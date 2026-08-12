@@ -223,7 +223,7 @@ export default function ContactModal({
                     : questionnaire.submitLabel}
                   <span className="btn-arrow">{submitting ? "…" : "→"}</span>
                 </button>
-                <p className="font-mono-data max-w-[18rem] text-[0.58rem] leading-relaxed opacity-70">
+                <p className="max-w-[19rem] text-[0.7rem] leading-relaxed opacity-60">
                   {questionnaire.consent}
                 </p>
               </div>

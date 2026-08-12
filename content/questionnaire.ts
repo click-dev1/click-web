@@ -28,6 +28,9 @@ export interface Field {
   /** prefix rendered inside the input (e.g. "@") and stripped before submit */
   prefix?: string;
   help?: string;
+  /** overrides the generic "<label> is required." — for labels that don't
+   *  read as a noun ("I'm here as is required.") */
+  requiredError?: string;
   /** choice fields only — value is what HubSpot stores */
   options?: { value: string; label: string; blurb: string }[];
   /** layout hint: pair two fields on one row at ≥sm */
@@ -43,6 +46,7 @@ export const fields: Field[] = [
     label: "I'm here as",
     type: "choice",
     required: true,
+    requiredError: "Pick one so we can point you at the right team.",
     maxLength: 20,
     options: [
       {
@@ -107,7 +111,7 @@ export const questionnaire = {
   eyebrow: "Start the conversation",
   title: "Tell us who's asking.",
   intro:
-    "Four questions. A strategist reads every one of these — you'll hear back within two working days.",
+    "A few quick questions. A strategist reads every one of these — you'll hear back within two working days.",
   submitLabel: "Send it",
   submittingLabel: "Sending",
   success: {
@@ -140,7 +144,10 @@ export function validate(answers: Answers): Record<string, string> {
     const value = (answers[field.name] ?? "").trim();
 
     if (!value) {
-      if (field.required) errors[field.name] = `${field.label} is required.`;
+      if (field.required) {
+        errors[field.name] =
+          field.requiredError ?? `${field.label} is required.`;
+      }
       continue;
     }
     if (value.length > field.maxLength) {
