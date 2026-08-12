@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Anton, Inter, JetBrains_Mono } from "next/font/google";
+import ContactModalProvider from "@/components/contact/ContactModalProvider";
 import "./globals.css";
 
 /* Display face: Anton — the closest free match to the CLICK logotype's
@@ -32,25 +33,22 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/* Runs before paint: restores the visitor's chosen design direction.
-   Kept inline so there is no theme flash. */
-const themeInit = `(function(){try{var t=localStorage.getItem("click-theme");if(t==="paper"||t==="noir"||t==="signal"||t==="blue"){document.documentElement.dataset.theme=t}else{document.documentElement.dataset.theme="signal"}}catch(e){document.documentElement.dataset.theme="signal"}})();`;
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="signal" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-      </head>
+    <html lang="en">
       <body
         className={`${anton.variable} ${inter.variable} ${jetbrains.variable} grain antialiased`}
       >
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {children}
+        {/* Root level, not per route group: the contact CTA appears in the
+            nav, the sections, the /concept finale and the 404 — which all
+            sit in different layouts. One provider covers every route and
+            keeps a single <dialog> in the top layer. */}
+        <ContactModalProvider>{children}</ContactModalProvider>
       </body>
     </html>
   );

@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
+import ContactButton from "@/components/contact/ContactButton";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
@@ -92,22 +93,6 @@ const fmt = (s: Stat, v: number) =>
   s.suffix;
 
 const MARQUEE_WORDS = ["Science", "Culture", "Attention", "Signal"];
-
-/* The scroll journey walks through all four Signal design directions —
-   the page itself is the theme demo. Restored to the visitor's stored
-   choice on exit. */
-const THEMES = ["signal", "noir", "blue", "paper"] as const;
-type ThemeName = (typeof THEMES)[number];
-
-function storedTheme(): ThemeName {
-  try {
-    const t = localStorage.getItem("click-theme");
-    if ((THEMES as readonly string[]).includes(t ?? "")) return t as ThemeName;
-  } catch {
-    /* private mode */
-  }
-  return "signal";
-}
 
 export default function ConceptExperience() {
   const root = useRef<HTMLDivElement>(null);
@@ -319,7 +304,7 @@ export default function ConceptExperience() {
               }),
           });
 
-          /* ---- chapter journey: wayfinding readout + theme per act ----
+          /* ---- chapter journey: wayfinding readout per act ----
              Created after all pins so initial sort sees final layout;
              ranges are pin-aware on refresh. */
           gsap.utils.toArray<HTMLElement>("[data-chapter]").forEach((el) => {
@@ -329,8 +314,6 @@ export default function ConceptExperience() {
               end: "bottom 50%",
               onToggle: (self) => {
                 if (!self.isActive) return;
-                const theme = el.dataset.chapterTheme;
-                if (theme) document.documentElement.dataset.theme = theme;
                 if (chapterRef.current && el.dataset.chapterLabel) {
                   chapterRef.current.textContent = el.dataset.chapterLabel;
                   gsap.fromTo(
@@ -424,7 +407,6 @@ export default function ConceptExperience() {
             finaleSplit.revert();
             gsap.ticker.remove(tick);
             lenis.destroy();
-            document.documentElement.dataset.theme = storedTheme();
           };
         }
       );
@@ -445,7 +427,6 @@ export default function ConceptExperience() {
       <section
         ref={heroRef}
         data-chapter
-        data-chapter-theme="signal"
         data-chapter-label="01 / 05 — Welcome"
         className="c-act relative flex min-h-[100svh] flex-col items-center justify-center px-5 text-center md:px-8"
       >
@@ -486,7 +467,6 @@ export default function ConceptExperience() {
       <section
         ref={manifestoRef}
         data-chapter
-        data-chapter-theme="noir"
         data-chapter-label="02 / 05 — The Idea"
         className="c-act relative flex min-h-[100svh] items-center px-5 md:px-8"
       >
@@ -506,7 +486,6 @@ export default function ConceptExperience() {
       <section
         ref={methodRef}
         data-chapter
-        data-chapter-theme="blue"
         data-chapter-label="03 / 05 — The Method"
         className="c-act relative lg:h-svh lg:overflow-hidden"
       >
@@ -571,7 +550,6 @@ export default function ConceptExperience() {
       {/* ---- act 4: the proof ---- */}
       <section
         data-chapter
-        data-chapter-theme="paper"
         data-chapter-label="04 / 05 — The Proof"
         className="c-act relative px-5 py-28 md:px-8 md:py-36"
       >
@@ -625,7 +603,6 @@ export default function ConceptExperience() {
       {/* ---- act 5: finale ---- */}
       <section
         data-chapter
-        data-chapter-theme="signal"
         data-chapter-label="05 / 05 — The Signal"
         className="c-act relative flex min-h-[100svh] flex-col items-center justify-center px-5 text-center md:px-8"
       >
@@ -650,9 +627,9 @@ export default function ConceptExperience() {
           <Link href="/" className="btn-primary c-magnetic">
             Enter the Site <span className="btn-arrow">→</span>
           </Link>
-          <Link href="/contact" className="btn-ghost c-magnetic">
+          <ContactButton className="btn-ghost c-magnetic">
             Start the Conversation <span className="btn-arrow">→</span>
-          </Link>
+          </ContactButton>
         </div>
         <p
           className="font-mono-data relative mt-20 text-[0.62rem]"

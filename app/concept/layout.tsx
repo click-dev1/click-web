@@ -2,7 +2,8 @@ import Link from "next/link";
 
 /* Self-contained microsite shell. The only chrome shared with the main
    site — pixel for pixel — is the CLICK logo + "· concept" pair in the
-   top-left. No nav links, no theme switcher, no footer. */
+   top-left. No nav links, no theme switcher, no footer. (The contact
+   modal comes from the root layout; the finale CTA opens it.) */
 export default function ConceptLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

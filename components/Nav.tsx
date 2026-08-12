@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ThemeSwitcher from "./ThemeSwitcher";
+import ContactButton from "./contact/ContactButton";
 
 /* Deliberately sparse for now: only Home and /concept exist. The full
    link set (Influencer Marketing / Talent / Work / About / Contact)
@@ -45,17 +45,11 @@ export default function Nav() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-7">
-          <div className="hidden items-center gap-7 md:flex">
-            <ThemeSwitcher />
-          </div>
-          <Link
-            href="/contact"
-            className="btn-primary px-4 py-2.5 text-xs md:px-6 md:py-3 md:text-sm"
-          >
-            Start the Conversation <span className="btn-arrow">→</span>
-          </Link>
-        </div>
+        <ContactButton className="btn-primary shrink-0 px-4 py-2.5 text-xs md:px-6 md:py-3 md:text-sm">
+          <span className="hidden sm:inline">Start the Conversation</span>
+          <span className="sm:hidden">Start</span>{" "}
+          <span className="btn-arrow">→</span>
+        </ContactButton>
       </nav>
     </header>
   );

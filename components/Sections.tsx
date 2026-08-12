@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ContactButton from "@/components/contact/ContactButton";
 import {
   brands,
   caseStudies,
@@ -56,28 +57,32 @@ export function Hero() {
           className="anim-fade-up mt-9 flex flex-wrap items-center gap-4"
           style={{ animationDelay: "0.5s" }}
         >
-          <Link href="/contact" className="btn-primary">
+          <ContactButton className="btn-primary">
             Start the Conversation <span className="btn-arrow">→</span>
-          </Link>
+          </ContactButton>
           <Link href="/work" className="btn-ghost">
             View Our Work <span className="btn-arrow">→</span>
           </Link>
         </div>
       </div>
 
-      {/* resolved insight — the visualization's payoff */}
-      <div
-        className="anim-fade-up pointer-events-none absolute right-5 top-[24%] hidden w-[21rem] lg:block"
-        style={{ animationDelay: "2s" }}
-      >
-        <div className="insight-frame">
-          <p className="eyebrow mb-2">
-            <span className="tick">◉</span> {heroAnnotation.eyebrow}
-          </p>
-          <p className="text-sm leading-relaxed">{heroAnnotation.body}</p>
-          <p className="eyebrow mt-3" style={{ color: "var(--signal)" }}>
-            {heroAnnotation.statusLabel}
-          </p>
+      {/* resolved insight — the visualization's payoff. Held to xl and
+          aligned to the content container: below that it would sit on top
+          of the headline, which still runs close to full measure. */}
+      <div className="pointer-events-none absolute inset-x-5 top-[24%] hidden md:inset-x-8 xl:block">
+        <div className="mx-auto w-full max-w-7xl">
+          <div
+            className="anim-fade-up insight-frame ml-auto w-[21rem]"
+            style={{ animationDelay: "2s" }}
+          >
+            <p className="eyebrow mb-2">
+              <span className="tick">◉</span> {heroAnnotation.eyebrow}
+            </p>
+            <p className="text-sm leading-relaxed">{heroAnnotation.body}</p>
+            <p className="eyebrow mt-3" style={{ color: "var(--signal)" }}>
+              {heroAnnotation.statusLabel}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -111,9 +116,11 @@ export function Journeys() {
       aria-label="Choose your journey"
     >
       <div className="journeys">
-        <Link
-          href="/contact"
-          className="journey-a texture-grid group relative block px-6 py-16 transition-colors md:px-10 md:py-24"
+        {/* The whole panel is the control — it opens the questionnaire with
+            the first answer already filled in for that audience. */}
+        <ContactButton
+          segment="brand"
+          className="journey-a texture-grid group relative block w-full px-5 py-16 text-left transition-colors md:px-10 md:py-24"
         >
           <p className="eyebrow mb-4">
             <span className="tick">01</span> For brands
@@ -128,12 +135,11 @@ export function Journeys() {
           <span className="btn-ghost mt-8 inline-flex group-hover:border-[var(--signal)]">
             Start the Conversation <span className="btn-arrow">→</span>
           </span>
-        </Link>
+        </ContactButton>
 
-        <Link
-          href="/contact#creator-network"
-          className="journey-b group relative block border-t px-6 py-16 transition-colors md:border-t-0 md:border-l md:px-10 md:py-24"
-          style={{ borderColor: "var(--hairline)" }}
+        <ContactButton
+          segment="creator"
+          className="journey-b group relative block w-full border-t px-5 py-16 text-left transition-colors md:border-t-0 md:border-l md:px-10 md:py-24 [border-color:var(--hairline)]"
         >
           <p className="eyebrow mb-4">
             <span className="tick">02</span> For creators
@@ -150,7 +156,7 @@ export function Journeys() {
           <span className="btn-ghost mt-8 inline-flex group-hover:border-[var(--signal)]">
             Join CLICK Talent <span className="btn-arrow">→</span>
           </span>
-        </Link>
+        </ContactButton>
       </div>
     </section>
   );
@@ -239,45 +245,50 @@ export function Intelligence() {
         How audience intelligence works
       </h2>
       <div id="intel-stage" className="relative lg:min-h-screen">
-        <div className="mx-auto flex max-w-7xl flex-col gap-24 px-5 py-24 md:px-8 lg:gap-0">
+        <div className="flex flex-col gap-24 py-24 lg:gap-0">
           {BEATS.map((b) => (
+            /* On desktop Fx.tsx stacks these with position:absolute against
+               #intel-stage, so the gutter + max-width live on the inner
+               wrapper — otherwise the pinned beats lose their margins. */
             <div
               key={b.label}
               data-beat
               className="flex flex-col justify-center lg:min-h-[80vh]"
             >
-              <p className="eyebrow mb-3">
-                <span className="tick">◆</span> {b.label}
-              </p>
-              <p
-                className="font-mono-data mb-5 text-[0.68rem]"
-                style={{ color: "var(--signal)" }}
-              >
-                {b.layers}
-              </p>
-              <h3 data-reveal className="font-display text-h2 max-w-3xl">
-                {b.title}
-              </h3>
-              <p
-                data-reveal
-                className="mt-6 max-w-xl text-lg leading-relaxed"
-                style={{ color: "var(--ink-muted)" }}
-              >
-                {b.body}
-              </p>
-              {"proof" in b && b.proof && (
-                <div data-reveal className="insight-frame mt-8 max-w-md">
-                  <span className="tnum text-metric block">
-                    {b.proof.value}
-                  </span>
-                  <span
-                    className="mt-1 block text-sm"
-                    style={{ color: "var(--ink-muted)" }}
-                  >
-                    {b.proof.label}
-                  </span>
-                </div>
-              )}
+              <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
+                <p className="eyebrow mb-3">
+                  <span className="tick">◆</span> {b.label}
+                </p>
+                <p
+                  className="font-mono-data mb-5 text-[0.68rem]"
+                  style={{ color: "var(--signal)" }}
+                >
+                  {b.layers}
+                </p>
+                <h3 data-reveal className="font-display text-h2 max-w-3xl">
+                  {b.title}
+                </h3>
+                <p
+                  data-reveal
+                  className="mt-6 max-w-xl text-lg leading-relaxed"
+                  style={{ color: "var(--ink-muted)" }}
+                >
+                  {b.body}
+                </p>
+                {"proof" in b && b.proof && (
+                  <div data-reveal className="insight-frame mt-8 max-w-md">
+                    <span className="tnum text-metric block">
+                      {b.proof.value}
+                    </span>
+                    <span
+                      className="mt-1 block text-sm"
+                      style={{ color: "var(--ink-muted)" }}
+                    >
+                      {b.proof.label}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -315,7 +326,7 @@ export function Work() {
             <article
               key={cs.brand}
               data-reveal
-              className="card-surface grid gap-8 rounded-xl p-7 md:grid-cols-[1fr_1.2fr_1fr] md:p-10"
+              className="card-surface grid gap-8 rounded-xl p-6 sm:p-7 md:p-10 lg:grid-cols-[1fr_1.2fr_1fr]"
             >
               <div>
                 <p className="eyebrow mb-2">
@@ -347,7 +358,8 @@ export function Work() {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center gap-5 md:border-l md:pl-8"
+              <div
+                className="flex flex-col justify-center gap-5 lg:border-l lg:pl-8"
                 style={{ borderColor: "var(--hairline)" }}
               >
                 <p className="eyebrow">What happened</p>
@@ -434,9 +446,9 @@ export function FinalCta() {
           conversation.
         </p>
         <div data-reveal className="mt-9">
-          <Link href="/contact" className="btn-primary">
+          <ContactButton className="btn-primary">
             Start the Conversation <span className="btn-arrow">→</span>
-          </Link>
+          </ContactButton>
         </div>
       </div>
     </section>

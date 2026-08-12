@@ -2,89 +2,30 @@
 
 /* ============================================================
    CLICK — Homepage Concept
-   Three design directions, one token system.
-   01 SIGNAL — CLICK's navy + electric blue, evolved
-   02 PAPER  — editorial print-lab, navy ink on warm paper
-   03 NOIR   — monochrome cinema, one rare warm accent
+   Direction 04 · FULL VOLTAGE — Electric Blue as the canvas
+   itself, white ink. Every value below is a published brand
+   colour (Brand Guidelines V1.0, Feb 2025, p.19).
+
+   Text colour note: on Electric Blue, pure white is the ONLY
+   text colour that gets close to WCAG AA — white is 4.45:1,
+   brand Light Blue #C5E9FF is 3.49:1, brand Grey #E2EAED is
+   3.65:1. So secondary copy is white too, and hierarchy comes
+   from size and weight instead of tint — which is how the
+   guidelines' own blue panels behave (p.05).
    ============================================================ */
 
-:root,
-[data-theme="signal"] {
-  --bg: #06080f;
-  --bg-elev: #0a0f19;
-  --ink: #f4f1ea;
-  --ink-muted: #8b93a3;
-  --hairline: rgba(255, 255, 255, 0.1);
-  --signal: #2e7fff;
-  --signal-strong: #186ffc;
-  --signal-tint: #91c8ff;
-  --cta-bg: #186ffc;
-  --cta-ink: #ffffff;
-  --card: rgba(255, 255, 255, 0.03);
-  --glow: rgba(46, 127, 255, 0.35);
-  --grain-opacity: 0.05;
-  /* canvas params (read by SignalCanvas) */
-  --p-color: 145, 200, 255;
-  --p-accent: 46, 127, 255;
-  --p-line-alpha: 0.14;
-  --p-glow-alpha: 0.5;
-}
-
-[data-theme="paper"] {
-  --bg: #f5f2ea;
-  --bg-elev: #eeeade;
-  --ink: #0a1c33;
-  --ink-muted: #5c6b80;
-  --hairline: rgba(10, 28, 51, 0.14);
-  --signal: #0f5fe0;
-  --signal-strong: #0a4dbd;
-  --signal-tint: #00234a;
-  --cta-bg: #00234a;
-  --cta-ink: #f5f2ea;
-  --card: rgba(10, 28, 51, 0.04);
-  --glow: rgba(15, 95, 224, 0.18);
-  --grain-opacity: 0.035;
-  --p-color: 10, 28, 51;
-  --p-accent: 15, 95, 224;
-  --p-line-alpha: 0.18;
-  --p-glow-alpha: 0.12;
-}
-
-[data-theme="noir"] {
-  --bg: #050505;
-  --bg-elev: #0c0c0c;
-  --ink: #ededed;
-  --ink-muted: #8a8a8a;
-  --hairline: rgba(255, 255, 255, 0.09);
-  --signal: #ff2a0d;
-  --signal-strong: #ff2a0d;
-  --signal-tint: #bdbdbd;
-  --cta-bg: #ededed;
-  --cta-ink: #050505;
-  --card: rgba(255, 255, 255, 0.035);
-  --glow: rgba(255, 255, 255, 0.2);
-  --grain-opacity: 0.07;
-  --p-color: 220, 220, 220;
-  --p-accent: 255, 42, 13;
-  --p-line-alpha: 0.1;
-  --p-glow-alpha: 0.3;
-}
-
-[data-theme="blue"] {
-  /* full-voltage: CLICK's electric blue as the canvas itself */
-  --bg: #0f5ad9;
-  --bg-elev: #0c4fc2;
-  --ink: #ffffff;
-  --ink-muted: #bcd4ff;
-  --hairline: rgba(255, 255, 255, 0.24);
+:root {
+  --bg: #186ffc; /* Electric Blue — the brand colour */
+  --ink: #ffffff; /* White */
+  --ink-muted: #ffffff; /* see text colour note above */
+  --hairline: rgba(255, 255, 255, 0.28);
   --signal: #ffffff;
-  --signal-strong: #ffffff;
-  --signal-tint: #cfe0ff;
-  --cta-bg: #ffffff;
-  --cta-ink: #0b3fa0;
-  --card: rgba(255, 255, 255, 0.08);
+  --cta-bg: #ffffff; /* White */
+  --cta-ink: #00234a; /* Dark Blue */
+  --card: rgba(255, 255, 255, 0.1);
   --glow: rgba(255, 255, 255, 0.3);
   --grain-opacity: 0.05;
+  /* canvas params (read by SignalCanvas) */
   --p-color: 255, 255, 255;
   --p-accent: 255, 255, 255;
   --p-line-alpha: 0.2;
@@ -102,10 +43,45 @@ html {
   }
 }
 
+/* ---------- type ----------
+   The brand system is Helvetica Now Display Condensed (primary,
+   Monotype) + Matter (supporting, Displaay). Both are licensed
+   commercial faces, so they are named first in every stack and
+   picked up the moment the woff2 files land in /public/fonts and
+   the @font-face blocks below are filled in. Until then the
+   Google fallbacks (Anton / Inter) carry the page. */
+
+/*
+@font-face {
+  font-family: "Helvetica Now Display Condensed";
+  src: url("/fonts/HelveticaNowDisplayCond-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Helvetica Now Display Condensed";
+  src: url("/fonts/HelveticaNowDisplayCond-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Matter";
+  src: url("/fonts/Matter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Matter";
+  src: url("/fonts/Matter-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+*/
+
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background-color 0.5s ease, color 0.5s ease;
@@ -117,9 +93,14 @@ body {
 }
 
 .font-display {
-  font-family: var(--font-anton), "Arial Narrow", sans-serif;
+  font-family: "Helvetica Now Display Condensed", var(--font-anton),
+    "Arial Narrow", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.01em;
+  /* condensed caps set solid close their word gaps up — the space
+     glyph is narrower than the counters around it, so words fuse
+     without this */
+  word-spacing: 0.08em;
   text-wrap: balance;
 }
 /* poster move for the culture side: outlined caps */
@@ -143,18 +124,35 @@ body {
   font-feature-settings: "tnum";
 }
 
-/* fluid type scale — condensed black caps: bigger, tighter leading */
+/* fluid type scale.
+
+   The brand rule is 80–85% leading on large display text, 90–100% on
+   smaller — but that rule is written for Helvetica Now Display
+   Condensed, a Regular/Bold grotesque. The Anton fallback is a single
+   Black weight with much taller vertical metrics and ~0.73em caps, so
+   0.84 leaves only 0.11em between one baseline and the next line's
+   cap-tops and the lines visually merge.
+
+   So leading is a variable tuned to whichever face is actually
+   rendering. When the licensed woff2 files land (see the @font-face
+   block at the top of this file), set --leading-display to 0.84 and
+   --leading-display-sm to 0.92 in the same edit. */
+:root {
+  --leading-display: 0.92;
+  --leading-display-sm: 0.98;
+}
+
 .text-hero {
   font-size: clamp(3rem, 10.5vw, 9rem);
-  line-height: 0.94;
+  line-height: var(--leading-display);
 }
 .text-h2 {
   font-size: clamp(2.2rem, 6vw, 5rem);
-  line-height: 0.96;
+  line-height: var(--leading-display);
 }
 .text-h3 {
   font-size: clamp(1.5rem, 2.8vw, 2.4rem);
-  line-height: 1.02;
+  line-height: var(--leading-display-sm);
 }
 .text-metric {
   font-size: clamp(1.8rem, 3.4vw, 3rem);
@@ -397,8 +395,8 @@ button:hover .btn-arrow {
   background-size: 44px 44px;
 }
 
-/* ---------- logo (official CLICK mark, painted via mask so it follows
-   the theme ink automatically: white on Signal/Noir, navy ink on Paper) ---------- */
+/* ---------- logo (official CLICK mark, painted via mask so it takes the
+   theme ink automatically rather than shipping a second colourway) ---------- */
 
 .logo-mark {
   display: inline-block;
@@ -416,27 +414,9 @@ button:hover .btn-arrow {
   border-bottom: 1px solid var(--hairline);
 }
 
-/* ---------- theme switcher ---------- */
-
-.theme-btn {
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
-  padding: 0.35rem 0.55rem;
-  color: var(--ink-muted);
-  border-radius: 4px;
-  transition: color 0.2s ease;
-}
-.theme-btn[aria-pressed="true"] {
-  color: var(--signal);
-}
-.theme-btn:hover {
-  color: var(--ink);
-}
-
 /* ============================================================
    CONCEPT MICROSITE (/concept) — self-contained scroll story.
-   Shares the token system (all four themes work) but nothing else.
+   Shares the token system but nothing else.
    Base state is fully readable with no JS / reduced motion;
    ConceptExperience only hides what it is about to animate.
    ============================================================ */
@@ -480,7 +460,9 @@ button:hover .btn-arrow {
    the letters can slam in and blow apart on scroll */
 .c-hero-title {
   font-size: clamp(4rem, 18.5vw, 21rem);
-  line-height: 0.9;
+  /* .c-letter-mask clips to this box, so leading below the face's own
+     glyph height would shave the letters */
+  line-height: var(--leading-display);
   display: flex;
   justify-content: center;
 }
@@ -533,7 +515,7 @@ button:hover .btn-arrow {
 /* proof: enormous tabular counters */
 .c-stat-value {
   font-size: clamp(3.4rem, 11vw, 9.5rem);
-  line-height: 0.92;
+  line-height: var(--leading-display);
 }
 
 /* finale CTA buttons get the magnetic treatment (transform set by JS) */
@@ -586,6 +568,287 @@ button:hover .btn-arrow {
   font-size: clamp(2.6rem, 7vw, 6.5rem);
   line-height: 1;
   white-space: nowrap;
+}
+
+/* ============================================================
+   CONTACT MODAL — the questionnaire that feeds HubSpot.
+
+   Inverted panel: the page is Electric Blue, so the dialog sits on
+   brand Dark Blue #00234a with white ink. That is the guidelines'
+   own pairing (p.19) and it separates the modal from the page
+   without introducing a colour the brand doesn't own.
+   ============================================================ */
+
+:root {
+  /* Functional UI state only — the brand palette has no error colour, and
+     nothing in it reads as "wrong" against Dark Blue. Kept soft rather
+     than a signal red so it corrects without alarming. */
+  --field-error: #ffb4a8;
+  --panel: #00234a; /* Dark Blue */
+}
+
+.contact-dialog {
+  margin: auto;
+  width: 100%;
+  max-width: min(100%, 46rem);
+  max-height: 100dvh;
+  padding: 1.25rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.contact-dialog::backdrop {
+  background: color-mix(in srgb, #00234a 72%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+/* Open/close animation. `allow-discrete` + @starting-style is what lets a
+   top-layer dialog animate both ways; browsers without it simply snap. */
+@media (prefers-reduced-motion: no-preference) {
+  .contact-dialog,
+  .contact-dialog::backdrop {
+    transition: opacity 0.25s ease, display 0.25s allow-discrete,
+      overlay 0.25s allow-discrete;
+    opacity: 0;
+  }
+  .contact-dialog[open],
+  .contact-dialog[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    .contact-dialog[open],
+    .contact-dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+  .contact-dialog .contact-panel {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @starting-style {
+    .contact-dialog[open] .contact-panel {
+      transform: translateY(12px) scale(0.985);
+    }
+  }
+}
+
+.contact-panel {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 2.5rem 1.5rem 2rem;
+  /* one soft Electric Blue bloom so the panel reads as part of the page
+     it opened from rather than a flat sheet dropped on top */
+  background-image: radial-gradient(
+    120% 90% at 100% 0%,
+    rgba(24, 111, 252, 0.45),
+    transparent 55%
+  );
+}
+@media (min-width: 640px) {
+  .contact-panel {
+    padding: 2.75rem 2.5rem 2.25rem;
+  }
+}
+
+/* corner brackets — same device as .insight-frame, so the modal is
+   visibly the same family as the annotations on the page */
+.contact-panel::before,
+.contact-panel::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: var(--signal);
+  border-style: solid;
+  pointer-events: none;
+}
+.contact-panel::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.contact-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+.contact-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+.contact-close:hover {
+  opacity: 1;
+}
+
+/* ---------- fields ---------- */
+
+.contact-label {
+  display: block;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin-bottom: 0.55rem;
+}
+.contact-req {
+  color: var(--signal);
+}
+
+.contact-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 0.15rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.contact-input-wrap:focus-within {
+  border-color: #fff;
+  box-shadow: 0 1px 0 #fff; /* reads as a 2px rule: the focus indicator */
+}
+.contact-input-wrap[data-invalid="true"] {
+  border-color: var(--field-error);
+}
+.contact-prefix {
+  opacity: 0.45;
+  font-size: 0.95rem;
+}
+.contact-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font-size: 0.98rem;
+  padding: 0.45rem 0;
+}
+.contact-input::placeholder {
+  color: rgba(255, 255, 255, 0.34);
+}
+/* the wrapper carries focus, so the global outline would double up */
+.contact-input:focus-visible {
+  outline: none;
+}
+.contact-input:disabled {
+  opacity: 0.5;
+}
+/* Chrome paints autofilled inputs solid yellow-white, which destroys the
+   panel. No way to set a background on autofill, so paint via shadow. */
+.contact-input:-webkit-autofill,
+.contact-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 100px var(--panel) inset;
+  caret-color: var(--ink);
+}
+
+.contact-help {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+.contact-error {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--field-error);
+}
+.contact-notice {
+  border-left: 2px solid var(--field-error);
+  padding-left: 0.8rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--field-error);
+}
+
+/* ---------- segment choice ---------- */
+
+.choice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.choice-card:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  transform: translateY(-1px);
+}
+.choice-card[data-selected] {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+}
+.choice-card:focus-within {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.choice-mark {
+  position: relative;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-top: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+}
+.choice-card[data-selected] .choice-mark {
+  border-color: #fff;
+}
+.choice-card[data-selected] .choice-mark::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+/* ---------- submit + success ---------- */
+
+.btn-primary:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+.btn-primary:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.contact-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  color: var(--signal);
+  font-size: 0.9rem;
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+/* bot trap: off-screen rather than display:none — bots that skip hidden
+   inputs still fill this one */
+.contact-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- sr-only util (tailwind provides, kept for safety) ---------- */

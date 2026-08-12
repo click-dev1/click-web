@@ -4,7 +4,8 @@ import SignalCanvas from "@/components/SignalCanvas";
 import FxRouter from "@/components/FxRouter";
 
 /* Chrome for the main concept site: persistent signal canvas, full nav,
-   footer. The /concept microsite deliberately lives outside this group. */
+   footer. The /concept microsite deliberately lives outside this group.
+   The contact modal is provided by the root layout, above all of these. */
 export default function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
