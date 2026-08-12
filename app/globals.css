@@ -1,0 +1,602 @@
+@import "tailwindcss";
+
+/* ============================================================
+   CLICK — Homepage Concept
+   Three design directions, one token system.
+   01 SIGNAL — CLICK's navy + electric blue, evolved
+   02 PAPER  — editorial print-lab, navy ink on warm paper
+   03 NOIR   — monochrome cinema, one rare warm accent
+   ============================================================ */
+
+:root,
+[data-theme="signal"] {
+  --bg: #06080f;
+  --bg-elev: #0a0f19;
+  --ink: #f4f1ea;
+  --ink-muted: #8b93a3;
+  --hairline: rgba(255, 255, 255, 0.1);
+  --signal: #2e7fff;
+  --signal-strong: #186ffc;
+  --signal-tint: #91c8ff;
+  --cta-bg: #186ffc;
+  --cta-ink: #ffffff;
+  --card: rgba(255, 255, 255, 0.03);
+  --glow: rgba(46, 127, 255, 0.35);
+  --grain-opacity: 0.05;
+  /* canvas params (read by SignalCanvas) */
+  --p-color: 145, 200, 255;
+  --p-accent: 46, 127, 255;
+  --p-line-alpha: 0.14;
+  --p-glow-alpha: 0.5;
+}
+
+[data-theme="paper"] {
+  --bg: #f5f2ea;
+  --bg-elev: #eeeade;
+  --ink: #0a1c33;
+  --ink-muted: #5c6b80;
+  --hairline: rgba(10, 28, 51, 0.14);
+  --signal: #0f5fe0;
+  --signal-strong: #0a4dbd;
+  --signal-tint: #00234a;
+  --cta-bg: #00234a;
+  --cta-ink: #f5f2ea;
+  --card: rgba(10, 28, 51, 0.04);
+  --glow: rgba(15, 95, 224, 0.18);
+  --grain-opacity: 0.035;
+  --p-color: 10, 28, 51;
+  --p-accent: 15, 95, 224;
+  --p-line-alpha: 0.18;
+  --p-glow-alpha: 0.12;
+}
+
+[data-theme="noir"] {
+  --bg: #050505;
+  --bg-elev: #0c0c0c;
+  --ink: #ededed;
+  --ink-muted: #8a8a8a;
+  --hairline: rgba(255, 255, 255, 0.09);
+  --signal: #ff2a0d;
+  --signal-strong: #ff2a0d;
+  --signal-tint: #bdbdbd;
+  --cta-bg: #ededed;
+  --cta-ink: #050505;
+  --card: rgba(255, 255, 255, 0.035);
+  --glow: rgba(255, 255, 255, 0.2);
+  --grain-opacity: 0.07;
+  --p-color: 220, 220, 220;
+  --p-accent: 255, 42, 13;
+  --p-line-alpha: 0.1;
+  --p-glow-alpha: 0.3;
+}
+
+[data-theme="blue"] {
+  /* full-voltage: CLICK's electric blue as the canvas itself */
+  --bg: #0f5ad9;
+  --bg-elev: #0c4fc2;
+  --ink: #ffffff;
+  --ink-muted: #bcd4ff;
+  --hairline: rgba(255, 255, 255, 0.24);
+  --signal: #ffffff;
+  --signal-strong: #ffffff;
+  --signal-tint: #cfe0ff;
+  --cta-bg: #ffffff;
+  --cta-ink: #0b3fa0;
+  --card: rgba(255, 255, 255, 0.08);
+  --glow: rgba(255, 255, 255, 0.3);
+  --grain-opacity: 0.05;
+  --p-color: 255, 255, 255;
+  --p-accent: 255, 255, 255;
+  --p-line-alpha: 0.2;
+  --p-glow-alpha: 0.35;
+}
+
+/* ---------- base ---------- */
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--bg);
+}
+
+.font-display {
+  font-family: var(--font-anton), "Arial Narrow", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  text-wrap: balance;
+}
+/* poster move for the culture side: outlined caps */
+.display-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--ink);
+  paint-order: stroke;
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .display-outline {
+    color: var(--ink);
+  }
+}
+.font-mono-data {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* fluid type scale — condensed black caps: bigger, tighter leading */
+.text-hero {
+  font-size: clamp(3rem, 10.5vw, 9rem);
+  line-height: 0.94;
+}
+.text-h2 {
+  font-size: clamp(2.2rem, 6vw, 5rem);
+  line-height: 0.96;
+}
+.text-h3 {
+  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  line-height: 1.02;
+}
+.text-metric {
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* ---------- shared surfaces ---------- */
+
+.hairline-t {
+  border-top: 1px solid var(--hairline);
+}
+.hairline-b {
+  border-bottom: 1px solid var(--hairline);
+}
+.card-surface {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  transition: border-color 0.25s ease, transform 0.25s ease,
+    background-color 0.5s ease;
+}
+.card-surface:hover {
+  border-color: color-mix(in srgb, var(--signal) 45%, transparent);
+}
+
+.eyebrow {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.eyebrow .tick {
+  color: var(--signal);
+}
+
+/* buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  font-size: 0.92rem;
+  font-weight: 550;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.2s ease, background-color 0.5s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px -8px var(--glow);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 0.85rem 1.6rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.btn-ghost:hover {
+  border-color: var(--signal);
+  transform: translateY(-2px);
+}
+.btn-arrow {
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+a:hover .btn-arrow,
+button:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* skip link */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* ---------- grain (static, subtle) ---------- */
+
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- marquee ---------- */
+
+.marquee {
+  overflow: hidden;
+  display: flex;
+  gap: 4rem;
+}
+.marquee-track {
+  display: flex;
+  gap: 4rem;
+  flex-shrink: 0;
+  min-width: 100%;
+  justify-content: space-around;
+  align-items: baseline;
+  animation: marquee-scroll 38s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 4rem));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .marquee {
+    flex-wrap: wrap;
+    row-gap: 1rem;
+  }
+}
+
+/* ---------- hero annotation / insight frame ---------- */
+
+.insight-frame {
+  position: relative;
+  padding: 1.1rem 1.25rem;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: none;
+  border: 1px solid var(--hairline);
+}
+.insight-frame::before,
+.insight-frame::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--signal);
+  border-style: solid;
+}
+.insight-frame::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.insight-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-fade-up {
+  opacity: 0;
+  animation: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* JS reveal targets: visible by default; Fx.tsx hides+animates them
+   only when motion is allowed (progressive enhancement). */
+[data-reveal] {
+  will-change: transform, opacity;
+}
+
+/* ---------- journey panels ---------- */
+
+.journeys {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transition: grid-template-columns 0.5s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+@media (min-width: 768px) {
+  .journeys:has(.journey-a:hover, .journey-a:focus-within) {
+    grid-template-columns: 1.25fr 0.75fr;
+  }
+  .journeys:has(.journey-b:hover, .journey-b:focus-within) {
+    grid-template-columns: 0.75fr 1.25fr;
+  }
+}
+@media (max-width: 767px) {
+  .journeys {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journeys {
+    transition: none;
+  }
+}
+
+/* fine grid texture for the "science" journey panel */
+.texture-grid {
+  background-image: linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* ---------- logo (official CLICK mark, painted via mask so it follows
+   the theme ink automatically: white on Signal/Noir, navy ink on Paper) ---------- */
+
+.logo-mark {
+  display: inline-block;
+  aspect-ratio: 965 / 290;
+  background-color: var(--ink);
+  -webkit-mask: url("/click-logo.png") no-repeat center / contain;
+  mask: url("/click-logo.png") no-repeat center / contain;
+  transition: background-color 0.5s ease;
+}
+
+/* ---------- nav ---------- */
+
+.nav-scrolled {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ---------- theme switcher ---------- */
+
+.theme-btn {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  padding: 0.35rem 0.55rem;
+  color: var(--ink-muted);
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+.theme-btn[aria-pressed="true"] {
+  color: var(--signal);
+}
+.theme-btn:hover {
+  color: var(--ink);
+}
+
+/* ============================================================
+   CONCEPT MICROSITE (/concept) — self-contained scroll story.
+   Shares the token system (all four themes work) but nothing else.
+   Base state is fully readable with no JS / reduced motion;
+   ConceptExperience only hides what it is about to animate.
+   ============================================================ */
+
+/* thin scroll progress hairline under the fixed logo header */
+.c-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 70;
+  background: var(--signal);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+/* every act paints an opaque background so an incoming section cleanly
+   covers the still-pinned one behind it ("camera move" handoff) */
+.c-act {
+  background: var(--bg);
+  transition: background-color 0.5s ease;
+}
+
+/* fixed chapter readout: wayfinding in place of a navbar */
+.c-chapter {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 70;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
+/* hero wordmark: viewport-filling Anton caps, one span per letter so
+   the letters can slam in and blow apart on scroll */
+.c-hero-title {
+  font-size: clamp(4rem, 18.5vw, 21rem);
+  line-height: 0.9;
+  display: flex;
+  justify-content: center;
+}
+.c-letter-mask {
+  display: inline-block;
+  overflow: hidden;
+}
+.c-letter {
+  display: inline-block;
+  will-change: transform;
+}
+
+/* manifesto: oversized statement read word-by-word on scrub */
+.c-manifesto-text {
+  font-size: clamp(1.9rem, 5vw, 4.4rem);
+  line-height: 1.14;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+/* method: horizontal track (pinned + translated on desktop by GSAP;
+   plain vertical stack on mobile / reduced motion) */
+.c-track {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 1024px) {
+  .c-track {
+    flex-direction: row;
+    width: 300vw;
+  }
+  .c-panel {
+    width: 100vw;
+    flex-shrink: 0;
+  }
+}
+.c-panel-num {
+  font-size: clamp(7rem, 24vh, 16rem);
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--signal);
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .c-panel-num {
+    color: var(--signal);
+  }
+}
+
+/* proof: enormous tabular counters */
+.c-stat-value {
+  font-size: clamp(3.4rem, 11vw, 9.5rem);
+  line-height: 0.92;
+}
+
+/* finale CTA buttons get the magnetic treatment (transform set by JS) */
+.c-magnetic {
+  will-change: transform;
+}
+
+/* custom cursor: blend-difference dot + trailing ring, fine pointers only */
+.c-cursor-dot,
+.c-cursor-ring {
+  display: none;
+}
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .c-cursor-dot,
+  .c-cursor-ring {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    pointer-events: none;
+    border-radius: 999px;
+    mix-blend-mode: difference;
+  }
+  .c-cursor-dot {
+    width: 8px;
+    height: 8px;
+    margin: -4px 0 0 -4px;
+    background: #fff;
+  }
+  .c-cursor-ring {
+    width: 36px;
+    height: 36px;
+    margin: -18px 0 0 -18px;
+    border: 1.5px solid rgba(255, 255, 255, 0.85);
+    transition: width 0.25s ease, height 0.25s ease, margin 0.25s ease;
+  }
+  .c-cursor-ring[data-hover="true"] {
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+  }
+}
+
+/* angled culture marquee between acts */
+.c-marquee-band {
+  transform: rotate(-2deg) scale(1.04);
+}
+.c-marquee-word {
+  font-size: clamp(2.6rem, 7vw, 6.5rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ---------- sr-only util (tailwind provides, kept for safety) ---------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

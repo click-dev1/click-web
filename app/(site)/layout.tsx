@@ -1,0 +1,22 @@
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import SignalCanvas from "@/components/SignalCanvas";
+import FxRouter from "@/components/FxRouter";
+
+/* Chrome for the main concept site: persistent signal canvas, full nav,
+   footer. The /concept microsite deliberately lives outside this group. */
+export default function SiteLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <>
+      <SignalCanvas />
+      <FxRouter />
+      <Nav />
+      <main id="main" className="relative">
+        {children}
+      </main>
+      <Footer />
+    </>
+  );
+}
