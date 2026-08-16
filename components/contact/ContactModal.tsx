@@ -175,7 +175,7 @@ export default function ContactModal({
             >
               {questionnaire.title}
             </h2>
-            <p className="mt-3 max-w-md text-sm leading-relaxed opacity-80">
+            <p className="mt-3 max-w-md text-sm leading-body opacity-80">
               {questionnaire.intro}
             </p>
 
@@ -223,7 +223,7 @@ export default function ContactModal({
                     : questionnaire.submitLabel}
                   <span className="btn-arrow">{submitting ? "…" : "→"}</span>
                 </button>
-                <p className="max-w-[19rem] text-[0.7rem] leading-relaxed opacity-60">
+                <p className="max-w-[19rem] text-[0.7rem] leading-body opacity-60">
                   {questionnaire.consent}
                 </p>
               </div>
@@ -364,11 +364,11 @@ function SuccessState({
       <h2 id="contact-modal-title" className="font-display text-h3 mt-3">
         {questionnaire.success.title}
       </h2>
-      <p className="mt-3 max-w-sm text-sm leading-relaxed opacity-80">
+      <p className="mt-3 max-w-sm text-sm leading-body opacity-80">
         {questionnaire.success.body}
       </p>
       {isPreview && (
-        <p className="font-mono-data mt-4 text-[0.58rem] leading-relaxed opacity-60">
+        <p className="font-data mt-4 text-[0.58rem] leading-body opacity-60">
           {questionnaire.previewNote}
         </p>
       )}

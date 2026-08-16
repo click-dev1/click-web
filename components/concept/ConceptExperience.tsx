@@ -508,7 +508,7 @@ export default function ConceptExperience() {
                   </p>
                   <h2 className="font-display text-h2">{p.title}</h2>
                   <p
-                    className="mt-6 text-lg leading-relaxed"
+                    className="mt-6 text-lg leading-body"
                     style={{ color: "var(--ink-muted)" }}
                   >
                     {p.copy}
@@ -591,7 +591,7 @@ export default function ConceptExperience() {
             </p>
           </div>
           <p
-            className="mt-10 text-xs leading-relaxed"
+            className="mt-10 text-xs leading-body"
             style={{ color: "var(--ink-muted)" }}
             data-creveal
           >
@@ -632,7 +632,7 @@ export default function ConceptExperience() {
           </ContactButton>
         </div>
         <p
-          className="font-mono-data relative mt-20 text-[0.62rem]"
+          className="font-data relative mt-20 text-[0.62rem]"
           style={{ color: "var(--ink-muted)" }}
         >
           CLICK · Concept 001 · Independent design concept — not the official

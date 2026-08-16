@@ -21,7 +21,7 @@ export default function Ecosystem() {
     >
       <div className="mx-auto max-w-7xl">
         <h2 id="eco-heading" className="font-display text-h2 max-w-2xl">
-          <span className="eyebrow mb-4 block">
+          <span className="eyebrow pill mb-5">
             <span className="tick" aria-hidden="true">
               ●
             </span>{" "}
@@ -67,7 +67,7 @@ export default function Ecosystem() {
             <p className="eyebrow mb-2">
               <span className="tick">◉</span> {active.name}
             </p>
-            <p className="leading-relaxed" style={{ color: "var(--ink-muted)" }}>
+            <p className="leading-body" style={{ color: "var(--ink-muted)" }}>
               {active.blurb}
             </p>
             <p className="eyebrow mt-4">

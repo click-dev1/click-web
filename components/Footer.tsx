@@ -121,7 +121,7 @@ export default function Footer() {
         </nav>
 
         <div
-          className="max-w-sm text-xs leading-relaxed"
+          className="max-w-sm text-xs leading-body"
           style={{ color: "var(--ink-muted)" }}
         >
           <p>
@@ -129,7 +129,7 @@ export default function Footer() {
             CLICK Media Group&apos;s official website; campaign figures are as
             published on clickmedia.group.
           </p>
-          <p className="font-mono-data mt-3 text-[0.62rem]">
+          <p className="font-data mt-3 text-[0.62rem]">
             Concept · {new Date().getFullYear()} · No tracking on this page
           </p>
         </div>

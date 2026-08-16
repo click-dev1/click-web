@@ -1,28 +1,26 @@
 import type { Metadata } from "next";
-import { Anton, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, Roboto_Condensed } from "next/font/google";
 import ContactModalProvider from "@/components/contact/ContactModalProvider";
 import "./globals.css";
 
-/* Display face: Anton — the closest free match to the CLICK logotype's
-   DNA (black-weight Swiss grotesque, closed apertures, vertical terminal
-   cuts, condensed). Headlines speak in the logo's voice. */
-const anton = Anton({
+/* Display fallback until the licensed Helvetica Now Display Condensed
+   files land. Roboto Condensed shares HNDC's skeleton — Helvetica-family
+   grotesque, open apertures, condensed — and, unlike Anton, it has a real
+   Bold. That matters: the guidelines set the logo in Black and say that
+   weight "should be used extremely sparingly so that our logo remains
+   distinctive", so headlines should not all be wearing it.
+   To revert to the previous poster look: swap this for Anton (weight 400)
+   and put --font-anton back in .font-display. */
+const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
-  variable: "--font-anton",
-  weight: "400",
+  variable: "--font-display-fallback",
+  weight: ["700"],
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -61,7 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${anton.variable} ${inter.variable} ${jetbrains.variable} grain antialiased`}
+        className={`${robotoCondensed.variable} ${inter.variable} grain antialiased`}
       >
         <a href="#main" className="skip-link">
           Skip to content

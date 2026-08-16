@@ -1,4 +1,5 @@
 import ContactButton from "@/components/contact/ContactButton";
+import { ScribbleCircle, ScribbleUnderline } from "@/components/Scribble";
 import {
   brands,
   caseStudies,
@@ -17,7 +18,7 @@ export function Hero() {
       aria-labelledby="hero-heading"
     >
       <div className="mx-auto w-full max-w-7xl">
-        <p className="eyebrow anim-fade-up mb-6">
+        <p className="eyebrow pill anim-fade-up mb-6">
           <span className="tick">●</span> Influencer marketing · Talent
           management · Global
         </p>
@@ -31,7 +32,7 @@ export function Hero() {
         </h1>
 
         <p
-          className="anim-fade-up mt-7 max-w-xl text-lg leading-relaxed"
+          className="anim-fade-up mt-7 max-w-xl text-lg leading-body"
           style={{ color: "var(--ink-muted)", animationDelay: "0.25s" }}
         >
           Audience intelligence, human expertise, and the world&apos;s most
@@ -40,7 +41,7 @@ export function Hero() {
         </p>
 
         <p
-          className="anim-fade-up font-mono-data mt-6 max-w-xl text-[0.72rem] leading-loose"
+          className="anim-fade-up font-data mt-6 max-w-xl text-[0.72rem] leading-loose"
           style={{ color: "var(--ink-muted)", animationDelay: "0.4s" }}
         >
           Science reveals the audience.
@@ -78,7 +79,7 @@ export function Hero() {
             <p className="eyebrow mb-2">
               <span className="tick">◉</span> {heroAnnotation.eyebrow}
             </p>
-            <p className="text-sm leading-relaxed">{heroAnnotation.body}</p>
+            <p className="text-sm leading-body">{heroAnnotation.body}</p>
             <p className="eyebrow mt-3" style={{ color: "var(--signal)" }}>
               {heroAnnotation.statusLabel}
             </p>
@@ -122,10 +123,23 @@ export function Journeys() {
           segment="brand"
           className="journey-a texture-grid group relative block w-full px-5 py-16 text-left transition-colors md:px-10 md:py-24"
         >
-          <p className="eyebrow mb-4">
-            <span className="tick">01</span> For brands
+          <p className="mb-4">
+            <span className="eyebrow pill">
+              <span className="tick">01</span> For brands
+            </span>
           </p>
-          <h2 className="font-display text-h2">I&apos;m a Brand</h2>
+          {/* One device per panel: the brand side gets the hand-drawn mark,
+              the creator side keeps the outlined-caps poster treatment.
+              Stacking both on one word just reads as noise. */}
+          <h2 className="font-display text-h2">
+            I&apos;m a{" "}
+            <span className="relative inline-block">
+              Brand
+              {/* 1 of 2 marks on this page — see Scribble.tsx. Hugs the line
+                  box; any looser and it crosses the sentence underneath. */}
+              <ScribbleCircle className="pointer-events-none absolute -inset-x-5 top-1 bottom-1 text-[var(--ink)]" />
+            </span>
+          </h2>
           <p
             className="mt-4 max-w-md text-lg"
             style={{ color: "var(--ink-muted)" }}
@@ -141,8 +155,10 @@ export function Journeys() {
           segment="creator"
           className="journey-b group relative block w-full border-t px-5 py-16 text-left transition-colors md:border-t-0 md:border-l md:px-10 md:py-24 [border-color:var(--hairline)]"
         >
-          <p className="eyebrow mb-4">
-            <span className="tick">02</span> For creators
+          <p className="mb-4">
+            <span className="eyebrow pill">
+              <span className="tick">02</span> For creators
+            </span>
           </p>
           <h2 className="font-display text-h2 display-outline">
             I&apos;m a Creator
@@ -249,7 +265,7 @@ export function Intelligence() {
           live above it to survive. */}
       <div className="mx-auto w-full max-w-7xl px-5 pt-24 md:px-8">
         <h2 id="intel-heading" className="font-display text-h2 max-w-3xl">
-          <span className="eyebrow mb-4 block">
+          <span className="eyebrow pill mb-5">
             <span className="tick" aria-hidden="true">
               ●
             </span>{" "}
@@ -274,7 +290,7 @@ export function Intelligence() {
             >
               <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
                 <p
-                  className="font-mono-data mb-5 text-[0.68rem]"
+                  className="font-data mb-5 text-[0.68rem]"
                   style={{ color: "var(--signal)" }}
                 >
                   {b.layers}
@@ -284,7 +300,7 @@ export function Intelligence() {
                 </h3>
                 <p
                   data-reveal
-                  className="mt-6 max-w-xl text-lg leading-relaxed"
+                  className="mt-6 max-w-xl text-lg leading-body"
                   style={{ color: "var(--ink-muted)" }}
                 >
                   {b.body}
@@ -323,7 +339,7 @@ export function Work() {
     >
       <div className="mx-auto max-w-7xl">
         <h2 id="work-heading" className="font-display text-h2 max-w-4xl">
-          <span className="eyebrow mb-4 block">
+          <span className="eyebrow pill mb-5">
             <span className="tick" aria-hidden="true">
               ●
             </span>{" "}
@@ -364,7 +380,7 @@ export function Work() {
 
                 <div>
                   <p className="eyebrow mb-1.5">What we built</p>
-                  <p className="leading-relaxed">{cs.created}</p>
+                  <p className="leading-body">{cs.created}</p>
                 </div>
 
                 <div
@@ -426,9 +442,15 @@ export function Recognition() {
       aria-label="Recognition"
     >
       <p data-reveal className="font-display text-h3">
-        {recognition.line}
+        <span className="relative inline-block">
+          {recognition.line}
+          {/* 2 of 2 — the award line is the one claim the blueprint says to
+              state once and leave alone, so it gets the emphasis */}
+          <ScribbleUnderline className="pointer-events-none absolute -bottom-4 left-0 h-3 w-full text-[var(--ink)]" />
+        </span>
       </p>
-      <p className="eyebrow mt-3">
+      {/* extra clearance: the scribble underline hangs below the line above */}
+      <p className="eyebrow mt-7">
         <span className="tick">◆</span> {recognition.years}
       </p>
     </section>

@@ -25,11 +25,34 @@
   --card: rgba(255, 255, 255, 0.1);
   --glow: rgba(255, 255, 255, 0.3);
   --grain-opacity: 0.05;
-  /* canvas params (read by SignalCanvas) */
+  /* canvas params (read by SignalCanvas).
+
+     Retuned for Electric Blue. The signal field was drawn against the
+     old near-black canvas (#06080f), where light-blue dots at 0.65
+     alpha separated at 5.18:1. Carried onto Electric Blue as white at
+     the same 0.65 they read 2.74:1 — half the separation — which is
+     why the field went muddy rather than wrong.
+
+     The recovery is opacity, not hue. White is the highest-contrast
+     ink this background allows (4.45:1 at full opacity, against 3.52
+     for brand Dark Blue and 3.49 for brand Light Blue) — the same
+     reason the text note at the top of this file gives. So there is a
+     hard ceiling here: 4.45:1 is 86% of what the dots used to have,
+     and no brand colour does better. */
   --p-color: 255, 255, 255;
   --p-accent: 255, 255, 255;
-  --p-line-alpha: 0.2;
-  --p-glow-alpha: 0.35;
+  --p-dot-alpha: 0.9; /* 3.90:1 — was 0.65, i.e. 2.74:1 */
+  --p-accent-alpha: 1; /* 4.45:1 — the ceiling, spent on the overlap */
+  --p-line-alpha: 0.3; /* 1.59:1 — was 0.2, i.e. 1.36:1 */
+  /* On black the accent was a different hue (#2e7fff against #91c8ff)
+     so the overlap read as a colour change. Electric Blue has nothing
+     brighter than white to shift to, so the overlap is carried by the
+     dot core going fully opaque instead — and the halo has to stay
+     out of its way. A white halo blooms far harder here than it did
+     on black: anything at or above the old 0.35 blows the accent dots
+     into blobs, because the halo and the field it sits on are now
+     only a few percent of luminance apart. Kept well under it. */
+  --p-glow-alpha: 0.22;
 }
 
 /* ---------- base ---------- */
@@ -53,8 +76,9 @@ section[id] {
    Monotype) + Matter (supporting, Displaay). Both are licensed
    commercial faces, so they are named first in every stack and
    picked up the moment the woff2 files land in /public/fonts and
-   the @font-face blocks below are filled in. Until then the
-   Google fallbacks (Anton / Inter) carry the page. */
+   the @font-face blocks below are filled in. Until then the closest
+   free stand-ins carry the page: Roboto Condensed Bold for HNDC
+   (same grotesque skeleton, real Bold) and Inter for Matter. */
 
 /*
 @font-face {
@@ -98,8 +122,9 @@ body {
 }
 
 .font-display {
-  font-family: "Helvetica Now Display Condensed", var(--font-anton),
-    "Arial Narrow", sans-serif;
+  font-family: "Helvetica Now Display Condensed",
+    var(--font-display-fallback), "Arial Narrow", sans-serif;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.01em;
   /* condensed caps set solid close their word gaps up — the space
@@ -119,10 +144,15 @@ body {
     color: var(--ink);
   }
 }
-.font-mono-data {
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
+/* Data/label voice. Was JetBrains Mono, which is not in CLICK's type
+   system at all — a monospace label set reads "technology company", the
+   one thing the blueprint says the site must never feel like. The brand
+   sets small labels in the supporting face, uppercase, tracked out. */
+.font-data {
+  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  font-weight: 500;
 }
 .tnum {
   font-variant-numeric: tabular-nums;
@@ -132,23 +162,23 @@ body {
 /* fluid type scale.
 
    The brand rule is 80–85% leading on large display text, 90–100% on
-   smaller — but that rule is written for Helvetica Now Display
-   Condensed, a Regular/Bold grotesque. The Anton fallback is a single
-   Black weight with much taller vertical metrics and ~0.73em caps, so
-   0.84 leaves only 0.11em between one baseline and the next line's
-   cap-tops and the lines visually merge.
-
-   So leading is a variable tuned to whichever face is actually
-   rendering. When the licensed woff2 files land (see the @font-face
-   block at the top of this file), set --leading-display to 0.84 and
-   --leading-display-sm to 0.92 in the same edit. */
+   smaller. That rule assumes Helvetica Now Display Condensed's metrics,
+   so leading lives in a variable tuned to whichever face is rendering:
+   the Roboto Condensed fallback has ~0.71em caps, close enough to HNDC
+   that the brand numbers work almost as written. (Anton, the previous
+   fallback, needed 0.92 — its caps are ~0.73em on far taller vertical
+   metrics, and at 0.84 the lines visually merged.) */
 :root {
-  --leading-display: 0.92;
-  --leading-display-sm: 0.98;
+  --leading-display: 0.86;
+  --leading-display-sm: 0.95;
 }
 
+/* Sized for the condensed grotesque, which sets wider than Anton did at
+   the same size. The cap is held down so "Where Science / Meets Culture."
+   stays two lines inside a max-w-4xl measure — widening the measure
+   instead would run the headline into the hero's insight frame at xl. */
 .text-hero {
-  font-size: clamp(3rem, 10.5vw, 9rem);
+  font-size: clamp(2.6rem, 8.6vw, 7.6rem);
   line-height: var(--leading-display);
 }
 .text-h2 {
@@ -184,14 +214,32 @@ body {
 }
 
 .eyebrow {
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
+  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-muted);
 }
 .eyebrow .tick {
   color: var(--signal);
+}
+
+/* Pill — a core brand shape (Guidelines p.16, p.23): a small uppercase
+   label inside a rounded container. Used for section labels, in place of
+   the bare tracked-out caps we had. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 0.32rem 0.85rem;
+}
+
+/* body leading — the brand caps the supporting face at 130% */
+.leading-body {
+  line-height: 1.3;
 }
 
 /* buttons */

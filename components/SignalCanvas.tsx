@@ -111,6 +111,8 @@ function readThemeParams() {
     accent: parse(s.getPropertyValue("--p-accent"), [46, 127, 255]),
     lineAlpha: parseFloat(s.getPropertyValue("--p-line-alpha")) || 0.14,
     glowAlpha: parseFloat(s.getPropertyValue("--p-glow-alpha")) || 0.4,
+    dotAlpha: parseFloat(s.getPropertyValue("--p-dot-alpha")) || 0.65,
+    accentAlpha: parseFloat(s.getPropertyValue("--p-accent-alpha")) || 0.95,
   };
 }
 
@@ -277,9 +279,13 @@ export default function SignalCanvas() {
           ctx!.globalAlpha = cfg.alpha;
           ctx!.drawImage(glow, p.x - s / 2, p.y - s / 2, s, s);
           ctx!.globalAlpha = 1;
-          ctx!.fillStyle = `rgba(${ar},${ag},${ab},${0.95 * cfg.alpha})`;
+          ctx!.fillStyle = `rgba(${ar},${ag},${ab},${
+            theme.accentAlpha * cfg.alpha
+          })`;
         } else {
-          ctx!.fillStyle = `rgba(${cr},${cg},${cb},${0.65 * cfg.alpha})`;
+          ctx!.fillStyle = `rgba(${cr},${cg},${cb},${
+            theme.dotAlpha * cfg.alpha
+          })`;
         }
         ctx!.beginPath();
         ctx!.arc(p.x, p.y, p.r, 0, Math.PI * 2);
