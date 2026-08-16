@@ -150,7 +150,28 @@ export const ecosystem = {
   center: "GameSquare",
   groups: [
     {
-      label: "Talent & Creators",
+      label: "Technology",
+      nodes: [
+        {
+          name: "AI Audience Mapping",
+          blurb: "Audience behavior, community overlap and cultural trends.",
+        },
+        {
+          name: "Sideqik",
+          blurb: "Influencer marketing platform — creator discovery to reporting.",
+        },
+        {
+          name: "TubeBuddy",
+          blurb: "YouTube audience and channel intelligence.",
+        },
+        {
+          name: "Stream Hatchet",
+          blurb: "Live-streaming analytics across every major platform.",
+        },
+      ],
+    },
+    {
+      label: "Creators",
       nodes: [
         {
           name: "CLICK Talent",
@@ -167,36 +188,28 @@ export const ecosystem = {
       ],
     },
     {
-      label: "Data & Intelligence",
-      nodes: [
-        {
-          name: "Stream Hatchet",
-          blurb: "Live-streaming analytics across every major platform.",
-        },
-        {
-          name: "Sideqik",
-          blurb: "Influencer marketing platform — creator discovery to reporting.",
-        },
-        {
-          name: "TubeBuddy",
-          blurb: "YouTube audience and channel intelligence.",
-        },
-        {
-          name: "AI Audience Mapping",
-          blurb: "Audience behavior, community overlap and cultural trends.",
-        },
-      ],
-    },
-    {
-      label: "Gaming & Experiences",
+      label: "Gaming & Esports",
       nodes: [
         {
           name: "ZONED",
           blurb: "Gaming and esports agency capabilities.",
         },
+      ],
+    },
+    {
+      label: "Experiential",
+      nodes: [
         {
-          name: "Experiential",
-          blurb: "Live events, brand activations and creative production.",
+          name: "Live Events",
+          blurb: "Fan-facing events produced end to end.",
+        },
+        {
+          name: "Brand Activations",
+          blurb: "Physical and in-game brand moments built for participation.",
+        },
+        {
+          name: "Creative Production",
+          blurb: "Campaign content production, from concept through delivery.",
         },
       ],
     },

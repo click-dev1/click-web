@@ -20,11 +20,17 @@ export default function Ecosystem() {
       aria-labelledby="eco-heading"
     >
       <div className="mx-auto max-w-7xl">
-        <p className="eyebrow mb-4">
-          <span className="tick">●</span> Backed by the GameSquare ecosystem
-        </p>
-        <h2 id="eco-heading" data-split className="font-display text-h2 max-w-2xl">
-          One ecosystem. Endless possibilities.
+        <h2 id="eco-heading" className="font-display text-h2 max-w-2xl">
+          <span className="eyebrow mb-4 block">
+            <span className="tick" aria-hidden="true">
+              ●
+            </span>{" "}
+            Backed by the GameSquare ecosystem
+          </span>
+          <span className="visually-hidden"> — </span>
+          <span data-split className="block">
+            One ecosystem. Endless possibilities.
+          </span>
         </h2>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[1.4fr_1fr]">

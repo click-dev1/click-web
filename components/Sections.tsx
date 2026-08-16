@@ -1,4 +1,3 @@
-import Link from "next/link";
 import ContactButton from "@/components/contact/ContactButton";
 import {
   brands,
@@ -60,9 +59,10 @@ export function Hero() {
           <ContactButton className="btn-primary">
             Start the Conversation <span className="btn-arrow">→</span>
           </ContactButton>
-          <Link href="/work" className="btn-ghost">
+          {/* in-page until /work exists */}
+          <a href="#work" className="btn-ghost">
             View Our Work <span className="btn-arrow">→</span>
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -190,7 +190,10 @@ export function Marquee() {
       aria-labelledby="brands-heading"
     >
       <h2 id="brands-heading" className="eyebrow mb-8 px-5 md:px-8">
-        <span className="tick">●</span> Trusted by leading brands
+        <span className="tick" aria-hidden="true">
+          ●
+        </span>{" "}
+        Trusted by leading brands
       </h2>
       {row(brands.clients, "")}
       <div className="mt-6 opacity-60">{row(brands.platforms, "")}</div>
@@ -205,27 +208,27 @@ export function Marquee() {
 
 /* ============ INTELLIGENCE (4 beats) ============ */
 
+/* Titles and bodies are CLICK's own Section 2 copy. No "Beat 01 · Listen"
+   style labels: the science → people → creators → culture → results
+   progression is a structural principle in the blueprint, explicitly not
+   copy — "do not print this progression as text on any page". */
 const BEATS = [
   {
-    label: "Beat 01 · Listen",
     layers: "Platforms → Audience Intelligence",
-    title: "Intelligence Before Investment",
-    body: "The strongest partnerships aren't built on assumptions. Before a campaign launches, we map how your audience and creator communities actually overlap.",
+    title: "The strongest partnerships aren't built on assumptions.",
+    body: "Before a campaign launches, we map how your audience and creator communities actually overlap — the behaviors, passions and cultural signals that determine whether a partnership works.",
   },
   {
-    label: "Beat 02 · Map",
     layers: "Communities → Creator Expertise",
     title: "The overlap is the opportunity.",
-    body: "Behaviors, passions and cultural signals show where a brand's audience and a creator's community are already the same people — before anyone posts.",
+    body: "Where a brand's audience and a creator's community are already the same people, the partnership has a foundation — and we can see it before anyone posts.",
   },
   {
-    label: "Beat 03 · Create",
     layers: "Creative Strategy",
-    title: "People turn insight into strategy.",
+    title: "Strategy, before the first post.",
     body: "Our strategists turn that intelligence into creator selection, creative direction, and media decisions — so every dollar is working before the first post goes live.",
   },
   {
-    label: "Beat 04 · Prove",
     layers: "Cultural Impact → Business Growth",
     title: "Then creators do what only creators can.",
     body: "They turn insight into culture — and culture into measurable business outcomes.",
@@ -241,24 +244,35 @@ export function Intelligence() {
       className="hairline-t relative z-10"
       aria-labelledby="intel-heading"
     >
-      <h2 id="intel-heading" className="visually-hidden">
-        How audience intelligence works
-      </h2>
+      {/* Sits outside #intel-stage: the stage gets pinned on desktop and
+          its children absolutely positioned, so the section title has to
+          live above it to survive. */}
+      <div className="mx-auto w-full max-w-7xl px-5 pt-24 md:px-8">
+        <h2 id="intel-heading" className="font-display text-h2 max-w-3xl">
+          <span className="eyebrow mb-4 block">
+            <span className="tick" aria-hidden="true">
+              ●
+            </span>{" "}
+            Audience intelligence
+          </span>
+          <span className="visually-hidden"> — </span>
+          <span data-split className="block">
+            Intelligence Before Investment
+          </span>
+        </h2>
+      </div>
       <div id="intel-stage" className="relative lg:min-h-screen">
-        <div className="flex flex-col gap-24 py-24 lg:gap-0">
+        <div className="flex flex-col gap-24 pt-14 pb-24 lg:gap-0">
           {BEATS.map((b) => (
             /* On desktop Fx.tsx stacks these with position:absolute against
                #intel-stage, so the gutter + max-width live on the inner
                wrapper — otherwise the pinned beats lose their margins. */
             <div
-              key={b.label}
+              key={b.title}
               data-beat
               className="flex flex-col justify-center lg:min-h-[80vh]"
             >
               <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
-                <p className="eyebrow mb-3">
-                  <span className="tick">◆</span> {b.label}
-                </p>
                 <p
                   className="font-mono-data mb-5 text-[0.68rem]"
                   style={{ color: "var(--signal)" }}
@@ -299,12 +313,6 @@ export function Intelligence() {
 
 /* ============ FEATURED WORK ============ */
 
-const CASE_ROUTES: Record<string, string> = {
-  Optus: "/work/optus-gaming-on-the-go",
-  Maybelline: "/work/maybelline-eyes-up",
-  "McDonald's": "/work/mcdonalds-summer-24",
-};
-
 export function Work() {
   return (
     <section
@@ -314,11 +322,17 @@ export function Work() {
       aria-labelledby="work-heading"
     >
       <div className="mx-auto max-w-7xl">
-        <p className="eyebrow mb-4">
-          <span className="tick">●</span> Featured work
-        </p>
-        <h2 id="work-heading" data-split className="font-display text-h2 max-w-3xl">
-          Smarter decisions. Stronger partnerships. Better results.
+        <h2 id="work-heading" className="font-display text-h2 max-w-4xl">
+          <span className="eyebrow mb-4 block">
+            <span className="tick" aria-hidden="true">
+              ●
+            </span>{" "}
+            Featured work
+          </span>
+          <span className="visually-hidden"> — </span>
+          <span data-split className="block">
+            Smarter decisions. Stronger partnerships. Better results.
+          </span>
         </h2>
 
         <div className="mt-16 flex flex-col gap-6">
@@ -326,78 +340,76 @@ export function Work() {
             <article
               key={cs.brand}
               data-reveal
-              className="card-surface grid gap-8 rounded-xl p-6 sm:p-7 md:p-10 lg:grid-cols-[1fr_1.2fr_1fr]"
+              className="card-surface rounded-xl p-6 sm:p-7 md:p-10"
             >
-              <div>
-                <p className="eyebrow mb-2">
-                  <span className="tick">{String(i + 1).padStart(2, "0")}</span>{" "}
-                  {cs.brand}
-                </p>
-                <h3 className="font-display text-h3">{cs.campaign}</h3>
-                <Link
-                  href={CASE_ROUTES[cs.brand] ?? "/work"}
-                  className="btn-ghost mt-6 inline-flex px-4 py-2 text-xs"
-                >
-                  View Case Study <span className="btn-arrow">→</span>
-                </Link>
-              </div>
-
-              <div className="flex flex-col gap-5">
-                <div>
-                  <p className="eyebrow mb-1.5">What was understood</p>
-                  <p className="leading-relaxed">{cs.understood}</p>
-                </div>
-                <div>
-                  <p className="eyebrow mb-1.5">What was created</p>
-                  <p
-                    className="leading-relaxed"
-                    style={{ color: "var(--ink-muted)" }}
-                  >
-                    {cs.created}
-                  </p>
-                </div>
-              </div>
+              {/* The insight opens the card, before the brand or the
+                  campaign name — blueprint: "One insight line — 'What we
+                  found' — before anything else." */}
+              <p className="eyebrow mb-3">
+                <span className="tick">{String(i + 1).padStart(2, "0")}</span>{" "}
+                What the intelligence found
+              </p>
+              <p className="max-w-4xl text-xl leading-snug md:text-2xl">
+                {cs.understood}
+              </p>
 
               <div
-                className="flex flex-col justify-center gap-5 lg:border-l lg:pl-8"
+                className="mt-8 grid gap-8 border-t pt-8 lg:grid-cols-[1fr_1.2fr_1fr]"
                 style={{ borderColor: "var(--hairline)" }}
               >
-                <p className="eyebrow">What happened</p>
-                {cs.metrics.length > 0 ? (
-                  cs.metrics.slice(0, 3).map((m) => (
-                    <div key={m.label}>
-                      <span className="tnum text-metric block">{m.value}</span>
+                <div>
+                  <p className="eyebrow mb-2">{cs.brand}</p>
+                  <h3 className="font-display text-h3">{cs.campaign}</h3>
+                </div>
+
+                <div>
+                  <p className="eyebrow mb-1.5">What we built</p>
+                  <p className="leading-relaxed">{cs.created}</p>
+                </div>
+
+                <div
+                  className="flex flex-col justify-center gap-5 lg:border-l lg:pl-8"
+                  style={{ borderColor: "var(--hairline)" }}
+                >
+                  <p className="eyebrow">What it delivered</p>
+                  {cs.metrics.length > 0 ? (
+                    cs.metrics.slice(0, 3).map((m) => (
+                      <div key={m.label}>
+                        <span className="tnum text-metric block">
+                          {m.value}
+                        </span>
+                        <span
+                          className="text-sm"
+                          style={{ color: "var(--ink-muted)" }}
+                        >
+                          {m.label}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div>
                       <span
-                        className="text-sm"
-                        style={{ color: "var(--ink-muted)" }}
+                        className="font-display block text-2xl"
+                        style={{ color: "var(--signal)" }}
                       >
-                        {m.label}
+                        {cs.proofLine}
                       </span>
                     </div>
-                  ))
-                ) : (
-                  <div>
-                    <span
-                      className="font-display block text-2xl"
-                      style={{ color: "var(--signal)" }}
-                    >
-                      {cs.proofLine}
-                    </span>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </article>
           ))}
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+        {/* The per-case "View Case Study" and "View All Work" CTAs are held
+            back until /work and /work/* exist — they were pointing at
+            routes that 404. They return with those pages. */}
+        <div className="mt-10">
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
             Campaign figures as published on clickmedia.group. Insight lines
             are concept interpretations pending client confirmation.
           </p>
-          <Link href="/work" className="btn-ghost">
-            View All Work <span className="btn-arrow">→</span>
-          </Link>
         </div>
       </div>
     </section>

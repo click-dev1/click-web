@@ -26,10 +26,32 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+/* Set NEXT_PUBLIC_SITE_URL in the deploy environment. It resolves
+   canonical + Open Graph URLs; without it they fall back to localhost and
+   any absolute URL Next emits will be wrong. */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+const title = "CLICK — Influencer Marketing & Talent Management Agency";
+const description =
+  "Global influencer marketing and talent management. We map where brand audiences and creator communities overlap — then build partnerships that move culture.";
+
 export const metadata: Metadata = {
-  title: "CLICK — Where Science Meets Culture · Independent Concept",
-  description:
-    "Independent homepage design concept for CLICK. Not the official CLICK Media Group website.",
+  metadataBase: new URL(siteUrl),
+  title: { default: title, template: "%s · CLICK" },
+  description,
+  applicationName: "CLICK",
+  /* canonical is declared per route, not here — a root-level canonical is
+     inherited by every page and would point them all at "/" */
+  openGraph: {
+    type: "website",
+    siteName: "CLICK",
+    url: "/",
+    title,
+    description,
+  },
+  twitter: { card: "summary_large_image", title, description },
+  /* ⚠ LAUNCH GATE — this concept must stay out of the index. Remove this
+     line (and add app/sitemap.ts + robots.ts) when the real site ships. */
   robots: { index: false, follow: false },
 };
 

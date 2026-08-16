@@ -37,6 +37,11 @@
 html {
   scroll-behavior: smooth;
 }
+/* the nav is fixed, so anchor targets would land underneath it */
+:target,
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
