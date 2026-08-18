@@ -6,10 +6,7 @@ import { contact } from "@/content/manifest";
 const COLUMNS = [
   {
     label: "Explore",
-    links: [
-      { href: "/", label: "Home" },
-      { href: "/concept", label: "Concept 001" },
-    ],
+    links: [{ href: "/", label: "Home" }],
   },
 ];
 
@@ -125,12 +122,13 @@ export default function Footer() {
           style={{ color: "var(--ink-muted)" }}
         >
           <p>
-            Independent homepage concept, created for evaluation. This is not
+            Independent homepage design, created for evaluation. This is not
             CLICK Media Group&apos;s official website; campaign figures are as
             published on clickmedia.group.
           </p>
           <p className="font-data mt-3 text-[0.62rem]">
-            Concept · {new Date().getFullYear()} · No tracking on this page
+            Independent design · {new Date().getFullYear()} · No tracking on
+            this page
           </p>
         </div>
       </div>

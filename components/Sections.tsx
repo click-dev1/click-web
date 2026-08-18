@@ -31,26 +31,26 @@ export function Hero() {
           Where Science Meets Culture.
         </h1>
 
+        {/* The brand triad leads the body copy: it is the positioning
+            line, so it reads before the explanation of it. */}
         <p
-          className="anim-fade-up mt-7 max-w-xl text-lg leading-body"
-          style={{ color: "var(--ink-muted)", animationDelay: "0.25s" }}
-        >
-          Audience intelligence, human expertise, and the world&apos;s most
-          influential creators — combined to build partnerships that move
-          culture and grow your business.
-        </p>
-
-        <p
-          className="anim-fade-up font-data mt-6 max-w-xl text-[0.72rem] leading-loose"
-          style={{ color: "var(--ink-muted)", animationDelay: "0.4s" }}
+          className="anim-fade-up font-display hero-creed mt-8 max-w-2xl"
+          style={{ animationDelay: "0.25s" }}
         >
           Science reveals the audience.
           <br />
           Creators shape the culture.
           <br />
-          <span style={{ color: "var(--signal)" }}>
-            CLICK powers the connection.
-          </span>
+          <span className="creed-payoff">CLICK powers the connection.</span>
+        </p>
+
+        <p
+          className="anim-fade-up mt-7 max-w-xl text-lg leading-body"
+          style={{ color: "var(--ink-muted)", animationDelay: "0.4s" }}
+        >
+          Audience intelligence, human expertise, and the world&apos;s most
+          influential creators — combined to build partnerships that move
+          culture and grow your business.
         </p>
 
         <div
@@ -424,7 +424,7 @@ export function Work() {
         <div className="mt-10">
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
             Campaign figures as published on clickmedia.group. Insight lines
-            are concept interpretations pending client confirmation.
+            are editorial interpretations pending client confirmation.
           </p>
         </div>
       </div>

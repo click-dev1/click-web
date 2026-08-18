@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     description,
   },
   twitter: { card: "summary_large_image", title, description },
-  /* ⚠ LAUNCH GATE — this concept must stay out of the index. Remove this
+  /* ⚠ LAUNCH GATE — this build must stay out of the index. Remove this
      line (and add app/sitemap.ts + robots.ts) when the real site ships. */
   robots: { index: false, follow: false },
 };
@@ -65,9 +65,9 @@ export default function RootLayout({
           Skip to content
         </a>
         {/* Root level, not per route group: the contact CTA appears in the
-            nav, the sections, the /concept finale and the 404 — which all
-            sit in different layouts. One provider covers every route and
-            keeps a single <dialog> in the top layer. */}
+            nav, the sections and the 404 — which sit in different layouts.
+            One provider covers every route and keeps a single <dialog> in
+            the top layer. */}
         <ContactModalProvider>{children}</ContactModalProvider>
       </body>
     </html>

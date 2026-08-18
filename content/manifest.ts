@@ -3,13 +3,13 @@
  * Every factual statement rendered on the page lives here with its
  * verification status. Nothing marked `awaiting-confirmation` may ship
  * to production without client sign-off; `placeholder-do-not-publish`
- * must never render outside this concept.
+ * must never render outside this preview build.
  *
  * Statuses:
  *  - verified-public: confirmed on clickmedia.group or another public source
  *  - client-confirmed: approved in writing by CLICK
  *  - awaiting-confirmation: plausible, needs client sign-off
- *  - placeholder-do-not-publish: concept-only material
+ *  - placeholder-do-not-publish: preview-only material
  *
  * Last checked: 2026-08-05 against https://www.clickmedia.group/our-work
  */
@@ -99,7 +99,7 @@ export const caseStudies: CaseStudy[] = [
 ];
 
 /* NOTE: the "understood" lines above are editorial interpretations written
-   for this concept — they are consistent with the public campaign pages but
+   for this build — they are consistent with the public campaign pages but
    are NOT documented client findings. Status for all three interpretive
    lines: awaiting-confirmation. Replace with CLICK's real campaign insights
    before production. */

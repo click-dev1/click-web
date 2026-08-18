@@ -4,8 +4,7 @@ import SignalCanvas from "@/components/SignalCanvas";
 import FxRouter from "@/components/FxRouter";
 import StructuredData from "@/components/StructuredData";
 
-/* Chrome for the main concept site: persistent signal canvas, full nav,
-   footer. The /concept microsite deliberately lives outside this group.
+/* Chrome for the main site: persistent signal canvas, full nav, footer.
    The contact modal is provided by the root layout, above all of these. */
 export default function SiteLayout({
   children,

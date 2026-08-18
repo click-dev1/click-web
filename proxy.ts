@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Gates the whole site behind HTTP Basic Auth while this is an unlaunched
- * concept. Credentials come from env vars (set in .env.local, never
- * committed) with a fallback so local dev works out of the box.
+ * Gates the whole site behind HTTP Basic Auth while it is unlaunched.
+ * Credentials come from env vars (set in .env.local, never committed)
+ * with a fallback so local dev works out of the box.
  */
 const SITE_USER = process.env.SITE_AUTH_USER || "admin";
 const SITE_PASS = process.env.SITE_AUTH_PASS || "click26";
