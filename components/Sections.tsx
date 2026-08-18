@@ -1,4 +1,5 @@
 import ContactButton from "@/components/contact/ContactButton";
+import IntelligenceDiagram from "@/components/IntelligenceDiagram";
 import { ScribbleCircle, ScribbleUnderline } from "@/components/Scribble";
 import {
   brands,
@@ -117,12 +118,8 @@ export function Journeys() {
       aria-label="Choose your journey"
     >
       <div className="journeys">
-        {/* The whole panel is the control — it opens the questionnaire with
-            the first answer already filled in for that audience. */}
-        <ContactButton
-          segment="brand"
-          className="journey-a texture-grid group relative block w-full px-5 py-16 text-left transition-colors md:px-10 md:py-24"
-        >
+        {/* The whole panel is the control — it opens the contact form. */}
+        <ContactButton className="journey-a texture-grid group relative block w-full px-5 py-16 text-left transition-colors md:px-10 md:py-24">
           <p className="mb-4">
             <span className="eyebrow pill">
               <span className="tick">01</span> For brands
@@ -151,10 +148,7 @@ export function Journeys() {
           </span>
         </ContactButton>
 
-        <ContactButton
-          segment="creator"
-          className="journey-b group relative block w-full border-t px-5 py-16 text-left transition-colors md:border-t-0 md:border-l md:px-10 md:py-24 [border-color:var(--hairline)]"
-        >
+        <ContactButton className="journey-b group relative block w-full border-t px-5 py-16 text-left transition-colors md:border-t-0 md:border-l md:px-10 md:py-24 [border-color:var(--hairline)]">
           <p className="mb-4">
             <span className="eyebrow pill">
               <span className="tick">02</span> For creators
@@ -215,8 +209,8 @@ export function Marquee() {
       <div className="mt-6 opacity-60">{row(brands.platforms, "")}</div>
       {/* full lists for assistive tech & no-motion contexts */}
       <p className="visually-hidden">
-        Client work includes {brands.clients.join(", ")}. Platform
-        partnerships: {brands.platforms.join(", ")}.
+        Client work includes {brands.clients.join(", ")}. Platform partnerships:{" "}
+        {brands.platforms.join(", ")}.
       </p>
     </section>
   );
@@ -248,9 +242,19 @@ const BEATS = [
     layers: "Cultural Impact → Business Growth",
     title: "Then creators do what only creators can.",
     body: "They turn insight into culture — and culture into measurable business outcomes.",
-    proof: { value: "51.93%", label: "market share increase · Optus — Gaming on the Go" },
+    proof: {
+      value: "51.93%",
+      label: "market share increase · Optus — Gaming on the Go",
+    },
   },
 ];
+
+/* Beat text and the diagram layer share this grid: text in column one,
+   drawing in column two. Column two is sized so the drawing (capped at
+   29rem) never runs under a headline at the lg breakpoint. Gutter lives
+   on the parent (px-5 md:px-8), container here — the site-wide order. */
+const INTEL_GRID =
+  "mx-auto w-full max-w-7xl lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(20rem,29rem)] lg:gap-16 lg:items-center";
 
 export function Intelligence() {
   return (
@@ -263,22 +267,48 @@ export function Intelligence() {
       {/* Sits outside #intel-stage: the stage gets pinned on desktop and
           its children absolutely positioned, so the section title has to
           live above it to survive. */}
-      <div className="mx-auto w-full max-w-7xl px-5 pt-24 md:px-8">
-        <h2 id="intel-heading" className="font-display text-h2 max-w-3xl">
-          <span className="eyebrow pill mb-5">
-            <span className="tick" aria-hidden="true">
-              ●
-            </span>{" "}
-            Audience intelligence
-          </span>
-          <span className="visually-hidden"> — </span>
-          <span data-split className="block">
-            Intelligence Before Investment
-          </span>
-        </h2>
+      <div className="px-5 pt-24 md:px-8">
+        <div className="mx-auto w-full max-w-7xl">
+          <h2 id="intel-heading" className="font-display text-h2 max-w-3xl">
+            <span className="eyebrow pill mb-5">
+              <span className="tick" aria-hidden="true">
+                ●
+              </span>{" "}
+              Audience intelligence
+            </span>
+            <span className="visually-hidden"> — </span>
+            <span data-split className="block">
+              Intelligence Before Investment
+            </span>
+          </h2>
+        </div>
       </div>
       <div id="intel-stage" className="relative lg:min-h-screen">
         <div className="flex flex-col gap-24 pt-14 pb-24 lg:gap-0">
+          {/* The loop diagram. One instance serves every layout:
+              - below lg it is a static block in flow, above the beats,
+                fully drawn (final state), revealed like any other block;
+              - at lg+ it leaves the flow as a layer over the pinned stage,
+                sticky beside the crossfading beats, and Fx.tsx draws it in
+                step with them.
+              It shares the beats' wrapper + grid so its column is the same
+              column the beat text leaves empty — alignment by construction. */}
+          <div
+            data-reveal
+            className="px-5 md:px-8 lg:pointer-events-none lg:absolute lg:inset-0"
+          >
+            {/* pt clears the fixed nav so the drawing centres in the space
+                actually visible below it */}
+            <div className="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center lg:pt-20">
+              <div className={INTEL_GRID}>
+                <div className="hidden lg:block" />
+                <div className="lg:flex lg:justify-end">
+                  <IntelligenceDiagram />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {BEATS.map((b) => (
             /* On desktop Fx.tsx stacks these with position:absolute against
                #intel-stage, so the gutter + max-width live on the inner
@@ -286,38 +316,42 @@ export function Intelligence() {
             <div
               key={b.title}
               data-beat
-              className="flex flex-col justify-center lg:min-h-[80vh]"
+              className="flex flex-col justify-center px-5 md:px-8 lg:min-h-[80vh]"
             >
-              <div className="mx-auto w-full max-w-7xl px-5 md:px-8">
-                <p
-                  className="font-data mb-5 text-[0.68rem]"
-                  style={{ color: "var(--signal)" }}
-                >
-                  {b.layers}
-                </p>
-                <h3 data-reveal className="font-display text-h2 max-w-3xl">
-                  {b.title}
-                </h3>
-                <p
-                  data-reveal
-                  className="mt-6 max-w-xl text-lg leading-body"
-                  style={{ color: "var(--ink-muted)" }}
-                >
-                  {b.body}
-                </p>
-                {"proof" in b && b.proof && (
-                  <div data-reveal className="insight-frame mt-8 max-w-md">
-                    <span className="tnum text-metric block">
-                      {b.proof.value}
-                    </span>
-                    <span
-                      className="mt-1 block text-sm"
-                      style={{ color: "var(--ink-muted)" }}
-                    >
-                      {b.proof.label}
-                    </span>
-                  </div>
-                )}
+              <div className={INTEL_GRID}>
+                <div>
+                  <p
+                    className="font-data mb-5 text-[0.68rem]"
+                    style={{ color: "var(--signal)" }}
+                  >
+                    {b.layers}
+                  </p>
+                  <h3 data-reveal className="font-display text-h2 max-w-3xl">
+                    {b.title}
+                  </h3>
+                  <p
+                    data-reveal
+                    className="mt-6 max-w-xl text-lg leading-body"
+                    style={{ color: "var(--ink-muted)" }}
+                  >
+                    {b.body}
+                  </p>
+                  {"proof" in b && b.proof && (
+                    <div data-reveal className="insight-frame mt-8 max-w-md">
+                      <span className="tnum text-metric block">
+                        {b.proof.value}
+                      </span>
+                      <span
+                        className="mt-1 block text-sm"
+                        style={{ color: "var(--ink-muted)" }}
+                      >
+                        {b.proof.label}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {/* second column intentionally empty: the diagram layer
+                    above occupies it */}
               </div>
             </div>
           ))}
@@ -423,8 +457,8 @@ export function Work() {
             routes that 404. They return with those pages. */}
         <div className="mt-10">
           <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
-            Campaign figures as published on clickmedia.group. Insight lines
-            are editorial interpretations pending client confirmation.
+            Campaign figures as published on clickmedia.group. Insight lines are
+            editorial interpretations pending client confirmation.
           </p>
         </div>
       </div>

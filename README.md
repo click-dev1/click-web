@@ -20,6 +20,8 @@ Open http://localhost:3000.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and fill in HubSpot values if you want the
-contact questionnaire to submit for real (see `docs/HUBSPOT_SETUP.md`). Left
-unset, the form runs in preview mode.
+Copy `.env.example` to `.env.local` for the preview-deployment Basic Auth
+credentials (see `proxy.ts`).
+
+The contact form is a HubSpot embed — nothing to configure locally; see
+`docs/HUBSPOT_SETUP.md` for where its fields, copy and styling live.

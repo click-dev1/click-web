@@ -1,151 +1,56 @@
-# Connecting the contact questionnaire to HubSpot
+# The contact form — HubSpot embed
 
-The modal already works — it validates, submits and shows a success state.
-Until the two values below are set it runs in **preview mode**: nothing is
-stored, and the success screen says so.
+The "Start the Conversation" modal shows a **HubSpot form**, embedded with
+HubSpot's own loader. Submissions go straight to HubSpot; the site never
+handles them.
 
-Wiring it up is four steps in HubSpot and two environment variables here.
-About fifteen minutes, no developer needed on the HubSpot side.
+## What lives where
 
----
+| Thing                                            | Where to change it                                   |
+| ------------------------------------------------ | ---------------------------------------------------- |
+| Fields, labels, required-ness, validation        | HubSpot → Marketing → Forms → the form's editor      |
+| Title, intro copy, thank-you message, redirect   | HubSpot form editor                                  |
+| Colours, fonts, button style of the form itself  | HubSpot form editor (**Style** tab)                  |
+| Which form is embedded (portal id, form id)      | `components/contact/hubspot.ts`                      |
+| The frame around it — panel, corner brackets, close, loading and fallback states | `components/contact/ContactModal.tsx` + the `CONTACT MODAL` block in `app/globals.css` |
+| Where the CTAs are                               | `<ContactButton>` in `components/Nav.tsx`, `components/Sections.tsx` |
 
-## Step 1 — Create two custom contact properties
+Everything in the first three rows publishes from HubSpot with no deploy.
+The form renders in an iframe, so site CSS cannot reach into it — if a
+colour or font in the form looks off, it's fixed in HubSpot's Style tab.
 
-The form sends five answers. Three map to properties HubSpot already has
-(`firstname`, `lastname`, `email`). Two need creating.
+## How it works
 
-Go to **Settings ⚙ → Data Management → Properties → Create property**, and
-create both of these against the **Contact** object:
+`ContactModal` loads `https://js.hsforms.net/forms/embed/<portalId>.js`
+once the page is interactive. When the modal is first opened it renders
 
-| Label          | Internal name        | Field type            | Options                        |
-| -------------- | -------------------- | --------------------- | ------------------------------ |
-| Enquiry type   | `click_enquiry_type` | Dropdown select       | `brand` — Brand · `creator` — Creator |
-| Social tag     | `click_social_tag`   | Single-line text      | —                              |
-
-⚠️ **The internal name has to match exactly.** HubSpot generates it from the
-label, so open "Create property → the `</>` icon next to the name" and set it
-by hand. Internal names cannot be changed after saving; the label can.
-
-For the dropdown, the **internal value** of each option must be lowercase
-`brand` and `creator` — the label shown to your team can be anything.
-
-## Step 2 — Create the form
-
-**Marketing → Forms → Create form → Embedded form → Blank template.**
-
-Add exactly these five fields, all as-is from the property list:
-
-- First name
-- Last name
-- Email
-- Enquiry type
-- Social tag
-
-Nothing needs styling — this form is never displayed. The website renders its
-own; HubSpot only receives the answers. Set follow-up email / notification /
-workflow options as you like, then **Publish**.
-
-## Step 3 — Copy the two IDs
-
-Open the published form and click **Share → Embed code**. In the snippet:
-
-```js
-hbspt.forms.create({
-  portalId: "12345678",                                  // ← HUBSPOT_PORTAL_ID
-  formId: "0a1b2c3d-4e5f-6789-abcd-ef0123456789",        // ← HUBSPOT_FORM_GUID
-});
+```html
+<div class="hs-form-frame" data-region="na1" data-form-id="…" data-portal-id="…"></div>
 ```
 
-Neither value is a secret — they appear in the page source of every embedded
-HubSpot form. There is no API key to create and nothing to rotate.
+HubSpot's loader watches the DOM, turns that div into an iframe and keeps
+its height in step with the form. The frame is created on the first open
+and kept mounted, so closing and reopening keeps a half-filled form (and
+doesn't count another form view).
 
-## Step 4 — Set the environment variables
+Two states are the site's own:
 
-Locally, create `.env.local` in the project root:
+- **Loading** — while the div is still empty, the panel shows a small
+  "Loading form" label (`.hs-form-frame:empty` in CSS, no JS involved).
+- **Fallback** — if the loader errors, or no iframe has appeared after
+  10 s (content blockers commonly stop `js.hsforms.net`), the panel swaps
+  to a short message with the contact email from `content/manifest.ts`.
 
-```
-HUBSPOT_PORTAL_ID=12345678
-HUBSPOT_FORM_GUID=0a1b2c3d-4e5f-6789-abcd-ef0123456789
-```
+## Swapping the form
 
-In production, add the same two variables in the hosting dashboard
-(Vercel: **Project → Settings → Environment Variables**) and redeploy.
+Create the new form in HubSpot as an **embedded** form, open its embed
+code, and copy the `data-form-id` (and `data-portal-id` / `data-region`
+if the account changed) into `components/contact/hubspot.ts`.
 
-That's it. Submissions now appear under **Marketing → Forms → [your form] →
-Submissions**, and each one creates or updates a contact.
+## Notes
 
----
-
-## Checking it worked
-
-1. Submit the modal with a real address.
-2. The success screen should **not** show the "Preview mode" line.
-3. The submission appears in the form's Submissions tab within seconds.
-
-If it doesn't, the server log holds HubSpot's own error message, prefixed
-`[hubspot]`. The two common ones:
-
-| Message contains          | Cause                                                          |
-| ------------------------- | -------------------------------------------------------------- |
-| `Field "…" doesn't exist` | The property internal name in step 1 doesn't match, or the field wasn't added to the form in step 2. |
-| `404`                     | Portal ID or form GUID is wrong, or the form isn't published.  |
-
----
-
-## Optional: attribution tracking
-
-If you install the HubSpot tracking script site-wide, submissions get joined
-to that visitor's browsing history (which pages, which campaign, first touch).
-The server already reads HubSpot's `hubspotutk` cookie and forwards it — no
-code change needed, just add the script.
-
-Note it is a third-party tracker, so it needs a cookie banner and a line in
-the privacy policy. Without it, everything still works; you just lose the
-"how did they get here" trail.
-
----
-
-## Adding a question later
-
-Everything is driven by one file: **`content/questionnaire.ts`**.
-
-```ts
-{
-  name: "budget",              // key in the JSON payload
-  hubspot: "click_budget",     // internal property name in HubSpot
-  label: "Rough budget",
-  type: "text",
-  required: false,
-  maxLength: 60,
-}
-```
-
-Add the entry, then create the matching property in HubSpot (step 1) and add
-it to the form (step 2). The modal renders it, validates it and maps it
-automatically — there is no form markup to edit.
-
----
-
-## How it fits together
-
-```
-ContactButton  ──opens──▶  ContactModal
-(any CTA)                  renders + validates from content/questionnaire.ts
-                                │
-                                │  POST /api/contact  (same-origin JSON)
-                                ▼
-                          app/api/contact/route.ts
-                          honeypot · rate limit · re-validates server-side
-                                │
-                                ▼
-                            lib/hubspot.ts
-                          maps answers → HubSpot property names
-                                │
-                                ▼
-                    api.hsforms.com  /submissions/v3/…
-```
-
-The browser never talks to HubSpot directly. That keeps any future
-credential server-side, means validation can't be bypassed, and makes
-switching CRM a change to `lib/hubspot.ts` alone — the modal doesn't know
-HubSpot exists.
+- HubSpot's cookie (`hubspotutk`) and analytics are set by HubSpot's
+  scripts inside the iframe. If a cookie banner is added to the site later,
+  the form embed is one of the things it should cover.
+- No environment variables are involved — portal id and form id are public
+  (they're in every HubSpot embed snippet), so they're committed.

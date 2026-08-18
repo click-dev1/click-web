@@ -1,6 +1,6 @@
 "use client";
 
-import { useContactModal, type Segment } from "./ContactModalProvider";
+import { useContactModal } from "./ContactModalProvider";
 
 /**
  * The trigger. Kept as its own client component so the sections that use it
@@ -12,18 +12,16 @@ import { useContactModal, type Segment } from "./ContactModalProvider";
  * dead /contact route to maintain.
  */
 export default function ContactButton({
-  segment,
   className = "btn-primary",
   children,
 }: {
-  segment?: Segment;
   className?: string;
   children: React.ReactNode;
 }) {
   const { open } = useContactModal();
 
   return (
-    <button type="button" className={className} onClick={() => open(segment)}>
+    <button type="button" className={className} onClick={open}>
       {children}
     </button>
   );
