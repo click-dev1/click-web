@@ -8,8 +8,6 @@ import { contact, recognition } from "@/content/manifest";
  * asserted that isn't rendered somewhere on the page, which is both the
  * blueprint's rule and Google's (structured data must reflect visible
  * content).
- *
- * Inert while the site is noindex; in place for the launch flip.
  */
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 

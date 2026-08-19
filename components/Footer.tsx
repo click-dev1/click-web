@@ -1,12 +1,43 @@
 import Link from "next/link";
-import { contact } from "@/content/manifest";
+import ContactButton from "@/components/contact/ContactButton";
+import { contact, recognition } from "@/content/manifest";
 
-/* Only routes that exist today; the full Solutions / Talent / Company
-   column set returns as those pages are built. */
-const COLUMNS = [
+type FooterLink = { href: string; label: string; external?: boolean };
+
+/* Section anchors, not routes: everything the footer points at lives on
+   the home page today. Absolute ("/#work") rather than bare hashes so the
+   links still resolve from the 404 and any future route. The Solutions /
+   Talent / Company column set returns as those pages are built. */
+const COLUMNS: { label: string; links: FooterLink[] }[] = [
   {
     label: "Explore",
-    links: [{ href: "/", label: "Home" }],
+    links: [
+      { href: "/#journeys", label: "What we do" },
+      { href: "/#intelligence", label: "Intelligence" },
+      { href: "/#work", label: "Work" },
+      { href: "/#ecosystem", label: "Ecosystem" },
+    ],
+  },
+  {
+    label: "Connect",
+    links: [
+      { href: `mailto:${contact.email}`, label: "General enquiries" },
+      {
+        href: "https://www.linkedin.com/company/clickmediagroup/",
+        label: "LinkedIn",
+        external: true,
+      },
+      {
+        href: "https://www.instagram.com/weareclicktalent",
+        label: "Instagram",
+        external: true,
+      },
+      {
+        href: "https://www.tiktok.com/@clickmgmt",
+        label: "TikTok",
+        external: true,
+      },
+    ],
   },
 ];
 
@@ -55,80 +86,123 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
+  const year = new Date().getFullYear();
+
   return (
     <footer
       data-signal="settle"
       className="hairline-t relative z-10 px-5 py-14 md:px-8"
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p>
-            <span className="logo-mark h-11" aria-hidden="true" />
-            <span className="visually-hidden">CLICK</span>
-          </p>
-          <p className="eyebrow mt-3">
-            <span className="tick">●</span> Part of the GameSquare ecosystem
-          </p>
-          <a
-            href={`mailto:${contact.email}`}
-            className="mt-4 inline-block text-sm underline underline-offset-4 transition-colors hover:text-[var(--signal)]"
-          >
-            {contact.email}
-          </a>
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-sm">
+            <p>
+              <span className="logo-mark h-11" aria-hidden="true" />
+              <span className="visually-hidden">CLICK</span>
+            </p>
+            <p className="eyebrow mt-3">
+              <span className="tick">●</span> Part of the GameSquare ecosystem
+            </p>
+            <p
+              className="mt-4 text-sm leading-body"
+              style={{ color: "var(--ink-muted)" }}
+            >
+              Influencer marketing, experiential and talent management —
+              mapping where brand audiences and creator communities overlap,
+              then building the partnerships that move culture.
+            </p>
+            <a
+              href={`mailto:${contact.email}`}
+              className="mt-4 inline-block text-sm underline underline-offset-4 transition-colors hover:text-[var(--signal)]"
+            >
+              {contact.email}
+            </a>
 
-          <div className="mt-5 flex items-center gap-4">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="transition-colors hover:text-[var(--signal)]"
-                style={{ color: "var(--ink-muted)" }}
-              >
-                <span className="block h-5 w-5">{s.icon}</span>
-              </a>
+            <div className="mt-5 flex items-center gap-4">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="transition-colors hover:text-[var(--signal)]"
+                  style={{ color: "var(--ink-muted)" }}
+                >
+                  <span className="block h-5 w-5">{s.icon}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <nav
+            aria-label="Footer"
+            className="grid grid-cols-2 gap-8 sm:gap-12"
+          >
+            {COLUMNS.map((col) => (
+              <div key={col.label}>
+                <p className="eyebrow mb-3">{col.label}</p>
+                <ul className="flex flex-col gap-2">
+                  {col.links.map((l) => {
+                    const linkClass =
+                      "text-sm transition-colors hover:text-[var(--signal)]";
+                    const linkStyle = { color: "var(--ink-muted)" };
+                    /* mailto and off-site links are plain anchors — only
+                       the in-app anchors go through <Link>. */
+                    const isAnchor =
+                      l.external || l.href.startsWith("mailto:");
+                    return (
+                      <li key={l.href}>
+                        {isAnchor ? (
+                          <a
+                            href={l.href}
+                            className={linkClass}
+                            style={linkStyle}
+                            {...(l.external
+                              ? { target: "_blank", rel: "noopener noreferrer" }
+                              : {})}
+                          >
+                            {l.label}
+                          </a>
+                        ) : (
+                          <Link
+                            href={l.href}
+                            className={linkClass}
+                            style={linkStyle}
+                          >
+                            {l.label}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             ))}
+          </nav>
+
+          {/* The footer keeps its own call to action: by the time a visitor
+              is this far down the page the CTA section has scrolled past. */}
+          <div className="lg:text-right">
+            <p className="eyebrow mb-3">Work with us</p>
+            <ContactButton className="btn-primary px-5 py-3 text-sm">
+              Start the Conversation <span className="btn-arrow">→</span>
+            </ContactButton>
+            <p className="eyebrow mt-5">
+              <span className="tick">◆</span> {recognition.line}
+            </p>
           </div>
         </div>
 
-        <nav
-          aria-label="Footer"
-          className="grid grid-cols-2 gap-8 sm:grid-cols-3"
-        >
-          {COLUMNS.map((col) => (
-            <div key={col.label}>
-              <p className="eyebrow mb-3">{col.label}</p>
-              <ul className="flex flex-col gap-2">
-                {col.links.map((l) => (
-                  <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      className="text-sm transition-colors hover:text-[var(--signal)]"
-                      style={{ color: "var(--ink-muted)" }}
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </nav>
-
         <div
-          className="max-w-sm text-xs leading-body"
+          className="hairline-t mt-12 flex flex-col gap-2 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
           style={{ color: "var(--ink-muted)" }}
         >
           <p>
-            Independent homepage design, created for evaluation. This is not
-            CLICK Media Group&apos;s official website; campaign figures are as
-            published on clickmedia.group.
+            © {year} CLICK Media Group. All rights reserved.
           </p>
-          <p className="font-data mt-3 text-[0.62rem]">
-            Independent design · {new Date().getFullYear()} · No tracking on
-            this page
+          <p className="font-data text-[0.62rem]">
+            Influencer Marketing · Talent · Experiential
           </p>
         </div>
       </div>

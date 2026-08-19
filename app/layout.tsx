@@ -55,9 +55,12 @@ export const metadata: Metadata = {
     description,
   },
   twitter: { card: "summary_large_image", title, description },
-  /* ⚠ LAUNCH GATE — this build must stay out of the index. Remove this
-     line (and add app/sitemap.ts + robots.ts) when the real site ships. */
-  robots: { index: false, follow: false },
+  /* Live: indexable, with app/robots.ts and app/sitemap.ts alongside. */
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 export default function RootLayout({

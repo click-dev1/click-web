@@ -20,8 +20,9 @@ Open http://localhost:3000.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` for the preview-deployment Basic Auth
-credentials (see `proxy.ts`).
+Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SITE_URL` to the
+deployed origin — canonical, Open Graph and JSON-LD URLs are resolved from
+it.
 
 The contact form is a HubSpot embed — nothing to configure locally; see
 `docs/HUBSPOT_SETUP.md` for where its fields, copy and styling live.
