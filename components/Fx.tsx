@@ -100,30 +100,42 @@ export default function Fx() {
         if (!stage) return;
         gsap.set(beats, { position: "absolute", inset: 0, autoAlpha: 0 });
         gsap.set(beats[0], { autoAlpha: 1 });
+        /* scrub: 1 — the diagram strokes and labels are tied to this, and
+           a full second of catch-up lets them glide after the wheel stops
+           instead of stopping dead with it. */
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: stage,
             start: "top top",
             end: `+=${beats.length * 90}%`,
             pin: true,
-            scrub: 0.6,
+            scrub: 1,
           },
         });
         beats.forEach((b, i) => {
           if (i === 0) return;
-          tl.to(beats[i - 1], { autoAlpha: 0, y: -30, duration: 0.4 }, i);
+          /* a short hand-off: the old headline is almost gone before the
+             new one starts to rise, so the two never read on top of each
+             other, but the left column is never empty for long */
+          tl.to(
+            beats[i - 1],
+            { autoAlpha: 0, y: -24, duration: 0.3, ease: "power1.in" },
+            i,
+          );
           tl.fromTo(
             b,
-            { autoAlpha: 0, y: 30 },
-            { autoAlpha: 1, y: 0, duration: 0.4 },
-            i + 0.15,
+            { autoAlpha: 0, y: 28 },
+            { autoAlpha: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            i + 0.24,
           );
         });
 
-        /* The loop diagram draws itself on the same timeline, so one
-           scrub drives text and drawing together. Beat i owns the window
-           [i + 0.15, i + 0.85]; the markup is the finished state, so every
-           piece is hidden here first and drawn back in. */
+        /* The loop diagram draws itself on the same timeline, so one scrub
+           drives text and drawing together. Beat i owns the window
+           [i + 0.1, i + 0.9]; each beat's drawing is spread across the
+           whole of it so something is always in motion while the reader
+           scrolls. The markup is the finished state, so every piece is
+           hidden here first and drawn back in. */
         const diagram = document.querySelector<HTMLElement>("[data-diagram]");
         if (!diagram) return;
         const q = gsap.utils.selector(diagram);
@@ -139,91 +151,131 @@ export default function Fx() {
           '[data-diag="src"] path, [data-diag="trunk"], [data-diag="trunk2"], [data-diag-arc], [data-diag="return-mask"]',
         );
         gsap.set(strokes, { drawSVG: "0%" });
+        /* words rise a little as they fade in; dots and the pill scale up */
         gsap.set(
           q(
-            "[data-diag-src-label], [data-diag-node], [data-diag-label], " +
-              '[data-diag="converge"], [data-diag="pill"], [data-diag="hub"], ' +
-              '[data-diag="hub-label"], [data-diag="track"], [data-diag="return-label"]',
+            "[data-diag-src-label], [data-diag-label], " +
+              '[data-diag="converge"], [data-diag="billions"], ' +
+              '[data-diag="hub-label"], [data-diag="return-label"]',
           ),
-          { autoAlpha: 0 },
+          { autoAlpha: 0, y: 10 },
         );
+        gsap.set(q("[data-diag-node]"), {
+          autoAlpha: 0,
+          scale: 0.4,
+          transformOrigin: "50% 50%",
+        });
+        gsap.set(one('[data-diag="pill"]') ?? [], {
+          autoAlpha: 0,
+          scale: 0.94,
+        });
+        gsap.set(one('[data-diag="track"]') ?? [], { autoAlpha: 0 });
         gsap.set(one('[data-diag="hub"]') ?? [], {
+          autoAlpha: 0,
           scale: 0.6,
           transformOrigin: "50% 50%",
         });
 
         const draw = { drawSVG: "0% 100%", ease: "none" as const };
-        const show = { autoAlpha: 1, ease: "power2.out" as const };
+        const rise = { autoAlpha: 1, y: 0, ease: "power2.out" as const };
+        const pop = {
+          autoAlpha: 1,
+          scale: 1,
+          ease: "back.out(1.6)" as const,
+        };
 
-        /* beat 1 — sources converge, capability, hub, step 01 */
-        tl.to(
+        /* ---- arrival: the sources gather while the stage scrolls into
+           place, so the drawing is already alive when the pin engages
+           rather than blank beside the first headline. Its own scrub,
+           mapped to the stage's top travelling from 70% of the viewport
+           up to the top edge — where the pinned timeline takes over. ---- */
+        const arrive = gsap.timeline({
+          scrollTrigger: {
+            trigger: stage,
+            start: "top 70%",
+            end: "top top",
+            scrub: 1,
+          },
+        });
+        arrive.to(
           q("[data-diag-src-label]"),
-          { ...show, duration: 0.15, stagger: 0.05 },
-          0.02,
+          { ...rise, duration: 0.35, stagger: 0.12 },
+          0,
         );
-        tl.to(
+        arrive.to(q('[data-diag="src"] path'), { ...draw, duration: 0.5 }, 0.2);
+        arrive.to(
           one('[data-diag="converge"]') ?? [],
-          { ...show, duration: 0.15 },
-          0.15,
+          { ...rise, duration: 0.3 },
+          0.3,
         );
-        tl.to(q('[data-diag="src"] path'), { ...draw, duration: 0.3 }, 0.12);
-        tl.to(
+        arrive.to(
           one('[data-diag="trunk"]') ?? [],
-          { ...draw, duration: 0.08 },
-          0.42,
+          { ...draw, duration: 0.1 },
+          0.7,
         );
-        tl.to(
+        arrive.to(
+          one('[data-diag="billions"]') ?? [],
+          { ...rise, duration: 0.25 },
+          0.78,
+        );
+        arrive.to(
           one('[data-diag="pill"]') ?? [],
-          { ...show, duration: 0.12 },
-          0.48,
+          { ...pop, duration: 0.3 },
+          0.9,
         );
+
+        /* beat 1 — the capability feeds the hub; the ring appears; step 01 */
         tl.to(
           one('[data-diag="trunk2"]') ?? [],
           { ...draw, duration: 0.08 },
-          0.56,
+          0.02,
         );
         tl.to(
           one('[data-diag="hub"]') ?? [],
-          { ...show, scale: 1, duration: 0.2 },
-          0.6,
+          { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.out" },
+          0.08,
         );
         tl.to(
           one('[data-diag="track"]') ?? [],
-          { ...show, duration: 0.2 },
-          0.62,
+          { autoAlpha: 1, duration: 0.4, ease: "power1.inOut" },
+          0.15,
         );
         tl.to(
           one('[data-diag="hub-label"]') ?? [],
-          { ...show, duration: 0.15 },
-          0.68,
+          { ...rise, duration: 0.3 },
+          0.3,
         );
-        tl.to([...nodes(1), ...labels(1)], { ...show, duration: 0.15 }, 0.66);
+        tl.to(nodes(1), { ...pop, duration: 0.25 }, 0.5);
+        tl.to(labels(1), { ...rise, duration: 0.3 }, 0.55);
 
-        /* beat 2 — 02 Discover */
-        tl.to(arcs(1), { ...draw, duration: 0.3 }, 1.15);
-        tl.to([...nodes(2), ...labels(2)], { ...show, duration: 0.15 }, 1.4);
-
-        /* beat 3 — 03 Create */
-        tl.to(arcs(2), { ...draw, duration: 0.3 }, 2.15);
-        tl.to([...nodes(3), ...labels(3)], { ...show, duration: 0.15 }, 2.4);
+        /* beats 2 & 3 — one arc each, drawn across the whole beat, its
+           step landing as the arc reaches the dot */
+        [1, 2].forEach((i) => {
+          const at = i + 0.15;
+          tl.to(arcs(i), { ...draw, duration: 0.45 }, at);
+          tl.to(nodes(i + 1), { ...pop, duration: 0.25 }, at + 0.35);
+          tl.to(labels(i + 1), { ...rise, duration: 0.3 }, at + 0.42);
+        });
 
         /* beat 4 — 04 → 06, the ring closes, performance returns */
         tl.to(
           arcs(3, 4, 5, 6),
-          { ...draw, duration: 0.14, stagger: 0.14 },
-          3.15,
+          { ...draw, duration: 0.18, stagger: 0.16 },
+          3.12,
         );
-        tl.to([...nodes(4), ...labels(4)], { ...show, duration: 0.12 }, 3.27);
-        tl.to([...nodes(5), ...labels(5)], { ...show, duration: 0.12 }, 3.41);
-        tl.to([...nodes(6), ...labels(6)], { ...show, duration: 0.12 }, 3.55);
+        [4, 5, 6].forEach((n, k) => {
+          const at = 3.12 + 0.16 * k + 0.14;
+          tl.to(nodes(n), { ...pop, duration: 0.22 }, at);
+          tl.to(labels(n), { ...rise, duration: 0.28 }, at + 0.06);
+        });
         tl.to(
           one('[data-diag="return-mask"]') ?? [],
-          { ...draw, duration: 0.2 },
+          { ...draw, duration: 0.25 },
           3.62,
         );
         tl.to(
           one('[data-diag="return-label"]') ?? [],
-          { ...show, duration: 0.15 },
+          { ...rise, duration: 0.28 },
           3.72,
         );
       });

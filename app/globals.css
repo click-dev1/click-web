@@ -72,13 +72,24 @@ section[id] {
 }
 
 /* ---------- type ----------
-   The brand system is Helvetica Now Display Condensed (primary,
-   Monotype) + Matter (supporting, Displaay). Both are licensed
-   commercial faces, so they are named first in every stack and
-   picked up the moment the woff2 files land in /public/fonts and
-   the @font-face blocks below are filled in. Until then the closest
-   free stand-ins carry the page: Roboto Condensed Bold for HNDC
-   (same grotesque skeleton, real Bold) and Inter for Matter. */
+   The brand system (Brand Guidelines V1 2025, pp. 14–16) is Helvetica
+   Now Display Condensed (primary, Monotype) + Matter (supporting,
+   Displaay). Both are licensed commercial faces, so they are named
+   first in both stacks below and take over the moment the woff2 files
+   land in /public/fonts and the @font-face block is uncommented. The
+   free OFL stand-ins behind them (Archivo, Hanken Grotesk — declared in
+   layout.tsx) are not placeholders to be deleted: they stay as the
+   fallback layer for the FOUT window and for any weight that fails.
+
+   The six faces below are the ones the guidelines actually specify:
+     HNDC   Regular / Bold / Extra Bold  ("we use it in Regular, Bold &
+            Extra Bold" — p.15). Black is logo-only and the logo ships
+            as an image, so it is never webfont-loaded.
+     Matter Regular / Medium / Bold      ("regular, medium & bold" — p.16.
+            The p.14 overview label says "Regular & Bold"; p.16 governs.)
+
+   Buy the WEBFONT licence, not desktop — desktop .otf/.ttf files do not
+   carry the right to serve from a server, whatever format they arrive in. */
 
 /*
 @font-face {
@@ -94,9 +105,21 @@ section[id] {
   font-display: swap;
 }
 @font-face {
+  font-family: "Helvetica Now Display Condensed";
+  src: url("/fonts/HelveticaNowDisplayCond-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
   font-family: "Matter";
   src: url("/fonts/Matter-Regular.woff2") format("woff2");
   font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Matter";
+  src: url("/fonts/Matter-Medium.woff2") format("woff2");
+  font-weight: 500;
   font-display: swap;
 }
 @font-face {
@@ -107,10 +130,19 @@ section[id] {
 }
 */
 
+/* Both stacks live in one place so the handover above is the only edit
+   the licensed faces need — nothing downstream names a font directly. */
+:root {
+  --font-display-stack: "Helvetica Now Display Condensed",
+    var(--font-display-fallback), "Arial Narrow", sans-serif;
+  --font-body-stack: "Matter", var(--font-body-fallback), system-ui,
+    sans-serif;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body-stack);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background-color 0.5s ease, color 0.5s ease;
@@ -122,9 +154,13 @@ body {
 }
 
 .font-display {
-  font-family: "Helvetica Now Display Condensed",
-    var(--font-display-fallback), "Arial Narrow", sans-serif;
+  font-family: var(--font-display-stack);
   font-weight: 700;
+  /* Only the Archivo fallback carries a width axis, so this is what
+     condenses it toward HNDC's proportions. HNDC is drawn condensed and
+     ships as static cuts, which ignore font-stretch — so the same value
+     is correct before and after the licensed files land. */
+  font-stretch: 75%;
   text-transform: uppercase;
   letter-spacing: 0.01em;
   /* condensed caps set solid close their word gaps up — the space
@@ -149,7 +185,7 @@ body {
    one thing the blueprint says the site must never feel like. The brand
    sets small labels in the supporting face, uppercase, tracked out. */
 .font-data {
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body-stack);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
@@ -162,12 +198,14 @@ body {
 /* fluid type scale.
 
    The brand rule is 80–85% leading on large display text, 90–100% on
-   smaller. That rule assumes Helvetica Now Display Condensed's metrics,
-   so leading lives in a variable tuned to whichever face is rendering:
-   the Roboto Condensed fallback has ~0.71em caps, close enough to HNDC
-   that the brand numbers work almost as written. (Anton, the previous
-   fallback, needed 0.92 — its caps are ~0.73em on far taller vertical
-   metrics, and at 0.84 the lines visually merged.) */
+   smaller (Brand Guidelines p.15). That rule assumes Helvetica Now
+   Display Condensed's metrics, so leading lives in a variable tuned to
+   whichever face is rendering: the Archivo fallback sits on Helvetica-ish
+   vertical metrics, close enough to HNDC that the brand numbers work
+   almost as written. (Anton, an earlier fallback, needed 0.92 — its caps
+   are ~0.73em on far taller vertical metrics, and at 0.84 the lines
+   visually merged.) Re-check these two values against the real HNDC when
+   it lands; if it sets tighter, walk them down toward the brand 0.80. */
 :root {
   --leading-display: 0.86;
   --leading-display-sm: 0.95;
@@ -192,7 +230,10 @@ body {
 .text-metric {
   font-size: clamp(1.8rem, 3.4vw, 3rem);
   line-height: 1;
-  font-weight: 600;
+  /* was 600, which Matter does not ship. These are the proof numbers —
+     the loudest thing in the frame — so they round up to Bold, not down
+     to Medium. */
+  font-weight: 700;
 }
 
 /* ---------- shared surfaces ---------- */
@@ -214,7 +255,7 @@ body {
 }
 
 .eyebrow {
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body-stack);
   font-size: 0.7rem;
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -252,7 +293,11 @@ body {
   border-radius: 999px;
   padding: 0.85rem 1.6rem;
   font-size: 0.92rem;
-  font-weight: 550;
+  /* was 550 — not a weight Matter ships. It only rendered as drawn
+     because the variable fallback interpolated it; static Matter would
+     have snapped it. 500 is Matter Medium, which the brand does ship,
+     and matches .btn-ghost so the two buttons sit at the same weight. */
+  font-weight: 500;
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1),
     box-shadow 0.2s ease, background-color 0.5s ease;
 }
@@ -598,7 +643,7 @@ button:hover .btn-arrow {
   z-index: 1;
   top: 0.9rem;
   right: 1rem;
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body-stack);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -625,7 +670,7 @@ button:hover .btn-arrow {
 }
 .contact-panel .hs-form-frame:empty::before {
   content: "Loading form";
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-body-stack);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -676,24 +721,36 @@ button:hover .btn-arrow {
    (components/IntelligenceDiagram.tsx). Geometry is SVG, words are
    HTML absolutely positioned over it. Type sizes are in container
    query units so labels shrink and grow with the drawing rather
-   than the viewport — one rule set serves the 26rem desktop column
-   and the full-width mobile block alike.
+   than the viewport — one rule set serves the desktop column and
+   the full-width tablet block alike. The cqi values are tuned to
+   the 660-unit viewBox: 1cqi ≈ 6.6 drawing units, so a 1.74cqi
+   description is 11.5px when the drawing is 660px wide and scales
+   from there. The clamps keep the words legible when the drawing
+   is small and stop them ballooning when it is huge.
    ============================================================ */
+
+/* The drawing's width, shared between the diagram itself and the
+   beat grid's second column (Sections.tsx), so the text column can
+   never run under it. Inside the pinned stage the drawing must clear
+   the viewport minus the fixed nav, so it is capped by height too:
+   (100vh − 7rem) × the 660/720 aspect. 55vw keeps a text column at
+   the lg breakpoint; 46rem is the ceiling on big monitors. */
+#intel-stage {
+  --diag-w: min(46rem, (100vh - 7rem) * 0.9167, 55vw);
+}
 
 .intel-diagram {
   container-type: inline-size;
   color: var(--ink);
   width: 100%;
-  max-width: 29rem;
+  max-width: 46rem;
   margin-inline: auto;
 }
-/* inside the pinned stage the drawing must clear the viewport minus the
-   fixed nav, so width is capped by height too ((100vh − 8rem) × the
-   440/600 aspect) */
 @media (min-width: 1024px) {
   .intel-diagram {
-    width: min(29rem, (100vh - 8rem) * 0.7333);
-    margin-inline: 0 auto;
+    width: var(--diag-w);
+    max-width: none;
+    margin-inline: 0;
   }
 }
 
@@ -704,50 +761,83 @@ button:hover .btn-arrow {
   line-height: 1;
 }
 
+/* ---- type ---- */
 .diag-eyebrow {
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(0.56rem, 2.35cqi, 0.66rem);
+  font-family: var(--font-body-stack);
+  font-size: clamp(0.56rem, 1.44cqi, 0.72rem);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
 }
 .diag-name {
-  font-size: clamp(0.9rem, 4.2cqi, 1.15rem);
+  font-size: clamp(0.95rem, 2.73cqi, 1.35rem);
 }
 .diag-title {
-  font-size: clamp(0.85rem, 3.9cqi, 1.05rem);
+  font-size: clamp(0.95rem, 2.58cqi, 1.3rem);
 }
 .diag-num {
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(0.52rem, 2.2cqi, 0.6rem);
+  font-family: var(--font-body-stack);
+  font-size: clamp(0.52rem, 1.36cqi, 0.66rem);
   font-weight: 500;
   letter-spacing: 0.14em;
 }
 .diag-hub-title {
-  font-size: clamp(0.8rem, 4.4cqi, 1.25rem);
+  font-size: clamp(0.72rem, 2.5cqi, 1.25rem);
   line-height: 0.95;
 }
+/* the one-line takeaway under each step title — Bold, since on this
+   canvas hierarchy has to come from weight, not tint (see the text
+   colour note at the top of this file) */
+.diag-sub {
+  font-family: var(--font-body-stack);
+  font-size: clamp(0.74rem, 1.9cqi, 0.98rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  white-space: normal;
+}
+/* the explanations — the only running text in the drawing */
+.diag-desc {
+  font-family: var(--font-body-stack);
+  font-size: clamp(0.68rem, 1.74cqi, 0.9rem);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: normal;
+  text-wrap: pretty;
+}
 
+/* ---- pieces ---- */
 .diag-source {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.35em;
+  width: 31%;
   transform: translateX(-50%);
   text-align: center;
+  font-size: clamp(0.68rem, 1.74cqi, 0.9rem); /* gap unit */
+}
+.diag-source .diag-name {
+  margin-block: 0.15em 0.1em;
 }
 .diag-converge {
   transform: translateY(-50%);
   opacity: 0.85;
 }
+.diag-billions {
+  transform: translate(-50%, -50%);
+  opacity: 0.85;
+}
 .diag-pill {
   transform: translate(-50%, -50%);
-  padding: 0.3rem 0.75rem;
-  gap: 0.4rem;
-  font-family: "Matter", var(--font-inter), system-ui, sans-serif;
-  font-size: clamp(0.56rem, 2.35cqi, 0.66rem);
-  font-weight: 600;
+  padding: 0.42em 1.1em;
+  gap: 0.6em;
+  font-family: var(--font-body-stack);
+  font-size: clamp(0.56rem, 1.44cqi, 0.72rem);
+  /* was 600 — see .text-metric. A small tracked-out label is the
+     .font-data voice, which the brand sets in Medium. */
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: color-mix(in srgb, var(--bg) 70%, transparent);
@@ -768,21 +858,113 @@ button:hover .btn-arrow {
   transform: translate(-50%, -50%);
   text-align: center;
   white-space: normal;
-  width: 28%;
+  width: 18%;
 }
 .diag-hub .diag-eyebrow:last-child {
-  font-size: clamp(0.5rem, 2cqi, 0.58rem);
+  font-size: clamp(0.5rem, 1.3cqi, 0.62rem);
   opacity: 0.8;
 }
 .diag-node {
   display: flex;
   flex-direction: column;
-  gap: 0.35em;
+  gap: 0.4em;
+  font-size: clamp(0.68rem, 1.74cqi, 0.9rem); /* gap unit */
 }
 .diag-node .diag-num {
   display: block;
 }
+.diag-node .diag-title {
+  margin-bottom: 0.1em;
+}
 .diag-return {
-  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  width: 30%;
+  transform: translate(-50%, 0);
+  text-align: center;
+  white-space: normal;
   opacity: 0.85;
+  font-size: clamp(0.68rem, 1.74cqi, 0.9rem); /* gap unit */
+}
+/* the return line's explanation sits inside the ring, below the hub —
+   the tightest pocket in the drawing, so it is allowed to go a touch
+   smaller than the other explanations before it wraps to a third line */
+.diag-return .diag-desc {
+  font-size: clamp(0.62rem, 1.67cqi, 0.86rem);
+}
+
+/* Ambient motion, independent of scroll, so the drawing is never quite
+   still while the reader sits on a beat: the hub glow breathes, and the
+   dashes on the return line travel toward the hub — the direction the
+   performance data flows. Both are subtle and CSS-only; both stay off
+   for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .intel-diagram [data-diag="hub"] circle:first-child {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: diag-breathe 5.5s ease-in-out infinite;
+  }
+  .intel-diagram [data-diag="return"] {
+    animation: diag-flow 1.8s linear infinite;
+  }
+}
+@keyframes diag-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+@keyframes diag-flow {
+  to {
+    stroke-dashoffset: -10; /* one dash + one gap of the 4 6 pattern */
+  }
+}
+
+/* Narrow containers (phones): the geometry keeps its proportions but
+   the type hits its legibility floor, so the running text would pile
+   into its neighbours. Titles and one-line takeaways carry the loop
+   there; the section copy beside it tells the full story. */
+@container (max-width: 36rem) {
+  .diag-desc,
+  .diag-converge,
+  .diag-hub .diag-eyebrow:last-child {
+    display: none;
+  }
+  /* the source columns are ~110px here: let the category wrap and the
+     name shrink a step so three of them fit side by side */
+  .diag-source {
+    width: 34%;
+  }
+  .diag-source .diag-eyebrow {
+    white-space: normal;
+    line-height: 1.25;
+    letter-spacing: 0.1em;
+  }
+  .diag-source .diag-name {
+    font-size: clamp(0.78rem, 2.73cqi, 1.35rem);
+  }
+  /* the type floors above are set for the desktop drawing; here the
+     geometry is half that size, so the step labels come down a notch
+     and close up, or 01 climbs into the pill above it */
+  .diag-title {
+    font-size: clamp(0.85rem, 2.58cqi, 1.3rem);
+  }
+  .diag-sub {
+    font-size: clamp(0.7rem, 1.9cqi, 0.98rem);
+  }
+  .diag-node {
+    gap: 0.3em;
+  }
+  /* inside the ring the chord is narrower than the label at one line */
+  .diag-return .diag-eyebrow {
+    white-space: normal;
+    line-height: 1.3;
+  }
 }

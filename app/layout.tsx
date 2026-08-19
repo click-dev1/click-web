@@ -1,26 +1,33 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Condensed } from "next/font/google";
+import { Archivo, Hanken_Grotesk } from "next/font/google";
 import ContactModalProvider from "@/components/contact/ContactModalProvider";
 import "./globals.css";
 
-/* Display fallback until the licensed Helvetica Now Display Condensed
-   files land. Roboto Condensed shares HNDC's skeleton — Helvetica-family
-   grotesque, open apertures, condensed — and, unlike Anton, it has a real
-   Bold. That matters: the guidelines set the logo in Black and say that
-   weight "should be used extremely sparingly so that our logo remains
-   distinctive", so headlines should not all be wearing it.
-   To revert to the previous poster look: swap this for Anton (weight 400)
-   and put --font-anton back in .font-display. */
-const robotoCondensed = Roboto_Condensed({
+/* Free OFL stand-ins that carry the page until the licensed brand faces
+   land — and that stay in the stack afterwards as the fallback layer.
+   See the @font-face block in globals.css for the handover.
+
+   Archivo for Helvetica Now Display Condensed: a Helvetica-family
+   grotesque with a real width axis (wdth 62–125), so .font-display can
+   condense it to sit near HNDC's proportions instead of approximating
+   with a separately-drawn narrow face. Its wght 100–900 covers the three
+   weights the guidelines actually call for — Regular, Bold and Extra
+   Bold — which the previous Roboto Condensed 700-only cut could not.
+   Black is deliberately absent: the guidelines reserve it for the logo,
+   and the logo ships as an image, so it is never typeset in the browser. */
+const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-display-fallback",
-  weight: ["700"],
+  axes: ["wdth"],
   display: "swap",
 });
 
-const inter = Inter({
+/* Hanken Grotesk for Matter: a warm grotesque rather than Inter's
+   neutral one, closer to the "subtle, warm touch" the guidelines
+   describe, with genuine Regular/Medium/Bold across wght 100–900. */
+const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-body-fallback",
   display: "swap",
 });
 
@@ -59,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotoCondensed.variable} ${inter.variable} grain antialiased`}
+        className={`${archivo.variable} ${hankenGrotesk.variable} grain antialiased`}
       >
         <a href="#main" className="skip-link">
           Skip to content

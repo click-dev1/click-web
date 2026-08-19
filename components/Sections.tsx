@@ -250,11 +250,13 @@ const BEATS = [
 ];
 
 /* Beat text and the diagram layer share this grid: text in column one,
-   drawing in column two. Column two is sized so the drawing (capped at
-   29rem) never runs under a headline at the lg breakpoint. Gutter lives
-   on the parent (px-5 md:px-8), container here — the site-wide order. */
+   drawing in column two. Column two IS the drawing's width (--diag-w,
+   set on #intel-stage in globals.css: height-capped for the pinned
+   stage, 55vw at most) so a headline can never run under it, and the
+   text column takes whatever is left. Gutter lives on the parent
+   (px-5 md:px-8), container here — the site-wide order. */
 const INTEL_GRID =
-  "mx-auto w-full max-w-7xl lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(20rem,29rem)] lg:gap-16 lg:items-center";
+  "mx-auto w-full max-w-7xl lg:grid lg:grid-cols-[minmax(0,1fr)_var(--diag-w)] lg:gap-10 lg:items-center";
 
 export function Intelligence() {
   return (
@@ -269,18 +271,39 @@ export function Intelligence() {
           live above it to survive. */}
       <div className="px-5 pt-24 md:px-8">
         <div className="mx-auto w-full max-w-7xl">
-          <h2 id="intel-heading" className="font-display text-h2 max-w-3xl">
-            <span className="eyebrow pill mb-5">
-              <span className="tick" aria-hidden="true">
-                ●
-              </span>{" "}
-              Audience intelligence
-            </span>
-            <span className="visually-hidden"> — </span>
-            <span data-split className="block">
-              Intelligence Before Investment
-            </span>
-          </h2>
+          <p className="eyebrow pill mb-8">
+            <span className="tick" aria-hidden="true">
+              ●
+            </span>{" "}
+            Audience intelligence
+          </p>
+          {/* Display headline left, supporting copy right. The paragraph
+              sits on the headline's baseline block (items-end) so the two
+              columns read as one line of thought, not a title + footnote. */}
+          <div className="grid gap-6 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:items-end md:gap-12 lg:gap-16">
+            {/* Slightly looser than --leading-display: the split-line
+                masks are overflow:hidden, so at 0.86 the comma's
+                descender was clipped by the line below. */}
+            <h2
+              id="intel-heading"
+              className="font-display text-h2"
+              style={{ lineHeight: 0.94 }}
+            >
+              <span data-split className="block">
+                We start with the audience, not the creator.
+              </span>
+            </h2>
+            <p
+              data-reveal
+              className="max-w-lg text-base leading-body md:text-lg"
+              style={{ color: "var(--ink-muted)" }}
+            >
+              CLICK combines audience intelligence from GameSquare’s ecosystem, creator expertise,
+              cultural insight and performance data in one continuous system.
+              What we learn before, during and after every campaign feeds the
+              next decision.
+            </p>
+          </div>
         </div>
       </div>
       <div id="intel-stage" className="relative lg:min-h-screen">
