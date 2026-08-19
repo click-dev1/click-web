@@ -20,9 +20,11 @@ Open http://localhost:3000.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SITE_URL` to the
-deployed origin — canonical, Open Graph and JSON-LD URLs are resolved from
-it.
+`NEXT_PUBLIC_SITE_URL` sets the absolute origin used by canonical tags,
+Open Graph URLs, `robots.txt`, `sitemap.xml` and the JSON-LD `@id`s. On
+Vercel it falls back to the project's production domain automatically, so
+it only needs setting once a custom domain is live (or on another host).
+See `lib/site.ts`.
 
 The contact form is a HubSpot embed — nothing to configure locally; see
 `docs/HUBSPOT_SETUP.md` for where its fields, copy and styling live.

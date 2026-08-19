@@ -1,4 +1,5 @@
 import { contact, recognition } from "@/content/manifest";
+import { siteUrl } from "@/lib/site";
 
 /**
  * Organization + WebSite JSON-LD.
@@ -9,8 +10,6 @@ import { contact, recognition } from "@/content/manifest";
  * blueprint's rule and Google's (structured data must reflect visible
  * content).
  */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-
 const SOCIAL_PROFILES = [
   "https://www.instagram.com/weareclicktalent",
   "https://www.linkedin.com/company/clickmediagroup/",

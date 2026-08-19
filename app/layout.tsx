@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Hanken_Grotesk } from "next/font/google";
 import ContactModalProvider from "@/components/contact/ContactModalProvider";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 /* Free OFL stand-ins that carry the page until the licensed brand faces
@@ -31,10 +32,6 @@ const hankenGrotesk = Hanken_Grotesk({
   display: "swap",
 });
 
-/* Set NEXT_PUBLIC_SITE_URL in the deploy environment. It resolves
-   canonical + Open Graph URLs; without it they fall back to localhost and
-   any absolute URL Next emits will be wrong. */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 const title = "CLICK — Influencer Marketing & Talent Management Agency";
 const description =
