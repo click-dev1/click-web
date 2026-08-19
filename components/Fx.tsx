@@ -151,23 +151,25 @@ export default function Fx() {
           '[data-diag="src"] path, [data-diag="trunk"], [data-diag="trunk2"], [data-diag-arc], [data-diag="return-mask"]',
         );
         gsap.set(strokes, { drawSVG: "0%" });
-        /* words rise a little as they fade in; dots and the pill scale up */
-        gsap.set(
-          q(
-            "[data-diag-src-label], [data-diag-label], " +
-              '[data-diag="converge"], [data-diag="billions"], ' +
-              '[data-diag="hub-label"], [data-diag="return-label"]',
-          ),
-          { autoAlpha: 0, y: 10 },
+        /* Words rise a little as they fade in. The labels are anchored to
+           their dots with CSS percentage transforms (translate(-50%, -100%)
+           and friends), and GSAP's x/y/scale rewrite the whole transform —
+           baking those percentages into stale pixels and then replacing
+           them. So the rise is done with the independent CSS `translate`
+           property, which GSAP passes through as a plain style and which
+           composes with `transform` without touching it. Only the dots and
+           the hub — SVG groups with no CSS transform of their own — take a
+           GSAP scale. */
+        const words = q(
+          "[data-diag-src-label], [data-diag-label], " +
+            '[data-diag="billions"], [data-diag="pill"], ' +
+            '[data-diag="hub-label"], [data-diag="return-label"]',
         );
+        gsap.set(words, { autoAlpha: 0, translate: "0px 10px" });
         gsap.set(q("[data-diag-node]"), {
           autoAlpha: 0,
           scale: 0.4,
           transformOrigin: "50% 50%",
-        });
-        gsap.set(one('[data-diag="pill"]') ?? [], {
-          autoAlpha: 0,
-          scale: 0.94,
         });
         gsap.set(one('[data-diag="track"]') ?? [], { autoAlpha: 0 });
         gsap.set(one('[data-diag="hub"]') ?? [], {
@@ -177,7 +179,11 @@ export default function Fx() {
         });
 
         const draw = { drawSVG: "0% 100%", ease: "none" as const };
-        const rise = { autoAlpha: 1, y: 0, ease: "power2.out" as const };
+        const rise = {
+          autoAlpha: 1,
+          translate: "0px 0px",
+          ease: "power2.out" as const,
+        };
         const pop = {
           autoAlpha: 1,
           scale: 1,
@@ -204,11 +210,6 @@ export default function Fx() {
         );
         arrive.to(q('[data-diag="src"] path'), { ...draw, duration: 0.5 }, 0.2);
         arrive.to(
-          one('[data-diag="converge"]') ?? [],
-          { ...rise, duration: 0.3 },
-          0.3,
-        );
-        arrive.to(
           one('[data-diag="trunk"]') ?? [],
           { ...draw, duration: 0.1 },
           0.7,
@@ -220,7 +221,7 @@ export default function Fx() {
         );
         arrive.to(
           one('[data-diag="pill"]') ?? [],
-          { ...pop, duration: 0.3 },
+          { ...rise, duration: 0.3 },
           0.9,
         );
 

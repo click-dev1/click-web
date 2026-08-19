@@ -333,14 +333,6 @@ export default function IntelligenceDiagram() {
       ))}
 
       <span
-        data-diag="converge"
-        className="diag-eyebrow diag-converge"
-        style={{ left: pct(8, W), top: pct(122, H) }}
-      >
-        Signals converge
-      </span>
-
-      <span
         data-diag="billions"
         className="diag-eyebrow diag-billions"
         style={{ left: pct(CX, W), top: pct(BILL_Y, H) }}

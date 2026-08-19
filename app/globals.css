@@ -821,10 +821,6 @@ button:hover .btn-arrow {
 .diag-source .diag-name {
   margin-block: 0.15em 0.1em;
 }
-.diag-converge {
-  transform: translateY(-50%);
-  opacity: 0.85;
-}
 .diag-billions {
   transform: translate(-50%, -50%);
   opacity: 0.85;
@@ -933,7 +929,6 @@ button:hover .btn-arrow {
    there; the section copy beside it tells the full story. */
 @container (max-width: 36rem) {
   .diag-desc,
-  .diag-converge,
   .diag-hub .diag-eyebrow:last-child {
     display: none;
   }
