@@ -29,7 +29,7 @@ export function Hero() {
           data-split
           className="font-display text-hero max-w-4xl"
         >
-          Where Science Meets Culture.
+          Understand Audiences. Move People.
         </h1>
 
         {/* The brand triad leads the body copy: it is the positioning
