@@ -432,7 +432,7 @@ export function Work() {
               >
                 <div>
                   <p className="eyebrow mb-2">{cs.brand}</p>
-                  <h3 className="font-display text-h3">{cs.campaign}</h3>
+                  <h3 className="font-display text-h3 text-balance">{cs.campaign}</h3>
                 </div>
 
                 <div>
@@ -445,6 +445,14 @@ export function Work() {
                   style={{ borderColor: "var(--hairline)" }}
                 >
                   <p className="eyebrow">What it delivered</p>
+                  {cs.resultsIntro && (
+                    <p
+                      className="leading-body -mt-2 text-sm"
+                      style={{ color: "var(--ink-muted)" }}
+                    >
+                      {cs.resultsIntro}
+                    </p>
+                  )}
                   {cs.metrics.length > 0 ? (
                     cs.metrics.slice(0, 3).map((m) => (
                       <div key={m.label}>

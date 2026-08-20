@@ -32,36 +32,45 @@ export interface CaseStudy {
   understood: string; // what was understood
   created: string; // what was created
   metrics: Metric[]; // what happened (max 3 rendered)
+  resultsIntro?: string; // optional lead-in above the metrics column
   proofLine?: string;
   status: VerificationStatus;
 }
 
-/* Campaign metrics verified against the live /our-work page on 2026-08-05.
-   750M impressions + 51.93% market-share increase belong to OPTUS (not
-   Maybelline — confirmed after a conflicting review note). Maybelline
-   publishes no quantitative metrics; its proof is the Cannes recognition. */
+/* Campaign metrics verified against the live /our-work page on 2026-08-05,
+   except Capcom — Pragmata, whose copy and figures are transcribed verbatim
+   from CLICK's own campaign deck (client-confirmed). Maybelline publishes no
+   quantitative metrics; its proof is the Cannes recognition. The Optus figures
+   (750M impressions, 51.93% market-share increase) still appear in the hero
+   proof chip and the intelligence beat. */
 export const caseStudies: CaseStudy[] = [
   {
-    brand: "Optus",
-    campaign: "Gaming on the Go",
+    brand: "Capcom",
+    campaign: "Sending Pragmata into orbit with creator content",
     understood:
-      "Gaming audiences judge network claims by lived experience, not ad copy.",
+      "Capcom partnered with Click Influence to drive awareness and creator-led conversation around Pragmata.",
     created:
-      "Creator-led streams and social content that put the product inside real play, on the platforms where gaming culture already lives.",
+      "We activated 59 gaming and lifestyle creators to produce 136 pieces of organic content around the game, while also executing a separate kit seeding campaign to spark added-value viewership and creator excitement.",
+    resultsIntro:
+      "The results? Creator content that drove strong engagement and organic conversations:",
     metrics: [
-      { value: "750M", label: "content impressions", status: "verified-public" },
       {
-        value: "51.93%",
-        label: "market share increase",
-        status: "verified-public",
+        value: "7.6M",
+        label: "Total Video Views",
+        status: "client-confirmed",
       },
       {
-        value: "835K",
-        label: "organic TikTok views",
-        status: "verified-public",
+        value: "2.8M",
+        label: "Added Value Video Views",
+        status: "client-confirmed",
+      },
+      {
+        value: "451K",
+        label: "Stream Hours Watched",
+        status: "client-confirmed",
       },
     ],
-    status: "verified-public",
+    status: "client-confirmed",
   },
   {
     brand: "Maybelline",
@@ -98,11 +107,11 @@ export const caseStudies: CaseStudy[] = [
   },
 ];
 
-/* NOTE: the "understood" lines above are editorial interpretations written
-   for this build — they are consistent with the public campaign pages but
-   are NOT documented client findings. Status for all three interpretive
+/* NOTE: the "understood" lines for Maybelline and McDonald's are editorial
+   interpretations written for this build — consistent with the public
+   campaign pages but NOT documented client findings. Status for those two
    lines: awaiting-confirmation. Replace with CLICK's real campaign insights
-   before production. */
+   before production. Capcom's line is deck copy, not interpretation. */
 
 export const heroAnnotation = {
   eyebrow: "ACTIVATION SIGNAL · MAYBELLINE — EYES UP",
