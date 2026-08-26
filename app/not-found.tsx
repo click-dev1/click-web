@@ -38,6 +38,9 @@ function NotFoundBody() {
         <Link href="/" className="btn-primary">
           Back to Home <span className="btn-arrow">→</span>
         </Link>
+        <Link href="/work" className="btn-ghost">
+          View Our Work <span className="btn-arrow">→</span>
+        </Link>
       </div>
     </section>
   );

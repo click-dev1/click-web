@@ -4,18 +4,29 @@ import { contact, recognition } from "@/content/manifest";
 
 type FooterLink = { href: string; label: string; external?: boolean };
 
-/* Section anchors, not routes: everything the footer points at lives on
-   the home page today. Absolute ("/#work") rather than bare hashes so the
-   links still resolve from the 404 and any future route. The Solutions /
-   Talent / Company column set returns as those pages are built. */
 const COLUMNS: { label: string; links: FooterLink[] }[] = [
   {
-    label: "Explore",
+    label: "Solutions",
     links: [
-      { href: "/#journeys", label: "What we do" },
-      { href: "/#intelligence", label: "Intelligence" },
-      { href: "/#work", label: "Work" },
-      { href: "/#ecosystem", label: "Ecosystem" },
+      { href: "/influencer-marketing", label: "Influencer Marketing" },
+      { href: "/influencer-marketing#experiential", label: "Experiential" },
+    ],
+  },
+  {
+    label: "Talent",
+    links: [
+      { href: "/talent-management", label: "Talent Management" },
+      { href: "/talent", label: "Talent Directory" },
+      { href: "/contact#creator-network", label: "Creator Network" },
+    ],
+  },
+  {
+    label: "Company",
+    links: [
+      { href: "/work", label: "Work" },
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/privacy", label: "Privacy" },
     ],
   },
   {
@@ -137,7 +148,7 @@ export default function Footer() {
 
           <nav
             aria-label="Footer"
-            className="grid grid-cols-2 gap-8 sm:gap-12"
+            className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-10"
           >
             {COLUMNS.map((col) => (
               <div key={col.label}>
@@ -148,7 +159,7 @@ export default function Footer() {
                       "text-sm transition-colors hover:text-[var(--signal)]";
                     const linkStyle = { color: "var(--ink-muted)" };
                     /* mailto and off-site links are plain anchors — only
-                       the in-app anchors go through <Link>. */
+                       the in-app routes go through <Link>. */
                     const isAnchor =
                       l.external || l.href.startsWith("mailto:");
                     return (
