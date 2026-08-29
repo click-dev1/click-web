@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const statics: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "monthly", priority: 1 },
     { url: `${siteUrl}/influencer-marketing`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${siteUrl}/experiential`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${siteUrl}/talent-management`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${siteUrl}/talent`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/work`, changeFrequency: "monthly", priority: 0.8 },

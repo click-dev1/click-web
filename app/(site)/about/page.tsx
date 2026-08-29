@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Placeholder from "@/components/Placeholder";
 import ContactButton from "@/components/contact/ContactButton";
@@ -96,11 +97,23 @@ export default function AboutPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {people.map((p) => (
               <article key={`${p.name}-${p.role}`} data-reveal className="card-surface overflow-hidden rounded-xl">
-                <Placeholder
-                  label="Editorial portrait · single commissioned series"
-                  ratio="4/5"
-                  className="rounded-none border-0"
-                />
+                {p.photo ? (
+                  <div className="relative w-full" style={{ aspectRatio: "4/5" }}>
+                    <Image
+                      src={p.photo}
+                      alt={`${p.name} — ${p.role}, CLICK`}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                ) : (
+                  <Placeholder
+                    label="Editorial portrait · single commissioned series"
+                    ratio="4/5"
+                    className="rounded-none border-0"
+                  />
+                )}
                 <div className="p-5">
                   <h3 className="font-display text-2xl">{p.name}</h3>
                   <p className="eyebrow mt-1">{p.role}</p>

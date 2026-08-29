@@ -9,7 +9,7 @@ const COLUMNS: { label: string; links: FooterLink[] }[] = [
     label: "Solutions",
     links: [
       { href: "/influencer-marketing", label: "Influencer Marketing" },
-      { href: "/influencer-marketing#experiential", label: "Experiential" },
+      { href: "/experiential", label: "Experiential" },
     ],
   },
   {

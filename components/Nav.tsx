@@ -10,10 +10,20 @@ import { contact } from "@/content/manifest";
 type NavLink = { href: string; label: string };
 type NavItem = NavLink | { label: string; children: NavLink[] };
 
-/* The flat link set from the blueprint: Influencer Marketing / Talent ▾
-   (Talent Management, Talent Directory) / Work / About / Contact. */
+/* The blueprint's primary navigation: Solutions ▾ (Influencer Marketing,
+   Experiential) / Talent ▾ (Talent Management, Talent Directory) / Work /
+   About / Contact. Solutions and Talent are dropdowns only — neither has a
+   landing page, and the blueprint says not to build one. The two dropdowns
+   mirror the homepage's two journeys: Solutions is the brand path, Talent
+   is the creator path. */
 const LINKS: NavItem[] = [
-  { href: "/influencer-marketing", label: "Influencer Marketing" },
+  {
+    label: "Solutions",
+    children: [
+      { href: "/influencer-marketing", label: "Influencer Marketing" },
+      { href: "/experiential", label: "Experiential" },
+    ],
+  },
   {
     label: "Talent",
     children: [

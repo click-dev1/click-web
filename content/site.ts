@@ -132,6 +132,37 @@ export const campaigns: Campaign[] = [
 export const workDisclosure =
   "Capcom figures as confirmed by CLICK; Optus, Maybelline and McDonald's figures as published on clickmedia.group. Insight lines are editorial interpretations pending client confirmation.";
 
+/* ============ EXPERIENTIAL ============ */
+
+/* The activation scorecard is the Experiential page's "show, don't claim"
+   moment — the blueprint asks for 3–4 real numbers from one flagship
+   experience, not a menu of every metric we could count. No experiential
+   activation has been supplied yet, so the only entry here is a shaped
+   placeholder: it lets the layout be reviewed populated and disappears
+   the moment SHOW_PLACEHOLDERS is off, leaving the page's honest
+   awaiting-content state. Replace it with a real activation. */
+export interface ActivationScorecard {
+  /** The experience the numbers came from. */
+  label: string;
+  metrics: { value: string; label: string }[];
+  status: VerificationStatus;
+}
+
+const ACTIVATION_SCORECARDS: ActivationScorecard[] = [
+  {
+    label: "Flagship activation",
+    metrics: [
+      { value: "12K", label: "attendees" },
+      { value: "3.8M", label: "broadcast views" },
+      { value: "410", label: "content pieces" },
+    ],
+    status: "placeholder-do-not-publish",
+  },
+];
+
+export const activationScorecard: ActivationScorecard | null =
+  publishable(ACTIVATION_SCORECARDS)[0] ?? null;
+
 /* ============ TALENT ROSTER ============ */
 
 export interface Talent {
@@ -346,6 +377,8 @@ export const rosterDisclosure = SHOW_PLACEHOLDERS
 export interface Person {
   name: string;
   role: string;
+  /** Portrait in /public/team. Absent = the commissioned-portrait placeholder. */
+  photo?: string;
   /** One line in their own voice. Real people never get an invented
       quote — they carry a collect-in-own-voice marker instead. */
   perspective?: string;
@@ -357,12 +390,14 @@ const PEOPLE: Person[] = [
   {
     name: "Grace Watkins",
     role: "Co-CEO",
+    photo: "/team/grace-watkins.png",
     recognition: "Business Insider Top Talent Managers",
     status: "verified-public",
   },
   {
     name: "Emma Barnes",
     role: "Co-CEO",
+    photo: "/team/emma-barnes.png",
     recognition: "Business Insider Top Talent Managers",
     status: "verified-public",
   },

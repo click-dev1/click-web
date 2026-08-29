@@ -32,7 +32,7 @@ const STACK = [
   {
     name: "Stream Hatchet",
     blurb:
-      "Unlock gaming, livestreaming, and esports intelligence across Twitch, YouTube Gaming, Kick, and emerging platforms.",
+      "Unlock gaming, livestreaming, and esports intelligence across Twitch, YouTube Gaming, Kick, Facebook Live, Steam, SOOP, Chzzk, Trovo, Rumble, OpenREC, and emerging platforms.",
   },
 ];
 
@@ -73,14 +73,6 @@ const CAPABILITIES = [
       "Campaign Optimization",
     ],
   },
-];
-
-const EXPERIENCE_CATEGORIES = [
-  { name: "Gaming & Esports", items: "Championships · Tournaments · Creator competitions" },
-  { name: "Sports", items: "Athlete partnerships · Fan experiences · Hospitality" },
-  { name: "Entertainment", items: "Premieres · Launch events · Live performances" },
-  { name: "Brand Activations", items: "Pop-ups · Product launches · Installations" },
-  { name: "Community", items: "Creator meetups · VIP events · Fan appreciation" },
 ];
 
 export default function InfluencerMarketingPage() {
@@ -309,93 +301,6 @@ export default function InfluencerMarketingPage() {
                 </p>
               </div>
             )}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= EXPERIENTIAL — cinematic register ================= */}
-      <section
-        id="experiential"
-        data-signal="divide"
-        className="hairline-t relative z-10 px-5 py-28 md:px-8"
-        aria-labelledby="experiential-heading"
-      >
-        <div className="mx-auto max-w-7xl">
-          <p className="eyebrow pill mb-6">
-            <span className="tick">●</span> Experiential
-          </p>
-          <h2
-            id="experiential-heading"
-            data-split
-            className="font-display text-h2 display-outline max-w-5xl"
-          >
-            Moments people don&apos;t just attend — they become part of.
-          </h2>
-          <p className="mt-8 max-w-2xl text-lg leading-body" style={{ color: "var(--ink-muted)" }}>
-            The most impactful experiences don&apos;t end when the lights go
-            down. They spark conversations, inspire content, strengthen
-            communities, and create lasting connections between brands and the
-            people they serve.
-          </p>
-
-          <div className="mt-14 grid gap-4 md:grid-cols-3">
-            <Placeholder label="Live event · client footage" ratio="3/4" className="md:mt-10" />
-            <Placeholder label="Creator meet-and-greet" ratio="3/4" />
-            <Placeholder label="Brand activation" ratio="3/4" className="md:mt-16" />
-          </div>
-
-          <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {EXPERIENCE_CATEGORIES.map((c) => (
-              <article key={c.name} data-reveal className="card-surface rounded-xl p-5">
-                <h3 className="font-display text-xl">{c.name}</h3>
-                <p className="mt-2 text-xs leading-body" style={{ color: "var(--ink-muted)" }}>
-                  {c.items}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-16 grid gap-10 lg:grid-cols-2">
-            <div>
-              <h3 data-reveal className="font-display text-h3">
-                Measured beyond the moment.
-              </h3>
-              <p className="mt-5 max-w-lg text-lg leading-body" style={{ color: "var(--ink-muted)" }}>
-                Every activation is designed to generate lasting value through
-                creator content, earned media, community engagement, and
-                measurable business impact. We report the three to five numbers
-                that prove the experience worked — not everything we could
-                count.
-              </p>
-            </div>
-            <div data-reveal className="insight-frame self-center">
-              <p className="eyebrow mb-4">
-                <span className="tick">◉</span> Activation scorecard · illustrative
-              </p>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <span className="tnum block text-2xl font-bold">12K</span>
-                  <span className="text-xs" style={{ color: "var(--ink-muted)" }}>
-                    attendees
-                  </span>
-                </div>
-                <div>
-                  <span className="tnum block text-2xl font-bold">3.8M</span>
-                  <span className="text-xs" style={{ color: "var(--ink-muted)" }}>
-                    broadcast views
-                  </span>
-                </div>
-                <div>
-                  <span className="tnum block text-2xl font-bold">410</span>
-                  <span className="text-xs" style={{ color: "var(--ink-muted)" }}>
-                    content pieces
-                  </span>
-                </div>
-              </div>
-              <p className="eyebrow mt-4">
-                Placeholder — replaced with a real activation
-              </p>
-            </div>
           </div>
         </div>
       </section>
