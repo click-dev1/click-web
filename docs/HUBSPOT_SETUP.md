@@ -49,8 +49,12 @@ if the account changed) into `components/contact/hubspot.ts`.
 
 ## Notes
 
-- HubSpot's cookie (`hubspotutk`) and analytics are set by HubSpot's
-  scripts inside the iframe. If a cookie banner is added to the site later,
-  the form embed is one of the things it should cover.
+- HubSpot's tracking script (`js.hs-scripts.com`) — the thing that sets
+  `hubspotutk` and joins a submission to the pages read beforehand — is
+  loaded only after the visitor grants analytics consent; see
+  `docs/CONSENT_AND_LEGAL.md`. The form embed itself is not consent-gated —
+  verified in a browser: with consent refused, the only cookie it produces
+  is Cloudflare's `__cf_bm` on HubSpot's own domains, which is listed as
+  essential in `lib/consent.ts`.
 - No environment variables are involved — portal id and form id are public
   (they're in every HubSpot embed snippet), so they're committed.

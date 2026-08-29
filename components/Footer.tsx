@@ -1,6 +1,8 @@
 import Link from "next/link";
 import ContactButton from "@/components/contact/ContactButton";
+import CookiePreferencesButton from "@/components/consent/CookiePreferencesButton";
 import { contact, recognition } from "@/content/manifest";
+import { legalNav } from "@/content/legal";
 
 type FooterLink = { href: string; label: string; external?: boolean };
 
@@ -26,7 +28,6 @@ const COLUMNS: { label: string; links: FooterLink[] }[] = [
       { href: "/work", label: "Work" },
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
-      { href: "/privacy", label: "Privacy" },
     ],
   },
   {
@@ -205,13 +206,39 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Legal bar. The Cookie Preferences button is the permanent way
+            back into the consent panel — withdrawing has to be as easy as
+            giving — and the California wording is the same panel under
+            the name that law asks for. */}
         <div
-          className="hairline-t mt-12 flex flex-col gap-2 pt-6 text-xs sm:flex-row sm:items-center sm:justify-between"
+          className="hairline-t mt-12 flex flex-col gap-3 pt-6 text-xs lg:flex-row lg:items-center lg:justify-between"
           style={{ color: "var(--ink-muted)" }}
         >
-          <p>
-            © {year} CLICK Media Group. All rights reserved.
-          </p>
+          <p>© {year} Click Management Pty. Ltd., trading as CLICK. All rights reserved.</p>
+          <nav aria-label="Legal">
+            <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
+              {legalNav.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="transition-colors hover:text-[var(--signal)]"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <CookiePreferencesButton className="underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
+                  Cookie Preferences
+                </CookiePreferencesButton>
+              </li>
+              <li>
+                <CookiePreferencesButton className="underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
+                  Do Not Sell or Share My Personal Information
+                </CookiePreferencesButton>
+              </li>
+            </ul>
+          </nav>
           <p className="font-data text-[0.62rem]">
             Influencer Marketing · Talent · Experiential
           </p>

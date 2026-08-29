@@ -28,3 +28,8 @@ override that — a staging host, or a domain change.
 
 The contact form is a HubSpot embed — nothing to configure locally; see
 `docs/HUBSPOT_SETUP.md` for where its fields, copy and styling live.
+
+Analytics (GA4 + HubSpot tracking) render only when
+`NEXT_PUBLIC_GA_MEASUREMENT_ID` is set — in Vercel, on Production only —
+and load behind the cookie consent layer. `docs/CONSENT_AND_LEGAL.md`
+explains the consent cookie, the legal pages and the launch checklist.

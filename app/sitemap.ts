@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
 import { campaigns, roster } from "@/content/site";
+import { isLegalPublishable, legalPages } from "@/content/legal";
 
-/* Every indexable route. /privacy is noindex until the legal text lands,
-   so it stays out. Case studies and talent profiles come from the same
-   data that renders them — a page exists here iff it exists on the site. */
+/* Every indexable route. Legal pages join once their text is signed off
+   (content/legal.ts) — until then they are noindex and stay out. Case
+   studies and talent profiles come from the same data that renders them —
+   a page exists here iff it exists on the site. */
 export default function sitemap(): MetadataRoute.Sitemap {
   const statics: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "monthly", priority: 1 },
@@ -16,6 +18,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/about`, changeFrequency: "yearly", priority: 0.6 },
     { url: `${siteUrl}/contact`, changeFrequency: "yearly", priority: 0.7 },
   ];
+  const legal: MetadataRoute.Sitemap = Object.values(legalPages)
+    .filter(isLegalPublishable)
+    .map((p) => ({
+      url: `${siteUrl}/${p.slug}`,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    }));
   const cases: MetadataRoute.Sitemap = campaigns.map((c) => ({
     url: `${siteUrl}/work/${c.slug}`,
     changeFrequency: "yearly",
@@ -26,5 +35,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
     priority: 0.6,
   }));
-  return [...statics, ...cases, ...talent];
+  return [...statics, ...legal, ...cases, ...talent];
 }
