@@ -963,3 +963,243 @@ button:hover .btn-arrow {
     line-height: 1.3;
   }
 }
+
+/* ============================================================
+   COOKIE CONSENT — the notice, the preferences panel and the legal
+   pages (components/consent/*, components/LegalPage.tsx).
+
+   The notice is a region pinned to the foot of the viewport, on the
+   same Dark Blue panel as the contact modal so the two read as one
+   family. It sits above page content and the nav (z 50) but under the
+   mobile menu (60) and the skip link (100). "Reject All" and "Accept
+   All" share .consent-btn so they are the same size — the one rule a
+   consent banner is judged on. No dismiss ✕, deliberately.
+   ============================================================ */
+
+.consent-banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 55;
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .consent-banner {
+    animation: consent-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes consent-rise {
+    from {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+.consent-banner-inner {
+  margin-inline: auto;
+  display: flex;
+  max-width: 80rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 64rem) {
+  .consent-banner-inner {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+}
+.consent-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+/* identical box for both decisions */
+.consent-btn {
+  min-width: 9.5rem;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  font-size: 0.86rem;
+}
+.consent-banner .btn-ghost {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+.consent-link {
+  padding: 0.5rem 0.25rem;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+.consent-link:hover {
+  opacity: 1;
+}
+
+/* ---------- preferences panel ---------- */
+
+.consent-dialog {
+  max-width: min(100%, 38rem);
+}
+.consent-panel {
+  padding: 2rem 1.5rem 1.5rem;
+  color: #ffffff;
+}
+@media (min-width: 40rem) {
+  .consent-panel {
+    padding: 2.5rem 2.25rem 2rem;
+  }
+}
+.consent-categories {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.consent-category {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.consent-category-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+/* a native checkbox drawn as a switch — the semantics stay a checkbox */
+.consent-switch {
+  appearance: none;
+  flex: none;
+  width: 2.6rem;
+  height: 1.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.consent-switch::after {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.consent-switch:checked {
+  background: var(--bg);
+  border-color: transparent;
+}
+.consent-switch:checked::after {
+  transform: translateX(1.1rem);
+}
+.consent-switch:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.consent-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.consent-panel .btn-ghost {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* ---------- legal documents ---------- */
+
+.legal-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  font-size: 1.05rem;
+}
+.legal-section {
+  scroll-margin-top: 7rem;
+  padding-top: 2.5rem;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--hairline);
+}
+.legal-section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.legal-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.legal-blocks p,
+.legal-blocks li {
+  color: var(--ink-muted);
+}
+.legal-blocks h3 {
+  color: var(--ink);
+}
+.legal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 0.25rem;
+}
+.legal-list li {
+  display: flex;
+  gap: 0.75rem;
+}
+.legal-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+}
+.legal-table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.legal-table th,
+.legal-table td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+.legal-table th {
+  font-family: var(--font-body-stack);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+.legal-table tr:last-child td {
+  border-bottom: 0;
+}
+.legal-table td:first-child {
+  font-family: var(--font-body-stack);
+  font-weight: 500;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.legal-toc ol {
+  counter-reset: none;
+}

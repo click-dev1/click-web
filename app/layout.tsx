@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Archivo, Hanken_Grotesk } from "next/font/google";
+import ConsentProvider from "@/components/consent/ConsentProvider";
 import ContactModalProvider from "@/components/contact/ContactModalProvider";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import PageViews from "@/components/analytics/PageViews";
+import HubSpotLoader from "@/components/analytics/HubSpotLoader";
 import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -71,11 +76,25 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        {/* Root level, not per route group: the contact CTA appears in the
-            nav, the sections and the 404 — which sit in different layouts.
-            One provider covers every route and keeps a single <dialog> in
-            the top layer. */}
-        <ContactModalProvider>{children}</ContactModalProvider>
+        {/* Root level, not per route group: consent, the tags it governs
+            and the contact CTA all have to exist on every route — the 404
+            lives outside (site). Consent wraps the contact modal because
+            the HubSpot form is one of the things it governs.
+
+            GA4's bootstrap declares Consent Mode defaults (read from the
+            consent cookie) before anything else runs, so storage is denied
+            from the first byte; the provider raises it via updateConsent().
+            PageViews needs Suspense: useSearchParams opts its subtree out
+            of static rendering otherwise. HubSpot's tracker renders only
+            once analytics is granted. */}
+        <ConsentProvider>
+          <GoogleAnalytics />
+          <Suspense fallback={null}>
+            <PageViews />
+          </Suspense>
+          <HubSpotLoader />
+          <ContactModalProvider>{children}</ContactModalProvider>
+        </ConsentProvider>
       </body>
     </html>
   );
