@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import Placeholder from "./Placeholder";
+import TalentMedia from "./TalentMedia";
 import { roster, rosterDisclosure } from "@/content/site";
 
 /**
@@ -102,9 +102,11 @@ export default function DirectoryExplorer() {
               href={`/talent/${t.slug}`}
               className="talent-card card-surface group relative block overflow-hidden rounded-xl"
             >
-              <Placeholder
+              <TalentMedia
+                talent={t}
                 label={`${t.name} · hero image or loop`}
                 ratio="4/5"
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 className="rounded-none border-0"
               />
               <div className="p-5">

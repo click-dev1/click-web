@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import DirectoryExplorer from "@/components/DirectoryExplorer";
-import Placeholder from "@/components/Placeholder";
+import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
 import { roster } from "@/content/site";
 
@@ -62,9 +62,11 @@ export default function TalentDirectoryPage() {
                   data-reveal
                   className="card-surface group block overflow-hidden rounded-xl"
                 >
-                  <Placeholder
+                  <TalentMedia
+                    talent={t}
                     label={`${t.name} · hero video`}
                     ratio="16/9"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
                     className="rounded-none border-0"
                   />
                   <div className="grid gap-6 p-6 sm:p-7 md:grid-cols-[1.4fr_1fr]">

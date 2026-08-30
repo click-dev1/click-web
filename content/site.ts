@@ -178,6 +178,13 @@ export interface Talent {
   partners: string[];
   ventures: string[];
   featured?: boolean;
+  /** Public path of the creator's primary image (card, portrait and hero slots). */
+  image?: string;
+  imageAlt?: string;
+  /** CSS object-position for the crop, e.g. "70% center". */
+  imagePosition?: string;
+  /** Source / licence note — kept in data so it ships with the asset. */
+  imageCredit?: string;
   /** Success story beats for the profile page. */
   story: { label: string; text: string }[];
   status: VerificationStatus;
@@ -186,7 +193,14 @@ export interface Talent {
 /* Only Muselk is a real CLICK creator (awaiting confirmation of the
    figures). Every other entry is an invented placeholder that exists so
    the directory, cards and profile template can be reviewed populated —
-   replace with the live roster; see SHOW_PLACEHOLDERS above. */
+   replace with the live roster; see SHOW_PLACEHOLDERS above.
+
+   IMAGES: Muselk's image is his own published creator asset (see
+   imageCredit). The placeholder creators are invented, so their images are
+   category-matched stock photography from Pexels (Pexels licence — free
+   for commercial use, no attribution required) chosen to read correctly
+   in the layouts. They are illustrative only and go with the entries when
+   the live roster replaces them. */
 const ROSTER: Talent[] = [
   {
     slug: "muselk",
@@ -198,6 +212,11 @@ const ROSTER: Talent[] = [
     audience: "9M+",
     managed: true,
     bio: "One of Australia's biggest gaming creators — a decade of daily invention across YouTube's most-watched games.",
+    image: "/talent/muselk.jpg",
+    imageAlt: "Muselk — Elliott Watkins",
+    imagePosition: "center 20%",
+    imageCredit:
+      "Muselk's own public profile photo (X/Twitter @muselk), upscaled from 400px — replace with a CLICK-supplied high-res portrait before production.",
     partners: ["EA", "Optus"],
     ventures: ["Merchandise line"],
     featured: true,
@@ -218,6 +237,10 @@ const ROSTER: Talent[] = [
     audience: "1.8M",
     managed: true,
     bio: "Variety streamer whose community treats every broadcast like a hometown show.",
+    image: "/talent/gg-mara.jpg",
+    imageAlt: "Streamer at a triple-monitor setup, mid-broadcast",
+    imagePosition: "78% center",
+    imageCredit: "Illustrative stock — Pexels #7915357 (RDNE Stock project).",
     partners: ["Capcom"],
     ventures: ["Peripherals collab"],
     featured: true,
@@ -238,6 +261,10 @@ const ROSTER: Talent[] = [
     audience: "2.4M",
     managed: true,
     bio: "Documentary-style lifestyle storytelling with a community that plans its weekends around the uploads.",
+    image: "/talent/navi-quinn.jpg",
+    imageAlt: "Lifestyle creator at home in warm evening light",
+    imagePosition: "center 30%",
+    imageCredit: "Illustrative stock — Pexels #30625145.",
     partners: ["Samsung"],
     ventures: ["Homeware label"],
     featured: true,
@@ -258,6 +285,10 @@ const ROSTER: Talent[] = [
     audience: "3.1M",
     managed: false,
     bio: "Sketch comedy at the speed of the feed — characters the internet quotes back.",
+    image: "/talent/soft-serve-sam.jpg",
+    imageAlt: "Comedy creator mid-laugh, studio portrait",
+    imagePosition: "center 25%",
+    imageCredit: "Illustrative stock — Pexels #31750367.",
     partners: ["Jack in the Box"],
     ventures: [],
     story: [
@@ -277,6 +308,10 @@ const ROSTER: Talent[] = [
     audience: "1.2M",
     managed: true,
     bio: "Producer and performer documenting the process as much as the product.",
+    image: "/talent/lumen.jpg",
+    imageAlt: "Producer in headphones working at a studio mixer",
+    imagePosition: "30% center",
+    imageCredit: "Illustrative stock — Pexels #8132964.",
     partners: ["Universal"],
     ventures: ["Sample library"],
     story: [
@@ -296,6 +331,10 @@ const ROSTER: Talent[] = [
     audience: "980K",
     managed: true,
     bio: "Motorsport explained by someone who clearly loves it — paddock access with fan energy.",
+    image: "/talent/pit-lane-priya.jpg",
+    imageAlt: "Motorsport creator in a racing helmet, city skyline behind",
+    imagePosition: "center 40%",
+    imageCredit: "Illustrative stock — Pexels #9607373.",
     partners: ["Adidas"],
     ventures: [],
     story: [
@@ -315,6 +354,10 @@ const ROSTER: Talent[] = [
     audience: "1.5M",
     managed: false,
     bio: "Home cooking with restaurant standards — recipes the comments actually make.",
+    image: "/talent/taste-of-talia.jpg",
+    imageAlt: "Food creator plating dishes in a home kitchen",
+    imagePosition: "center 30%",
+    imageCredit: "Illustrative stock — Pexels #8329331.",
     partners: [],
     ventures: ["Cookware range"],
     story: [
@@ -334,6 +377,10 @@ const ROSTER: Talent[] = [
     audience: "2.0M",
     managed: true,
     bio: "Street skating and street style, filmed like cinema.",
+    image: "/talent/kickflip-ko.jpg",
+    imageAlt: "Skater resting on a board in an empty warehouse",
+    imagePosition: "center 30%",
+    imageCredit: "Illustrative stock — Pexels #9724752.",
     partners: ["Nike"],
     ventures: ["Board shop"],
     story: [
@@ -353,6 +400,10 @@ const ROSTER: Talent[] = [
     audience: "4.2M",
     managed: true,
     bio: "Beauty science without the lecture — testing everything so the audience doesn't have to.",
+    image: "/talent/glowby.jpg",
+    imageAlt: "Beauty creator, clean close-up portrait",
+    imagePosition: "center 35%",
+    imageCredit: "Illustrative stock — Pexels #3373716.",
     partners: ["Maybelline"],
     ventures: ["Skincare line"],
     featured: true,

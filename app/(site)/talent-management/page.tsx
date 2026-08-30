@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Placeholder from "@/components/Placeholder";
+import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
 import { roster } from "@/content/site";
 import { recognition } from "@/content/manifest";
@@ -291,7 +292,13 @@ export default function TalentManagementPage() {
                   data-reveal
                   className="card-surface group block overflow-hidden rounded-xl"
                 >
-                  <Placeholder label={`${t.name} · portrait`} ratio="3/4" className="rounded-none border-0" />
+                  <TalentMedia
+                    talent={t}
+                    label={`${t.name} · portrait`}
+                    ratio="3/4"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="rounded-none border-0"
+                  />
                   <div className="p-5">
                     <h3 className="font-display text-2xl">{t.name}</h3>
                     <p className="eyebrow mt-1.5">

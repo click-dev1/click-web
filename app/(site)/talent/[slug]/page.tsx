@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
+import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
 import { roster } from "@/content/site";
 
@@ -76,7 +77,14 @@ export default async function TalentProfilePage({
                 </ContactButton>
               </div>
             </div>
-            <Placeholder label={`${t.name} · hero video`} ratio="4/5" className="anim-fade-up" />
+            <TalentMedia
+              talent={t}
+              label={`${t.name} · hero video`}
+              ratio="4/5"
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="anim-fade-up rounded-xl"
+              priority
+            />
           </div>
         </div>
       </section>
@@ -240,9 +248,11 @@ export default async function TalentProfilePage({
                   data-reveal
                   className="card-surface group block overflow-hidden rounded-xl"
                 >
-                  <Placeholder
+                  <TalentMedia
+                    talent={o}
                     label={`${o.name} · portrait`}
                     ratio="4/3"
+                    sizes="(min-width: 640px) 33vw, 100vw"
                     className="rounded-none border-0"
                   />
                   <div className="p-5">
