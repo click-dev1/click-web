@@ -4,7 +4,7 @@ import PageHero from "@/components/PageHero";
 import Placeholder from "@/components/Placeholder";
 import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
-import { roster } from "@/content/site";
+import { fetchRoster } from "@/lib/sanity/talent";
 import { recognition } from "@/content/manifest";
 
 export const metadata: Metadata = {
@@ -66,7 +66,8 @@ const SERVICES = [
 
 const JOURNEY = ["Creator", "Audience", "Community", "Brand", "Business", "Legacy"];
 
-export default function TalentManagementPage() {
+export default async function TalentManagementPage() {
+  const roster = await fetchRoster();
   const spotlight = roster.filter((t) => t.featured).slice(0, 4);
 
   return (

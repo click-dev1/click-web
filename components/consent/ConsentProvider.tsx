@@ -9,6 +9,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { usePathname } from "next/navigation";
 import {
   visibleConsentCategories,
   type ConsentChoices,
@@ -134,11 +135,16 @@ export default function ConsentProvider({
     [apply, current, isPreferencesOpen],
   );
 
+  /* The Studio (/studio) is an editing tool for CLICK staff, not a page
+     for visitors: no notice, no preferences panel. Consent state still
+     exists there, so nothing else changes. */
+  const isStudio = usePathname()?.startsWith("/studio") ?? false;
+
   return (
     <Ctx.Provider value={api}>
       {children}
-      {isHydrated && !api.hasDecided && !isPreferencesOpen && <ConsentBanner />}
-      {isHydrated && <ConsentPreferences />}
+      {isHydrated && !isStudio && !api.hasDecided && !isPreferencesOpen && <ConsentBanner />}
+      {isHydrated && !isStudio && <ConsentPreferences />}
     </Ctx.Provider>
   );
 }

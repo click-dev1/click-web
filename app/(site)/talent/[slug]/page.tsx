@@ -4,10 +4,12 @@ import { notFound } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
 import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
-import { roster } from "@/content/site";
+import { fetchRoster, fetchTalent, fetchTalentSlugs } from "@/lib/sanity/talent";
+import { platformNames } from "@/lib/sanity/types";
 
-export function generateStaticParams() {
-  return roster.map((t) => ({ slug: t.slug }));
+export async function generateStaticParams() {
+  const slugs = await fetchTalentSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -16,12 +18,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const t = roster.find((r) => r.slug === slug);
+  const t = await fetchTalent(slug);
   if (!t) return { title: "Talent" };
   return {
-    title: `${t.name} — CLICK Talent`,
-    description: t.bio,
+    title: t.seo?.title ?? `${t.name} — CLICK Talent`,
+    description: t.seo?.description ?? t.bio,
     alternates: { canonical: `/talent/${t.slug}` },
+    robots: t.seo?.noIndex ? { index: false, follow: false } : undefined,
   };
 }
 
@@ -32,10 +35,10 @@ export default async function TalentProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const t = roster.find((r) => r.slug === slug);
+  const t = await fetchTalent(slug);
   if (!t) notFound();
 
-  const others = roster.filter((r) => r.slug !== t.slug).slice(0, 3);
+  const others = (await fetchRoster()).filter((r) => r.slug !== t.slug).slice(0, 3);
 
   return (
     <>
@@ -109,7 +112,7 @@ export default async function TalentProfilePage({
             </div>
             <div data-reveal className="card-surface rounded-xl p-6">
               <p className="eyebrow mb-2">Platforms</p>
-              <p className="font-display text-2xl">{t.platforms.join(" · ")}</p>
+              <p className="font-display text-2xl">{platformNames(t).join(" · ")}</p>
             </div>
             <div data-reveal className="card-surface rounded-xl p-6">
               <p className="eyebrow mb-2">Base</p>

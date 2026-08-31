@@ -26,6 +26,8 @@ export default function PageViews() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    /* The Studio is staff tooling, not traffic. */
+    if (pathname.startsWith("/studio")) return;
     const qs = searchParams.toString();
     pageview(qs ? `${pathname}?${qs}` : pathname);
   }, [pathname, searchParams]);

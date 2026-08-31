@@ -3,13 +3,15 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import TalentMedia from "./TalentMedia";
-import { roster, rosterDisclosure } from "@/content/site";
+import { platformNames, type Talent } from "@/lib/sanity/types";
 
 /**
  * Directory with live search + Category / Platform / Region filters.
  * Filter options are generated from the data, so empty values never render.
+ * The roster is fetched by the page (server) and handed in — this
+ * component only owns the filtering UI.
  */
-export default function DirectoryExplorer() {
+export default function DirectoryExplorer({ roster }: { roster: Talent[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [platform, setPlatform] = useState<string | null>(null);
@@ -18,10 +20,10 @@ export default function DirectoryExplorer() {
   const options = useMemo(
     () => ({
       categories: [...new Set(roster.map((t) => t.category))].sort(),
-      platforms: [...new Set(roster.flatMap((t) => t.platforms))].sort(),
+      platforms: [...new Set(roster.flatMap(platformNames))].sort(),
       regions: [...new Set(roster.map((t) => t.region))].sort(),
     }),
-    [],
+    [roster],
   );
 
   const results = roster.filter((t) => {
@@ -30,11 +32,11 @@ export default function DirectoryExplorer() {
       !q ||
       t.name.toLowerCase().includes(q) ||
       t.category.toLowerCase().includes(q) ||
-      t.platforms.some((p) => p.toLowerCase().includes(q));
+      platformNames(t).some((p) => p.toLowerCase().includes(q));
     return (
       matchesQuery &&
       (!category || t.category === category) &&
-      (!platform || t.platforms.includes(platform)) &&
+      (!platform || platformNames(t).includes(platform)) &&
       (!region || t.region === region)
     );
   });
@@ -117,7 +119,9 @@ export default function DirectoryExplorer() {
                   )}
                 </div>
                 <p className="eyebrow mt-2">
-                  {t.category} · {t.platforms.join(" / ")} · {t.location}
+                  {[t.category, platformNames(t).join(" / "), t.location]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </p>
                 <p className="tnum mt-2 text-sm">{t.audience} audience</p>
               </div>
@@ -151,10 +155,6 @@ export default function DirectoryExplorer() {
             </p>
           </div>
         )}
-
-        <p className="mt-10 text-sm" style={{ color: "var(--ink-muted)" }}>
-          {rosterDisclosure}
-        </p>
       </div>
     </section>
   );

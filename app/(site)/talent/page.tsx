@@ -4,7 +4,8 @@ import PageHero from "@/components/PageHero";
 import DirectoryExplorer from "@/components/DirectoryExplorer";
 import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
-import { roster } from "@/content/site";
+import { fetchRoster } from "@/lib/sanity/talent";
+import { platformNames } from "@/lib/sanity/types";
 
 export const metadata: Metadata = {
   title: "Talent Directory",
@@ -21,7 +22,8 @@ const MATCH_STEPS = [
   "Business Results",
 ];
 
-export default function TalentDirectoryPage() {
+export default async function TalentDirectoryPage() {
+  const roster = await fetchRoster();
   const featured = roster.filter((t) => t.featured).slice(0, 2);
 
   return (
@@ -38,7 +40,7 @@ export default function TalentDirectoryPage() {
       />
 
       {/* ---- the directory (search + filters) ---- */}
-      <DirectoryExplorer />
+      <DirectoryExplorer roster={roster} />
 
       {/* ---- Featured Talent ---- */}
       {featured.length > 0 && (
@@ -86,7 +88,7 @@ export default function TalentDirectoryPage() {
                       </div>
                       <div>
                         <dt className="eyebrow">Platforms</dt>
-                        <dd className="text-sm">{t.platforms.join(" · ")}</dd>
+                        <dd className="text-sm">{platformNames(t).join(" · ")}</dd>
                       </div>
                       {t.partners.length > 0 && (
                         <div>

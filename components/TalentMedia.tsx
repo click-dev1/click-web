@@ -1,12 +1,17 @@
 import Image from "next/image";
 import Placeholder from "./Placeholder";
-import type { Talent } from "@/content/site";
+import { urlFor } from "@/lib/sanity/image";
+import type { SanityImage } from "@/lib/sanity/types";
 
 /**
  * The media slot for a creator — card hero, spotlight portrait, profile
- * hero. Renders the talent's image when one is on file and falls back to
- * the design Placeholder when it isn't, so the layouts never depend on
+ * hero. Renders the talent's portrait when one is on file and falls back
+ * to the design Placeholder when it isn't, so the layouts never depend on
  * every creator having photography.
+ *
+ * The image comes from Sanity: the editor's hotspot becomes the CSS
+ * object-position (so the focal point survives every aspect ratio without
+ * a server-side crop per slot) and the asset's LQIP is the blur-up.
  */
 export default function TalentMedia({
   talent,
@@ -16,7 +21,7 @@ export default function TalentMedia({
   className = "",
   priority = false,
 }: {
-  talent: Pick<Talent, "name" | "image" | "imageAlt" | "imagePosition">;
+  talent: { name: string; portrait?: SanityImage };
   /** CSS aspect-ratio of the slot, e.g. "4/5". */
   ratio: string;
   /** Placeholder label when no image is on file. */
@@ -26,22 +31,29 @@ export default function TalentMedia({
   className?: string;
   priority?: boolean;
 }) {
-  if (!talent.image) {
+  const { portrait } = talent;
+  if (!portrait?.asset) {
     return <Placeholder label={label} ratio={ratio} className={className} />;
   }
+  const { hotspot, lqip } = portrait;
+  const objectPosition = hotspot
+    ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`
+    : "center";
   return (
     <div
       className={`talent-media relative w-full overflow-hidden ${className}`}
       style={{ aspectRatio: ratio }}
     >
       <Image
-        src={talent.image}
-        alt={talent.imageAlt ?? talent.name}
+        src={urlFor(portrait).width(1600).quality(80).url()}
+        alt={portrait.alt ?? talent.name}
         fill
         sizes={sizes}
         priority={priority}
+        placeholder={lqip ? "blur" : "empty"}
+        blurDataURL={lqip}
         className="object-cover"
-        style={{ objectPosition: talent.imagePosition ?? "center" }}
+        style={{ objectPosition }}
       />
     </div>
   );
