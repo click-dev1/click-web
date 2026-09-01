@@ -290,7 +290,7 @@ export function Intelligence() {
               style={{ lineHeight: 0.94 }}
             >
               <span data-split className="block">
-                We start with the audience, not the creator.
+                We start with the audience.
               </span>
             </h2>
             <p
@@ -344,6 +344,7 @@ export function Intelligence() {
               <div className={INTEL_GRID}>
                 <div>
                   <p
+                    data-beat-aside
                     className="font-data mb-5 text-[0.68rem]"
                     style={{ color: "var(--signal)" }}
                   >
@@ -354,6 +355,7 @@ export function Intelligence() {
                   </h3>
                   <p
                     data-reveal
+                    data-beat-aside
                     className="mt-6 max-w-xl text-lg leading-body"
                     style={{ color: "var(--ink-muted)" }}
                   >

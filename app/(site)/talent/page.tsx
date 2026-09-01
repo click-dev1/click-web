@@ -24,7 +24,16 @@ const MATCH_STEPS = [
 
 export default async function TalentDirectoryPage() {
   const roster = await fetchRoster();
-  const featured = roster.filter((t) => t.featured).slice(0, 2);
+  /* Featured talent reads US first — the roster CLICK is scaling into the
+     market — then a smaller Australian selection. Grouping by region is
+     the emphasis: the order alone would not say which market leads. */
+  const featured = roster.filter((t) => t.featured);
+  const groups = [
+    { region: "United States", label: "United States" },
+    { region: "Australia", label: "Australia" },
+  ]
+    .map((g) => ({ ...g, talent: featured.filter((t) => t.region === g.region) }))
+    .filter((g) => g.talent.length > 0);
 
   return (
     <>
@@ -43,7 +52,7 @@ export default async function TalentDirectoryPage() {
       <DirectoryExplorer roster={roster} />
 
       {/* ---- Featured Talent ---- */}
-      {featured.length > 0 && (
+      {groups.length > 0 && (
         <section
           data-signal="divide"
           className="hairline-t relative z-10 px-5 py-24 md:px-8"
@@ -56,51 +65,48 @@ export default async function TalentDirectoryPage() {
             <h2 id="featured-heading" data-split className="font-display text-h2 max-w-3xl">
               Flagship creators, up close.
             </h2>
-            <div className="mt-12 grid gap-6 lg:grid-cols-2">
-              {featured.map((t) => (
-                <Link
-                  key={t.slug}
-                  href={`/talent/${t.slug}`}
-                  data-reveal
-                  className="card-surface group block overflow-hidden rounded-xl"
-                >
-                  <TalentMedia
-                    talent={t}
-                    label={`${t.name} · hero video`}
-                    ratio="16/9"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="rounded-none border-0"
-                  />
-                  <div className="grid gap-6 p-6 sm:p-7 md:grid-cols-[1.4fr_1fr]">
-                    <div>
-                      <h3 className="font-display text-h3">{t.name}</h3>
-                      <p className="mt-3 leading-body" style={{ color: "var(--ink-muted)" }}>
-                        {t.bio}
-                      </p>
-                      <span className="btn-ghost mt-5 inline-flex px-4 py-2 text-xs group-hover:border-[var(--signal)]">
-                        View Creator Profile <span className="btn-arrow">→</span>
-                      </span>
-                    </div>
-                    <dl className="flex flex-col gap-3 md:border-l md:pl-6 [border-color:var(--hairline)]">
-                      <div>
-                        <dt className="eyebrow">Audience</dt>
-                        <dd className="tnum text-xl font-medium">{t.audience}</dd>
+
+            {groups.map((g, i) => (
+              <div key={g.region} className={i === 0 ? "mt-12" : "mt-16"}>
+                <p className="eyebrow hairline-t pt-4">
+                  <span className="tick" aria-hidden="true">
+                    ◉
+                  </span>{" "}
+                  {g.label} · {g.talent.length} creators
+                </p>
+                <div className="mt-6 grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+                  {g.talent.map((t) => (
+                    <Link
+                      key={t.slug}
+                      href={`/talent/${t.slug}`}
+                      data-reveal
+                      className="card-surface group block overflow-hidden rounded-xl"
+                    >
+                      <TalentMedia
+                        talent={t}
+                        label={`${t.name} · portrait`}
+                        ratio="4/5"
+                        sizes="(min-width: 1024px) 20vw, (min-width: 768px) 33vw, 50vw"
+                        className="rounded-none border-0"
+                      />
+                      <div className="p-4">
+                        <h3 className="font-display text-xl">{t.name}</h3>
+                        <p className="eyebrow mt-1.5">
+                          {t.category} · {t.audience}
+                        </p>
+                        {/* the lead market carries a little more of the
+                            story; the Australian row stays compact */}
+                        {i === 0 && (
+                          <p className="mt-2 text-sm" style={{ color: "var(--ink-muted)" }}>
+                            {platformNames(t).join(" · ")}
+                          </p>
+                        )}
                       </div>
-                      <div>
-                        <dt className="eyebrow">Platforms</dt>
-                        <dd className="text-sm">{platformNames(t).join(" · ")}</dd>
-                      </div>
-                      {t.partners.length > 0 && (
-                        <div>
-                          <dt className="eyebrow">Partners</dt>
-                          <dd className="text-sm">{t.partners.join(" · ")}</dd>
-                        </div>
-                      )}
-                    </dl>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}

@@ -37,6 +37,7 @@ export const PLATFORMS = [
 ] as const;
 
 export const REGIONS = [
+  "United States",
   "Australia",
   "Asia-Pacific",
   "North America",

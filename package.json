@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed:sanity": "tsx --env-file=.env.local scripts/seed-sanity.ts",
+    "seed:roster": "tsx --env-file=.env.local scripts/seed-roster.ts",
     "sanity": "sanity"
   },
   "dependencies": {

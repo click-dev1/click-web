@@ -68,7 +68,18 @@ const JOURNEY = ["Creator", "Audience", "Community", "Brand", "Business", "Legac
 
 export default async function TalentManagementPage() {
   const roster = await fetchRoster();
-  const spotlight = roster.filter((t) => t.featured).slice(0, 4);
+  /* The whole US roster leads, then one Australian creator per category:
+     the emphasis is on the market CLICK is scaling into, without losing
+     the breadth the Australian roster is there to show. */
+  const featured = roster.filter((t) => t.featured);
+  const spotlight = [
+    ...featured.filter((t) => t.region === "United States"),
+    ...featured
+      .filter((t) => t.region !== "United States")
+      .filter(
+        (t, i, rest) => rest.findIndex((x) => x.category === t.category) === i,
+      ),
+  ].slice(0, 8);
 
   return (
     <>

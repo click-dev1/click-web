@@ -1,4 +1,9 @@
 /**
+ * SUPERSEDED — do not run. This migrated the original placeholder roster
+ * from content/site.ts, whose invented creators have since been deleted in
+ * favour of the real one. Re-running it would put them back. The live
+ * roster is scripts/seed-roster.ts (pnpm seed:roster). Kept for reference.
+ *
  * One-shot migration of the talent roster from content/site.ts into the
  * Sanity Content Lake.
  *

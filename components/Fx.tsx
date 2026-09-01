@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import Lenis from "lenis";
 import { setSignalMode, type SignalMode } from "@/lib/signal";
 
 /**
@@ -47,13 +46,9 @@ export default function Fx() {
       return () => io.disconnect();
     }
 
-    /* ---- smooth scroll: single RAF via GSAP ticker ---- */
+    /* Smooth scroll itself lives in <SmoothScroll>: it must outlive this
+       component, which remounts on every route change. */
     gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin);
-    const lenis = new Lenis({ autoRaf: false, lerp: 0.11 });
-    lenis.on("scroll", ScrollTrigger.update);
-    const tick = (time: number) => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
 
     /* ---- reveals ---- */
     const ctx = gsap.context(() => {
@@ -100,6 +95,12 @@ export default function Fx() {
         if (!stage) return;
         gsap.set(beats, { position: "absolute", inset: 0, autoAlpha: 0 });
         gsap.set(beats[0], { autoAlpha: 1 });
+        /* Timeline units past the last beat, spent holding the completed
+           drawing and returning the opening headline to it. One unit is
+           one beat's worth of scroll (90vh), so the pin has to grow by
+           the same amount or the tail would be scrubbed through in no
+           distance at all. */
+        const TAIL = 1.45;
         /* scrub: 1 — the diagram strokes and labels are tied to this, and
            a full second of catch-up lets them glide after the wheel stops
            instead of stopping dead with it. */
@@ -107,7 +108,7 @@ export default function Fx() {
           scrollTrigger: {
             trigger: stage,
             start: "top top",
-            end: `+=${beats.length * 90}%`,
+            end: `+=${(beats.length + TAIL) * 90}%`,
             pin: true,
             scrub: 1,
           },
@@ -279,14 +280,50 @@ export default function Fx() {
           { ...rise, duration: 0.28 },
           3.72,
         );
+
+        /* ---- the hold ----
+           Beat 4's last label lands at 4.0 and, until now, the pin
+           released on the same frame — the finished loop was already
+           scrolling away as it completed. Nothing happens between 4.0
+           and 4.35: a full stop in a section that has been moving since
+           the pin engaged, so the completed visualization is finally on
+           screen at rest. Then the copy comes back round to where it
+           started — the opening headline alone, without its layer label
+           or paragraph, beside the drawing. The diagram itself is never
+           reversed: the loop stays closed. */
+        const opening = beats[0];
+        const asides = opening.querySelectorAll("[data-beat-aside]");
+        tl.to(
+          beats[beats.length - 1],
+          { autoAlpha: 0, y: -24, duration: 0.3, ease: "power1.in" },
+          4.35,
+        );
+        tl.set(asides, { autoAlpha: 0 }, 4.35);
+        tl.fromTo(
+          opening,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.45,
+            ease: "power2.out",
+            /* fromTo renders its start state the moment it is created,
+               wherever it sits on the timeline — which would blank the
+               opening beat before the reader ever reaches it. */
+            immediateRender: false,
+          },
+          4.6,
+        );
+        /* An empty tween costs scroll distance and nothing else, so the
+           closing frame — finished loop, opening promise — holds for
+           itself before the stage unpins. Ends at 4 + TAIL. */
+        tl.to({}, { duration: 0.4 }, 5.05);
       });
     });
 
     return () => {
       io.disconnect();
       ctx.revert();
-      gsap.ticker.remove(tick);
-      lenis.destroy();
     };
   }, []);
 
