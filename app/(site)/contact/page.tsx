@@ -182,8 +182,8 @@ export default function ContactPage() {
             </h2>
             <p className="mt-5 max-w-md text-lg leading-body" style={{ color: "var(--ink-muted)" }}>
               A few details and we&apos;ll connect you with the right team —
-              brands, creators and partners alike. Budget and timeline are
-              conversation questions, not form fields.
+              brands, creators and partners alike. Budget, timing and a brief
+              are optional — send them if you have them.
             </p>
             <p className="mt-6 text-sm">
               Prefer email?{" "}

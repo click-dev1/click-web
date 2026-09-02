@@ -15,12 +15,15 @@
  * The controller details below were supplied by CLICK on 2026-08-29.
  * Everything else is a draft for counsel to confirm, correct or replace.
  *
- * What counsel still has to settle — search "TO CONFIRM" below:
- *   - the ABN
- *   - whether a dedicated privacy mailbox replaces info@
- *   - the retention periods
+ * Counsel completed their review on 2026-09-02 and settled the ABN, the
+ * dedicated privacy mailbox, the retention periods (approved as drafted,
+ * plus the legal/tax/archival carve-out), the authorised-agent wording and
+ * the Creator Network age floor. The Audience Intelligence Snapshot
+ * language was reviewed and left as drafted.
+ *
+ * What is still open — search "TO CONFIRM" below:
  *   - EU/UK representative details, if any are required
- *   - the age floor for the Creator Network
+ *   - privacy@clickmedia.group has to exist before these pages go live
  *
  * The cookie table and the processor list in the Cookie Policy are
  * generated from lib/consent.ts. Do not hand-write cookie names here.
@@ -63,11 +66,15 @@ export interface LegalPageContent {
 export const controller = {
   name: "Click Management Pty. Ltd.",
   tradingAs: "CLICK",
-  abn: "ABN TO CONFIRM", // TO CONFIRM — supplied by CLICK
+  abn: "ABN 61 618 447 206", // confirmed by counsel 2026-09-02
   address:
     "Level 5, 69–75 Reservoir Street, Surry Hills NSW 2010, New South Wales, Australia",
-  /** TO CONFIRM — counsel may prefer a dedicated privacy@ mailbox. */
-  privacyEmail: contact.email,
+  /**
+   * Counsel's 2026-09-02 review replaces info@ with a dedicated privacy
+   * mailbox for privacy enquiries. TO CONFIRM — IT has still to create it;
+   * do not publish these pages (flip `status`) until mail to it is landing.
+   */
+  privacyEmail: "privacy@clickmedia.group",
   parent: "GameSquare Holdings, Inc.",
   site: `www.${SITE_DOMAIN}`,
 };
@@ -82,7 +89,7 @@ const privacy: LegalPageContent = {
   slug: "privacy-policy",
   title: "Privacy Policy",
   description: `How ${controller.name}, trading as CLICK, collects, uses, shares and protects personal information through this website.`,
-  updated: "Last updated: 29 August 2026",
+  updated: "Last updated: 2 September 2026",
   status: "awaiting-confirmation",
   intro: [
     t(
@@ -97,7 +104,7 @@ const privacy: LegalPageContent = {
           `The organisation responsible for your personal information (the "controller") is ${controller.name} (${controller.abn}), with its registered office at ${controller.address}.`,
         ),
         t(
-          `${controller.name} is part of a group of companies whose parent company is ${controller.parent}. Where this policy refers to "the GameSquare group", it means ${controller.parent} and its subsidiaries, which include Stream Hatchet, Sideqik and FaZe Clan.`,
+          `${controller.name} is part of a group of companies whose parent company is ${controller.parent}. Where this policy refers to "the GameSquare group", it means ${controller.parent} and its subsidiaries, which include Stream Hatchet, Sideqik Inc., TubeBuddy, Inc. and FaZe Clan Holdings Inc.`,
         ),
         t(
           `Questions about this policy, or about how we handle your information, can be sent to ${controller.privacyEmail} or by post to the address above, marked for the attention of the Privacy Officer.`,
@@ -120,7 +127,7 @@ const privacy: LegalPageContent = {
       blocks: [
         h("When you contact us"),
         t(
-          "Our enquiry form asks for your name, your email address, the organisation you represent and what you would like to talk about. Emails you send to us are kept with any reply. We do not ask for budgets, timelines or job titles.",
+          "Our enquiry form asks for your name, your email address, the organisation you represent and what you would like to talk about. It also asks, so that we can route your enquiry to the right team, for an estimated budget and the timing of the launch or go-live you are planning around, and it lets you upload a brief. The budget, timing and brief are optional: you can send an enquiry without them, and anything you upload is treated in the same way as the rest of your enquiry. Emails you send to us are kept with any reply.",
         ),
         h("When you join the Creator Network or apply for representation"),
         t(
@@ -209,7 +216,7 @@ const privacy: LegalPageContent = {
     {
       heading: "How long we keep it",
       blocks: [
-        t("We keep personal information for as long as it is needed for the purpose it was collected for, and then delete or de-identify it. As a guide (TO CONFIRM):"),
+        t("We keep personal information for as long as it is needed for the purpose it was collected for, and then delete or de-identify it. As a guide:"),
         list([
           "Enquiries and business contacts: for the duration of our relationship and up to 24 months after our last contact.",
           "Creator Network applications and snapshot working data: 24 months from the application, unless we enter into a representation agreement, in which case for the duration of that agreement and the period our legal obligations require afterwards.",
@@ -218,6 +225,9 @@ const privacy: LegalPageContent = {
           `Your cookie choice: ${CONSENT_MAX_AGE_DAYS === 365 ? "12 months" : `${CONSENT_MAX_AGE_DAYS} days`}, after which we ask again.`,
           "Server logs: 30 days.",
         ]),
+        t(
+          "We may keep information for longer than these periods where we need to: to meet a legal, tax, accounting or other regulatory requirement; to establish, exercise or defend a legal claim; or to keep an archival record of our work and the agreements behind it. Where we do, we keep only what those purposes need, restrict who can see it, and use it for nothing else.",
+        ),
       ],
     },
     {
@@ -251,13 +261,16 @@ const privacy: LegalPageContent = {
         t(
           `Email ${controller.privacyEmail} or write to the address above. We may ask for enough information to confirm you are who you say you are. We respond within 30 days, or tell you if we need longer and why. There is no charge, unless a request is clearly unfounded or excessive.`,
         ),
+        t(
+          "You can also make a request through someone acting for you — an authorised agent. We will ask the agent for written proof that you have authorised them, and we may ask you to verify your own identity and to confirm to us directly that the agent is acting on your behalf, before we act on the request. A parent or guardian may make a request for a child in the same way.",
+        ),
       ],
     },
     {
       heading: "Children",
       blocks: [
         t(
-          "The Site is intended for adults. Many creators are under 18, and we know that: if you are under 18 and want to join the Creator Network or be considered for representation, a parent or guardian must contact us on your behalf (TO CONFIRM the age floor with counsel). We do not knowingly collect personal information from anyone under 16 without a parent's or guardian's involvement; if you think we have, tell us and we will delete it.",
+          "The Site is intended for adults. Many creators are under 18, and we know that: if you are under 18 and want to join the Creator Network or be considered for representation, a parent or guardian must contact us on your behalf, and any agreement we reach is made with them. We do not knowingly collect personal information from anyone under 16 without a parent's or guardian's involvement; if you think we have, tell us and we will delete it.",
         ),
       ],
     },
@@ -419,7 +432,7 @@ const terms: LegalPageContent = {
   slug: "terms-of-use",
   title: "Terms of Use",
   description: "The terms on which this website is made available to you.",
-  updated: "Last updated: 29 August 2026",
+  updated: "Last updated: 2 September 2026",
   status: "awaiting-confirmation",
   intro: [
     t(

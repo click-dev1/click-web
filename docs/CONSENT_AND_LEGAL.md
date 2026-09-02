@@ -59,14 +59,20 @@ on staging whenever HubSpot changes the embed.
 Use as typed blocks; `components/LegalPage.tsx` renders them. Each has a
 `status`. The status is internal — nothing on the page shows it. Until it is
 `client-confirmed` the route is `noindex` and left out of the sitemap;
-flip the status when counsel signs off and both change at once. Search the file for `TO CONFIRM`
-for the facts counsel still owes: ABN, privacy mailbox, retention periods,
-EU/UK representative, the Creator Network age floor.
+flip the status when counsel signs off and both change at once.
+
+Counsel's review landed 2026-09-02: ABN, the privacy mailbox
+(`privacy@clickmedia.group`), the retention periods, the authorised-agent
+wording and the Creator Network age floor are all settled, and the statuses
+are still `awaiting-confirmation` for two reasons — search `TO CONFIRM` in
+the file: EU/UK representative details, and the privacy mailbox has to
+exist before a policy points people at it.
 
 Do not hand-write cookie names in the policy text — they are generated.
 
 ## Launch checklist
 
+- [ ] `privacy@clickmedia.group` exists and mail to it is landing.
 - [ ] Counsel has signed off all three documents; statuses flipped.
 - [ ] Browser audit on staging: no non-essential cookie before Accept;
       none after Reject; all removed after withdrawing; GPC browser sees
