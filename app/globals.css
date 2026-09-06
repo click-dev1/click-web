@@ -1072,6 +1072,19 @@ button:hover .btn-arrow {
   }
 }
 
+/* The burger and its overlay are below-lg only. The breakpoint lives here
+   rather than as an `lg:hidden` utility on the elements: Tailwind v4 emits
+   utilities inside `@layer utilities`, and everything in this file is
+   unlayered, so `.nav-burger { display: inline-flex }` above would win the
+   cascade over `.lg\:hidden` and leave the burger showing on desktop
+   alongside the full link list. Keep the rule next to what it overrides. */
+@media (min-width: 64rem) {
+  .nav-burger,
+  .nav-overlay {
+    display: none;
+  }
+}
+
 /* ---------- filter chips (work + talent explorers, service cards) ---------- */
 
 .chip {

@@ -188,7 +188,7 @@ export default function Nav() {
           <button
             ref={burgerRef}
             type="button"
-            className="nav-burger lg:hidden"
+            className="nav-burger"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -209,7 +209,7 @@ export default function Nav() {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="nav-overlay lg:hidden"
+          className="nav-overlay"
         >
           <nav aria-label="Mobile" className="mx-auto w-full max-w-7xl">
             <ul className="flex flex-col">
