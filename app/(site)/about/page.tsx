@@ -135,9 +135,10 @@ export default function AboutPage() {
           </div>
           {SHOW_PLACEHOLDERS && (
             <p className="mt-8 text-sm" style={{ color: "var(--ink-muted)" }}>
-              Team roles beyond leadership are illustrative placeholders. Real
-              people carry no invented quotes — perspective lines are collected
-              from the team in their own voices before launch.
+              Team names and titles are confirmed by CLICK. Portraits are
+              awaiting supply, and no one carries an invented quote —
+              perspective lines are collected in their own voices before
+              launch.
             </p>
           )}
         </div>
