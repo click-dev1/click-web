@@ -28,6 +28,35 @@ import { parseBody } from "next-sanity/webhook";
 
 type WebhookPayload = { _type: string };
 
+/* The variables this route needs in order to do anything. */
+const REQUIRED = ["SANITY_API_READ_TOKEN", "SANITY_REVALIDATE_SECRET"] as const;
+
+/**
+ * Readiness check — GET /api/revalidate.
+ *
+ * Answers "is this deployment configured to receive publishes?" without
+ * disclosing a value. `unexpected` lists any other SANITY_* key the
+ * runtime can see, which is what catches the failure this was written
+ * for: a variable whose NAME carries a stray space or typo looks correct
+ * in the Vercel dashboard but is a different key to the process.
+ */
+export function GET() {
+  const present = Object.fromEntries(
+    REQUIRED.map((k) => [k, Boolean(process.env[k])]),
+  );
+  const unexpected = Object.keys(process.env)
+    .filter((k) => k.startsWith("SANITY") && !REQUIRED.includes(k as never))
+    .sort();
+
+  return NextResponse.json({
+    ok: REQUIRED.every((k) => Boolean(process.env[k])),
+    present,
+    unexpected,
+    /* Distinguishes "the value is empty" from "the key is absent". */
+    secretLength: (process.env.SANITY_REVALIDATE_SECRET ?? "").length,
+  });
+}
+
 export async function POST(req: NextRequest) {
   const secret = process.env.SANITY_REVALIDATE_SECRET;
 
