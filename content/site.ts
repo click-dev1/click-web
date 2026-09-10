@@ -129,6 +129,13 @@ export const campaigns: Campaign[] = [
   },
 ];
 
+/** Indexable and in the sitemap only once CLICK has confirmed the campaign.
+    Mirrors isLegalPublishable in content/legal.ts — the page still renders
+    on the review build, it just stays out of the sitemap. */
+export function isCampaignPublishable(c: Campaign): boolean {
+  return c.status === "client-confirmed" || c.status === "verified-public";
+}
+
 export const workDisclosure =
   "Capcom figures as confirmed by CLICK; Optus, Maybelline and McDonald's figures as published on clickmedia.group. Insight lines are editorial interpretations pending client confirmation.";
 

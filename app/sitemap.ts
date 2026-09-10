@@ -1,13 +1,18 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
-import { campaigns, roster } from "@/content/site";
+import { fetchTalentSitemap } from "@/lib/sanity/talent";
+import { campaigns, isCampaignPublishable } from "@/content/site";
 import { isLegalPublishable, legalPages } from "@/content/legal";
 
-/* Every indexable route. Legal pages join once their text is signed off
-   (content/legal.ts) — until then they are noindex and stay out. Case
-   studies and talent profiles come from the same data that renders them —
-   a page exists here iff it exists on the site. */
-export default function sitemap(): MetadataRoute.Sitemap {
+/* Every indexable route.
+
+   The rule throughout: a URL appears here only if it exists on the site
+   AND is meant to be found. Talent comes from Sanity, which is what
+   /talent and /talent/[slug] render from — the two cannot disagree, and
+   the same "talent" cache tag that rebuilds those pages rebuilds this
+   file. Case studies and legal pages join once their status says CLICK
+   and counsel have signed them off. */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const statics: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "monthly", priority: 1 },
     { url: `${siteUrl}/influencer-marketing`, changeFrequency: "monthly", priority: 0.9 },
@@ -18,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/about`, changeFrequency: "yearly", priority: 0.6 },
     { url: `${siteUrl}/contact`, changeFrequency: "yearly", priority: 0.7 },
   ];
+
   const legal: MetadataRoute.Sitemap = Object.values(legalPages)
     .filter(isLegalPublishable)
     .map((p) => ({
@@ -25,15 +31,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     }));
-  const cases: MetadataRoute.Sitemap = campaigns.map((c) => ({
-    url: `${siteUrl}/work/${c.slug}`,
-    changeFrequency: "yearly",
-    priority: 0.7,
-  }));
-  const talent: MetadataRoute.Sitemap = roster.map((t) => ({
+
+  const cases: MetadataRoute.Sitemap = campaigns
+    .filter(isCampaignPublishable)
+    .map((c) => ({
+      url: `${siteUrl}/work/${c.slug}`,
+      changeFrequency: "yearly",
+      priority: 0.7,
+    }));
+
+  const talent: MetadataRoute.Sitemap = (await fetchTalentSitemap()).map((t) => ({
     url: `${siteUrl}/talent/${t.slug}`,
+    lastModified: new Date(t._updatedAt),
     changeFrequency: "monthly",
     priority: 0.6,
   }));
+
   return [...statics, ...legal, ...cases, ...talent];
 }

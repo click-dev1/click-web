@@ -39,3 +39,13 @@ export const talentBySlugQuery = defineQuery(
 export const talentSlugsQuery = defineQuery(
   `*[_type == "talent" && defined(slug.current)].slug.current`,
 );
+
+/* Sitemap needs only the address and when it last changed — projecting
+   the whole document to throw it away would be wasteful, and the sitemap
+   is regenerated on every talent publish. */
+export const talentSitemapQuery = defineQuery(
+  `*[_type == "talent" && defined(slug.current)] | order(name asc) {
+    "slug": slug.current,
+    _updatedAt
+  }`,
+);
