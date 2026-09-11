@@ -48,3 +48,57 @@ export interface Talent {
 /** Platform names in display order — the shape the old string[] had. */
 export const platformNames = (t: Pick<Talent, "platforms">) =>
   (t.platforms ?? []).map((p) => p.platform);
+
+/* ---------- Pages ---------- */
+
+/** Portable Text — the shape `body` fields come back as. */
+export type RichText = unknown[];
+
+export interface Cta {
+  _key?: string;
+  label: string;
+  destination: "modal" | "internal" | "external";
+  href?: string;
+  style?: "primary" | "ghost";
+}
+
+export interface PageHeroBlock {
+  _type: "pageHero";
+  _key: string;
+  eyebrow: string;
+  title: string;
+  kicker?: string;
+  lede?: string;
+  ctas?: Cta[];
+  aside?: SanityImage;
+  outline?: boolean;
+}
+
+export interface CopyMediaBlock {
+  _type: "copyMedia";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  body: RichText;
+  media?: SanityImage;
+  mediaPosition?: "right" | "left" | "below";
+  insight?: string;
+}
+
+export interface CtaBannerBlock {
+  _type: "ctaBanner";
+  _key: string;
+  heading: string;
+  body?: string;
+  cta: Cta;
+}
+
+export type PageBlock = PageHeroBlock | CopyMediaBlock | CtaBannerBlock;
+
+export interface Page {
+  _id: string;
+  title: string;
+  slug: string;
+  seo?: Seo;
+  blocks: PageBlock[];
+}

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
 import { fetchTalentSitemap } from "@/lib/sanity/talent";
+import { fetchPageSitemap } from "@/lib/sanity/page";
 import { campaigns, isCampaignPublishable } from "@/content/site";
 import { isLegalPublishable, legalPages } from "@/content/legal";
 
@@ -47,5 +48,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...statics, ...legal, ...cases, ...talent];
+  /* Pages CLICK assembles in the CMS. Unlike talent, an empty list is a
+     legitimate state — there simply may not be any yet. Editors keep a
+     page out of here with SEO → "Hide from search engines". */
+  const cmsPages: MetadataRoute.Sitemap = (await fetchPageSitemap()).map((p) => ({
+    url: `${siteUrl}/${p.slug}`,
+    lastModified: new Date(p._updatedAt),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  return [...statics, ...legal, ...cases, ...talent, ...cmsPages];
 }

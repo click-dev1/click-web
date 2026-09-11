@@ -118,6 +118,44 @@ deployment-pinned URL (`click-<hash>-<team>.vercel.app`) — those are
 frozen to a single build, so revalidating one has no effect on what
 anybody is looking at.
 
+## Pages and section blocks
+
+A **Page** document is a list of sections. Editors add, reorder and remove
+them; the page's vertical rhythm, hairlines and background-canvas signals
+are derived from position, not chosen — editors control copy, images and
+calls to action (SOW §4), not layout.
+
+Delivered blocks:
+
+| Block | What it is |
+| --- | --- |
+| `pageHero` | Eyebrow, headline, kicker, lede, up to two buttons, optional image |
+| `copyMedia` | Eyebrow, heading, body copy, optional image (left/right/below), optional pull quote |
+| `ctaBanner` | Closing call to action |
+
+A CMS page lives at `/<slug>` via `app/(site)/[slug]/page.tsx`. Every
+hand-built route is static and therefore wins over it, so a CMS page can
+never shadow `/about` or `/work` — but a page given one of those slugs
+will build and be unreachable.
+
+### Adding a block
+
+Three places, all required. A block missing from any one of them is
+either invisible to editors or renders as nothing:
+
+1. **Schema** — `sanity/schemaTypes/objects/blocks/<name>.ts`, registered
+   in `sanity/schemaTypes/index.ts`
+2. **Page** — add it to the `blocks` array in `sanity/schemaTypes/page.ts`
+3. **Renderer** — a component in `components/blocks/`, wired into the
+   `switch` in `components/blocks/registry.tsx`
+
+If the block resolves a reference or an image, add its projection to
+`pageFields` in `lib/sanity/queries.ts`.
+
+> Per SOW §4, *designing a new section type is development work and falls
+> outside the self-service scope*. Assembling a new page from the blocks
+> above is within it.
+
 ## Environment variables
 
 | Variable | Needed where | Purpose |

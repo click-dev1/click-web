@@ -23,14 +23,35 @@ const readOptions = previewDrafts
   ? {}
   : { next: { revalidate: false as const, tags: ["talent"] } };
 
+/* A private dataset does not reject an unauthorised read — it returns an
+   empty result set. So a build with a missing or wrong
+   SANITY_API_READ_TOKEN succeeds and silently ships a site with no
+   creators at all, green build, no error anywhere. An empty roster is
+   never a legitimate state for this site, so treat it as the
+   misconfiguration it always is and fail the build loudly. */
+function assertPopulated<T>(rows: T[], what: string): T[] {
+  if (!rows.length) {
+    throw new Error(
+      `Sanity returned no ${what}. This is almost always a missing or ` +
+        `invalid SANITY_API_READ_TOKEN — the dataset is private, and an ` +
+        `unauthorised read comes back empty rather than failing. See docs/SANITY.md.`,
+    );
+  }
+  return rows;
+}
+
 export const fetchRoster = () =>
-  client.fetch<Talent[]>(rosterQuery, {}, readOptions);
+  client
+    .fetch<Talent[]>(rosterQuery, {}, readOptions)
+    .then((rows) => assertPopulated(rows, "talent"));
 
 export const fetchTalent = (slug: string) =>
   client.fetch<Talent | null>(talentBySlugQuery, { slug }, readOptions);
 
 export const fetchTalentSlugs = () =>
-  client.fetch<string[]>(talentSlugsQuery, {}, readOptions);
+  client
+    .fetch<string[]>(talentSlugsQuery, {}, readOptions)
+    .then((rows) => assertPopulated(rows, "talent slugs"));
 
 /** Slug + last-modified for every profile, for app/sitemap.ts. */
 export const fetchTalentSitemap = () =>
