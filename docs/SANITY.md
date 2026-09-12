@@ -64,6 +64,12 @@ Two rules when adding a type:
 2. **Draft reads pass no cache directive at all.** Not `revalidate: 0` —
    that opts the route out of prerendering, and every page is required to
    ship as static HTML (SOW §2).
+3. **Give published reads a finite `revalidate`, never `false`.** An
+   indefinite entry is persisted in `.next/cache`, which Vercel restores
+   between deployments — so a build can bake content captured at an
+   earlier build and never correct itself. That is how a published page
+   stayed out of a freshly built sitemap. One hour means a missed webhook
+   self-heals instead of surviving deploys.
 
 ### Setting the webhook up
 
