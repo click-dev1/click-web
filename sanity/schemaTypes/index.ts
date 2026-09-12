@@ -1,9 +1,13 @@
 import type { SchemaTypeDefinition } from "sanity";
 import { seoType } from "./objects/seo";
 import { ctaType } from "./objects/cta";
+import { metricType } from "./objects/metric";
 import { pageHeroType } from "./objects/blocks/pageHero";
 import { copyMediaType } from "./objects/blocks/copyMedia";
 import { ctaBannerType } from "./objects/blocks/ctaBanner";
+import { metricRowType } from "./objects/blocks/metricRow";
+import { capabilityListType } from "./objects/blocks/capabilityList";
+import { cardGridType } from "./objects/blocks/cardGrid";
 import { pageType } from "./page";
 import { talentType } from "./talent";
 
@@ -21,8 +25,12 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // section blocks
   pageHeroType,
   copyMediaType,
+  metricRowType,
+  capabilityListType,
+  cardGridType,
   ctaBannerType,
   // shared objects
   ctaType,
+  metricType,
   seoType,
 ];

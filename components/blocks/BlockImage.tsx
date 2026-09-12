@@ -16,11 +16,16 @@ export default function BlockImage({
   sizes,
   className = "",
   priority = false,
+  ratio,
 }: {
   image: SanityImage;
   sizes: string;
   className?: string;
   priority?: boolean;
+  /** Force a slot shape. Used where a ragged grid would be worse than a
+      crop — a card grid, for instance. Omit it and the asset's own
+      aspect ratio wins, which is the better default everywhere else. */
+  ratio?: string;
 }) {
   const { hotspot, lqip, aspectRatio } = image;
   const objectPosition = hotspot
@@ -30,7 +35,7 @@ export default function BlockImage({
   return (
     <div
       className={`talent-media relative w-full overflow-hidden ${className}`}
-      style={{ aspectRatio: aspectRatio ? String(aspectRatio) : "4/3" }}
+      style={{ aspectRatio: ratio ?? (aspectRatio ? String(aspectRatio) : "4/3") }}
     >
       <Image
         src={urlFor(image).width(1600).quality(80).url()}

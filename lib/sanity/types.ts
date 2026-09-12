@@ -85,6 +85,54 @@ export interface CopyMediaBlock {
   insight?: string;
 }
 
+export interface Metric {
+  _key?: string;
+  value: string;
+  label: string;
+}
+
+export interface MetricRowBlock {
+  _type: "metricRow";
+  _key: string;
+  eyebrow?: string;
+  heading?: string;
+  metrics: Metric[];
+  footnote?: string;
+}
+
+export interface CapabilityGroup {
+  _key?: string;
+  label: string;
+  items: string[];
+}
+
+export interface CapabilityListBlock {
+  _type: "capabilityList";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  groups: CapabilityGroup[];
+}
+
+export interface Card {
+  _key?: string;
+  eyebrow?: string;
+  title: string;
+  body?: string;
+  image?: SanityImage;
+  cta?: Cta;
+}
+
+export interface CardGridBlock {
+  _type: "cardGrid";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  numbered?: boolean;
+  cards: Card[];
+  cta?: Cta;
+}
+
 export interface CtaBannerBlock {
   _type: "ctaBanner";
   _key: string;
@@ -93,7 +141,13 @@ export interface CtaBannerBlock {
   cta: Cta;
 }
 
-export type PageBlock = PageHeroBlock | CopyMediaBlock | CtaBannerBlock;
+export type PageBlock =
+  | PageHeroBlock
+  | CopyMediaBlock
+  | MetricRowBlock
+  | CapabilityListBlock
+  | CardGridBlock
+  | CtaBannerBlock;
 
 export interface Page {
   _id: string;

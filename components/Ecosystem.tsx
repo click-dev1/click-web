@@ -38,27 +38,31 @@ export default function Ecosystem() {
             {ecosystem.groups.map((g) => (
               <div key={g.label}>
                 <p className="eyebrow mb-3">{g.label}</p>
-                <div className="flex flex-wrap gap-3" role="list">
+                {/* A real list of real buttons. These used to be buttons
+                    carrying role="listitem", which overrode the button
+                    role and left aria-pressed on an element that cannot
+                    take it. */}
+                <ul className="flex flex-wrap gap-3">
                   {g.nodes.map((n) => (
-                    <button
-                      key={n.name}
-                      type="button"
-                      role="listitem"
-                      className="card-surface rounded-full px-5 py-2.5 text-sm transition-transform hover:-translate-y-0.5"
-                      style={
-                        active.name === n.name
-                          ? { borderColor: "var(--signal)" }
-                          : undefined
-                      }
-                      aria-pressed={active.name === n.name}
-                      onClick={() => setActive(n)}
-                      onMouseEnter={() => setActive(n)}
-                      onFocus={() => setActive(n)}
-                    >
-                      {n.name}
-                    </button>
+                    <li key={n.name}>
+                      <button
+                        type="button"
+                        className="card-surface rounded-full px-5 py-2.5 text-sm transition-transform hover:-translate-y-0.5"
+                        style={
+                          active.name === n.name
+                            ? { borderColor: "var(--signal)" }
+                            : undefined
+                        }
+                        aria-pressed={active.name === n.name}
+                        onClick={() => setActive(n)}
+                        onMouseEnter={() => setActive(n)}
+                        onFocus={() => setActive(n)}
+                      >
+                        {n.name}
+                      </button>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             ))}
           </div>

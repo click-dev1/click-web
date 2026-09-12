@@ -49,6 +49,9 @@ export const pageType = defineType({
       of: [
         defineArrayMember({ type: "pageHero" }),
         defineArrayMember({ type: "copyMedia" }),
+        defineArrayMember({ type: "metricRow" }),
+        defineArrayMember({ type: "capabilityList" }),
+        defineArrayMember({ type: "cardGrid" }),
         defineArrayMember({ type: "ctaBanner" }),
       ],
       validation: (rule) => rule.required().min(1),

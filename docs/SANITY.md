@@ -137,7 +137,16 @@ Delivered blocks:
 | --- | --- |
 | `pageHero` | Eyebrow, headline, kicker, lede, up to two buttons, optional image |
 | `copyMedia` | Eyebrow, heading, body copy, optional image (left/right/below), optional pull quote |
+| `metricRow` | Two to four measured figures, optional heading and provenance footnote |
+| `capabilityList` | One to four groups of capability chips |
+| `cardGrid` | Two to eight short cards, optionally numbered and imaged, optional link below |
 | `ctaBanner` | Closing call to action |
+
+Anything derived from the *number* of items an editor adds is derived on
+purpose. Column counts come from the item count so a grid never ends in a
+ragged row, and `cardGrid`'s 01/02/03 marks come from position so
+reordering the cards renumbers them. Hand-typed numbering survives
+exactly until someone drags a card.
 
 A CMS page lives at `/<slug>` via `app/(site)/[slug]/page.tsx`. Every
 hand-built route is static and therefore wins over it, so a CMS page can

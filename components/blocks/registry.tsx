@@ -1,5 +1,8 @@
 import PageHeroBlock from "./PageHeroBlock";
 import CopyMedia from "./CopyMedia";
+import MetricRow from "./MetricRow";
+import CapabilityList from "./CapabilityList";
+import CardGrid from "./CardGrid";
 import CtaBanner from "./CtaBanner";
 import type { PageBlock } from "@/lib/sanity/types";
 
@@ -35,6 +38,14 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
             return <PageHeroBlock key={block._key} block={block} />;
           case "copyMedia":
             return <CopyMedia key={block._key} block={block} signal={signal} />;
+          case "metricRow":
+            return <MetricRow key={block._key} block={block} signal={signal} />;
+          case "capabilityList":
+            return (
+              <CapabilityList key={block._key} block={block} signal={signal} />
+            );
+          case "cardGrid":
+            return <CardGrid key={block._key} block={block} signal={signal} />;
           case "ctaBanner":
             return <CtaBanner key={block._key} block={block} signal={signal} />;
           default:
