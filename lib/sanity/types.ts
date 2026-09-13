@@ -104,6 +104,7 @@ export interface PageHeroBlock {
   ctas?: Cta[];
   asideKind?: "none" | "image" | "note";
   aside?: SanityImage;
+  asideLabel?: string;
   asideNote?: { label?: string; text: string; footnote?: string };
   outline?: boolean;
 }
@@ -112,10 +113,10 @@ export interface CopyMediaBlock {
   _type: "copyMedia";
   _key: string;
   eyebrow?: string;
-  heading: string;
+  heading?: string;
   body: RichText;
   media?: SanityImage[];
-  mediaLabel?: string;
+  mediaLabels?: string[];
   mediaPosition?: "right" | "left" | "below";
   insight?: string;
   insightLabel?: string;
@@ -150,6 +151,7 @@ export interface Card {
   eyebrow?: string;
   title: string;
   body?: string;
+  items?: string[];
   image?: SanityImage;
   cta?: Cta;
 }
@@ -214,6 +216,16 @@ export interface FeaturedTalentBlock {
   auto: TalentCard[];
 }
 
+export interface MediaBlock {
+  _type: "mediaBlock";
+  _key: string;
+  eyebrow?: string;
+  heading?: string;
+  images?: SanityImage[];
+  mediaLabels?: string[];
+  caption?: string;
+}
+
 export interface ActivationScorecardBlock {
   _type: "activationScorecard";
   _key: string;
@@ -244,6 +256,7 @@ export type PageBlock =
   | CardGridBlock
   | FeaturedWorkBlock
   | FeaturedTalentBlock
+  | MediaBlock
   | ActivationScorecardBlock
   | CtaBannerBlock;
 

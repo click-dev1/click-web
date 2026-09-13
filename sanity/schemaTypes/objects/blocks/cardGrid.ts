@@ -57,6 +57,15 @@ export const cardGridType = defineType({
               rows: 4,
             }),
             defineField({
+              name: "items",
+              title: "List",
+              type: "array",
+              of: [defineArrayMember({ type: "string" })],
+              options: { layout: "tags" },
+              description:
+                "Optional. Shown as a marked list under the card — use it instead of, or as well as, the paragraph.",
+            }),
+            defineField({
               name: "image",
               type: "image",
               options: { hotspot: true },

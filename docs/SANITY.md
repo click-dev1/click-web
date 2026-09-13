@@ -164,13 +164,19 @@ pull-quote style on its own, or the smaller stated-finding style once it
 carries a label — a finding that cites its sources should not be set like
 a slogan.
 
-Blocks that show an image also take an **awaiting-image caption**. With no
-image on file they render the same empty frame the hand-built pages use,
-so a section that is waiting on photography says so instead of quietly
-collapsing. Remove the caption once the image is in. The one exception is
+Blocks that show an image also take **awaiting-image captions**. With no
+image on file they render the same empty frames the hand-built pages use —
+one caption per image that is coming, in the arrangement the images will
+take — so a section waiting on photography says so instead of quietly
+collapsing. Remove them once the images are in. The one exception is
 `featuredWork`, which stays a compact text card without an image:
 placeholder rectangles in the middle of an argument read as broken rather
 than as honest.
+
+`copyMedia` with images on the **left** puts them first in the markup
+rather than reordering with CSS. Reading order is DOM order and a narrow
+screen stacks in that order, so a CSS-only swap would put the copy above
+the pictures on a phone — which is not what the hand-built section does.
 
 A CMS page lives at `/<slug>` via `app/(site)/[slug]/page.tsx`. Every
 hand-built route is static and therefore wins over it, so a CMS page can
@@ -243,11 +249,10 @@ The sequence that avoids that:
 3. Delete the hand-built route, change the slug to the real one, clear
    the `noIndex` flag.
 
-`pnpm seed:im` did steps 1 for `/influencer-marketing`. The rendered text
-differs from the original in exactly two places, both understood: the
-three-frame collage shows one awaiting-photography caption instead of
-three, and the scorecard source reads as one string. Everything else is
-word for word.
+`pnpm seed:im` did step 1 for `/influencer-marketing`. The two pages'
+rendered text is **identical** — the only line the diff reports is the
+scorecard source, which the original builds from two JSX expressions and
+so splits across two text nodes. Same characters.
 
 ## Environment variables
 

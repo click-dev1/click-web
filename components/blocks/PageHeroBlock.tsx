@@ -1,5 +1,6 @@
 import PageHero, { type HeroCta } from "@/components/PageHero";
 import BlockImage from "./BlockImage";
+import Placeholder from "@/components/Placeholder";
 import type { PageHeroBlock as Block } from "@/lib/sanity/types";
 
 /* Adapter, not a second hero. The bespoke pages already render
@@ -30,12 +31,14 @@ export default function PageHeroBlock({ block }: { block: Block }) {
       <p className="text-sm leading-body">{note.text}</p>
       {note.footnote && <p className="eyebrow mt-3">{note.footnote}</p>}
     </div>
-  ) : block.asideKind !== "none" && block.aside?.asset ? (
+  ) : block.asideKind === "none" ? undefined : block.aside?.asset ? (
     <BlockImage
       image={block.aside}
       sizes="(max-width: 1024px) 100vw, 33vw"
       priority
     />
+  ) : block.asideLabel ? (
+    <Placeholder label={block.asideLabel} ratio="3/4" />
   ) : undefined;
 
   return (

@@ -10,6 +10,7 @@ import { capabilityListType } from "./objects/blocks/capabilityList";
 import { cardGridType } from "./objects/blocks/cardGrid";
 import { featuredWorkType } from "./objects/blocks/featuredWork";
 import { featuredTalentType } from "./objects/blocks/featuredTalent";
+import { mediaBlockType } from "./objects/blocks/mediaBlock";
 import { activationScorecardType } from "./objects/blocks/activationScorecard";
 import { pageType } from "./page";
 import { talentType } from "./talent";
@@ -35,6 +36,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   cardGridType,
   featuredWorkType,
   featuredTalentType,
+  mediaBlockType,
   activationScorecardType,
   ctaBannerType,
   // shared objects

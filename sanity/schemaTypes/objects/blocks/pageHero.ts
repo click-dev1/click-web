@@ -74,6 +74,15 @@ export const pageHeroType = defineType({
       ],
     }),
     defineField({
+      name: "asideLabel",
+      title: "Awaiting-image caption",
+      type: "string",
+      description:
+        "Shown as an empty frame until the image above is supplied — e.g. \u201cActivation film \u00b7 client footage\u201d.",
+      hidden: ({ parent }) =>
+        parent?.asideKind === "note" || parent?.asideKind === "none",
+    }),
+    defineField({
       name: "asideNote",
       title: "Note (right column)",
       type: "object",

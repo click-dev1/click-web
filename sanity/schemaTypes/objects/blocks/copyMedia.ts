@@ -22,7 +22,8 @@ export const copyMediaType = defineType({
       name: "heading",
       type: "text",
       rows: 2,
-      validation: (rule) => rule.required(),
+      description:
+        "Optional. Leave it empty where the copy continues the section above it.",
     }),
     defineField({
       name: "body",
@@ -86,12 +87,17 @@ export const copyMediaType = defineType({
       ],
       validation: (rule) => rule.max(3),
     }),
+    /* One caption per image that is coming, so a section waiting on
+       photography shows the arrangement it will have rather than a single
+       lonely frame. They take exactly the layout the images will take. */
     defineField({
-      name: "mediaLabel",
-      title: "Awaiting-image caption",
-      type: "string",
+      name: "mediaLabels",
+      title: "Awaiting-image captions",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
       description:
-        "Shown in an empty frame while there are no images — e.g. \u201cAudience overlap visualization\u201d. Remove it once the images are in.",
+        "One per image you intend to add — e.g. \u201cCreator briefing\u201d, \u201cProduction day\u201d. They show as empty frames in the arrangement the images will take. Remove them once the images are in.",
+      validation: (rule) => rule.max(3),
     }),
     defineField({
       name: "mediaPosition",
@@ -106,7 +112,7 @@ export const copyMediaType = defineType({
         ],
         layout: "radio",
       },
-      hidden: ({ parent }) => !parent?.media?.length && !parent?.mediaLabel,
+      hidden: ({ parent }) => !parent?.media?.length && !parent?.mediaLabels?.length,
     }),
     /* The framed insight at the foot of a section. On its own it reads as
        a pull quote; give it a label and it becomes a stated finding, which

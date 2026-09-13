@@ -125,6 +125,7 @@ const pageFields = /* groq */ `
     _type == "cardGrid" => { cards[]{ ..., image{ ${imageFields} } } },
     _type == "featuredWork" => ${featuredWorkProjection},
     _type == "featuredTalent" => ${featuredTalentProjection},
+    _type == "mediaBlock" => { images[]{ ${imageFields} } },
     _type == "activationScorecard" => { media{ ${imageFields} } }
   }
 `;

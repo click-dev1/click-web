@@ -100,7 +100,7 @@ async function main() {
         ),
       ],
       media: [],
-      mediaLabel: "Audience overlap visualization",
+      mediaLabels: ["Audience overlap visualization"],
       mediaPosition: "right",
     },
 
@@ -159,7 +159,11 @@ async function main() {
         ),
       ],
       media: [],
-      mediaLabel: "Creator briefing · client photography",
+      mediaLabels: [
+        "Creator briefing · client photography",
+        "Production day",
+        "Creative review",
+      ],
       mediaPosition: "left",
     },
 

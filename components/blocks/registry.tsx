@@ -5,6 +5,7 @@ import CapabilityList from "./CapabilityList";
 import CardGrid from "./CardGrid";
 import FeaturedWork from "./FeaturedWork";
 import FeaturedTalent from "./FeaturedTalent";
+import MediaBand from "./MediaBand";
 import ActivationScorecard from "./ActivationScorecard";
 import CtaBanner from "./CtaBanner";
 import type { PageBlock } from "@/lib/sanity/types";
@@ -28,7 +29,12 @@ const MIDDLE_SIGNALS = ["flow", "divide", "quiet"] as const;
 function signalFor(block: PageBlock, index: number): string {
   if (block._type === "pageHero") return "overlap";
   if (block._type === "ctaBanner") return "settle";
-  return MIDDLE_SIGNALS[index % MIDDLE_SIGNALS.length];
+  /* Count the middles from the first middle, not from the top of the
+     page: the cycle has to open on "flow" the way the hand-built pages
+     do. Using the block's absolute index started it on "divide" whenever
+     a page opened with a hero, which is every page. */
+  const middleIndex = index - 1;
+  return MIDDLE_SIGNALS[middleIndex % MIDDLE_SIGNALS.length];
 }
 
 export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
@@ -57,6 +63,8 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
             return (
               <FeaturedTalent key={block._key} block={block} signal={signal} />
             );
+          case "mediaBlock":
+            return <MediaBand key={block._key} block={block} signal={signal} />;
           case "activationScorecard":
             return (
               <ActivationScorecard

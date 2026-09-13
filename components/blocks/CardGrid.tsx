@@ -51,6 +51,19 @@ function CardBody({
           {card.body}
         </p>
       )}
+      {card.items && card.items.length > 0 && (
+        <ul
+          className="mt-5 flex flex-col gap-2 text-sm leading-body"
+          style={{ color: "var(--ink-muted)" }}
+        >
+          {card.items.map((item) => (
+            <li key={item} className="flex gap-3">
+              <span aria-hidden="true">▸</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
       {card.cta && (
         <div className="mt-6">
           <CtaLink cta={{ ...card.cta, style: card.cta.style ?? "ghost" }} />

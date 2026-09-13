@@ -54,6 +54,7 @@ export const pageType = defineType({
         defineArrayMember({ type: "cardGrid" }),
         defineArrayMember({ type: "featuredWork" }),
         defineArrayMember({ type: "featuredTalent" }),
+        defineArrayMember({ type: "mediaBlock" }),
         defineArrayMember({ type: "activationScorecard" }),
         defineArrayMember({ type: "ctaBanner" }),
       ],
