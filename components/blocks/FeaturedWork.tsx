@@ -1,7 +1,6 @@
 import Link from "next/link";
 import BlockImage from "./BlockImage";
 import CtaLink from "./CtaLink";
-import Placeholder from "@/components/Placeholder";
 import type { FeaturedWorkBlock as Block } from "@/lib/sanity/types";
 
 /**
@@ -61,18 +60,18 @@ export default function FeaturedWork({
               data-reveal
               className="card-surface group block overflow-hidden rounded-xl"
             >
-              {c.media?.asset ? (
+              {/* No empty frame here, unlike the /work grid. A featured row
+                  sits inside a page of prose, and placeholder rectangles
+                  in the middle of an argument read as broken rather than
+                  as honest. With an image it is a picture card; without,
+                  a compact text card — which is what the hand-built proof
+                  sections used. */}
+              {c.media?.asset && (
                 <BlockImage
                   image={c.media}
                   ratio="16/9"
                   sizes="(min-width: 768px) 33vw, 100vw"
                   className="rounded-none"
-                />
-              ) : (
-                <Placeholder
-                  label={c.mediaLabel ?? "Campaign film · client-supplied"}
-                  ratio="16/9"
-                  className="rounded-none border-0"
                 />
               )}
               <div className="p-6">

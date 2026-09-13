@@ -1,5 +1,6 @@
 import BlockImage from "./BlockImage";
 import CtaLink from "./CtaLink";
+import InsightFrame from "./InsightFrame";
 import type { CardGridBlock as Block, Card } from "@/lib/sanity/types";
 
 /**
@@ -79,7 +80,7 @@ export default function CardGrid({
     <section
       data-signal={signal}
       className="hairline-t relative z-10 px-5 py-24 md:px-8"
-      aria-labelledby={headingId}
+      {...(block.heading ? { "aria-labelledby": headingId } : {})}
     >
       <div className="mx-auto max-w-7xl">
         {block.eyebrow && (
@@ -87,11 +88,17 @@ export default function CardGrid({
             <span className="tick">●</span> {block.eyebrow}
           </p>
         )}
-        <h2 id={headingId} data-split className="font-display text-h2 max-w-3xl">
-          {block.heading}
-        </h2>
+        {block.heading && (
+          <h2 id={headingId} data-split className="font-display text-h2 max-w-3xl">
+            {block.heading}
+          </h2>
+        )}
 
-        <div className={`mt-12 grid gap-6 ${columns}`}>
+        <div
+          className={`grid gap-6 ${columns} ${
+            block.heading || block.eyebrow ? "mt-12" : ""
+          }`}
+        >
           {cards.map((card, i) =>
             card.image?.asset ? (
               <article
@@ -120,6 +127,12 @@ export default function CardGrid({
             ),
           )}
         </div>
+
+        <InsightFrame
+          text={block.insight}
+          label={block.insightLabel}
+          footnote={block.insightFootnote}
+        />
 
         {block.cta && (
           <div className="mt-10">

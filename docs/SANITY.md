@@ -136,12 +136,13 @@ Delivered blocks:
 | Block | What it is |
 | --- | --- |
 | `pageHero` | Eyebrow, headline, kicker, lede, up to two buttons, optional image |
-| `copyMedia` | Eyebrow, heading, body copy, optional image (left/right/below), optional pull quote |
+| `copyMedia` | Eyebrow, heading, body copy, up to 3 images (left/right/below), optional framed insight |
 | `metricRow` | Two to four measured figures, optional heading and provenance footnote |
 | `capabilityList` | One to four groups of capability chips |
 | `cardGrid` | Two to eight short cards, optionally numbered and imaged, optional link below |
 | `featuredWork` | A row of case studies — chosen, or the featured ones automatically |
 | `featuredTalent` | A row of creators — chosen, or the featured ones automatically |
+| `activationScorecard` | Signature block: copy beside a framed scorecard of 2–4 figures |
 | `ctaBanner` | Closing call to action |
 
 Anything derived from the *number* of items an editor adds is derived on
@@ -156,6 +157,20 @@ keeps showing current work without anyone remembering to go back and
 edit it; name specific items and those appear, in the order given. "How
 many to show" applies only to the automatic list — an editor who named
 four meant four.
+
+`copyMedia`'s images arrange themselves too: one fills the slot, two or
+three become the collage. And its framed insight takes the large
+pull-quote style on its own, or the smaller stated-finding style once it
+carries a label — a finding that cites its sources should not be set like
+a slogan.
+
+Blocks that show an image also take an **awaiting-image caption**. With no
+image on file they render the same empty frame the hand-built pages use,
+so a section that is waiting on photography says so instead of quietly
+collapsing. Remove the caption once the image is in. The one exception is
+`featuredWork`, which stays a compact text card without an image:
+placeholder rectangles in the middle of an argument read as broken rather
+than as honest.
 
 A CMS page lives at `/<slug>` via `app/(site)/[slug]/page.tsx`. Every
 hand-built route is static and therefore wins over it, so a CMS page can
@@ -211,6 +226,28 @@ builds it from the documents instead.
 again** once CLICK has edited anything in the Studio — it reads
 `content/site.ts` and would overwrite their edits. It exists to move the
 content once.
+
+## Migrating a bespoke page
+
+A static route **wins over** a CMS page with the same slug. So a page
+migrated straight to its real slug is invisible until the hand-built file
+is deleted — which is the one step here that is hard to walk back.
+
+The sequence that avoids that:
+
+1. Seed the page to a temporary slug (`<name>-cms`) with SEO →
+   "Hide from search engines" set. Two addresses serving the same copy is
+   a duplicate-content problem, not a staging detail.
+2. Compare the two rendered pages. Stripping the tags out of both builds
+   and diffing the text is the fastest way to prove nothing was dropped.
+3. Delete the hand-built route, change the slug to the real one, clear
+   the `noIndex` flag.
+
+`pnpm seed:im` did steps 1 for `/influencer-marketing`. The rendered text
+differs from the original in exactly two places, both understood: the
+three-frame collage shows one awaiting-photography caption instead of
+three, and the scorecard source reads as one string. Everything else is
+word for word.
 
 ## Environment variables
 

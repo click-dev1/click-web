@@ -1,14 +1,51 @@
 import BlockImage from "./BlockImage";
 import RichText from "./RichText";
-import type { CopyMediaBlock as Block } from "@/lib/sanity/types";
+import InsightFrame from "./InsightFrame";
+import Placeholder from "@/components/Placeholder";
+import type { CopyMediaBlock as Block, SanityImage } from "@/lib/sanity/types";
 
 /**
- * Eyebrow, heading, body copy, optional image, optional pull quote.
+ * Eyebrow, heading, body copy, optional images, optional framed insight.
  *
  * The markup deliberately mirrors the hand-built sections it replaces
- * (see /talent-management "More than management") so a page assembled in
- * the CMS is indistinguishable from one written by hand.
+ * (see /talent-management "More than management" and
+ * /influencer-marketing "Creator expertise") so a page assembled in the
+ * CMS is indistinguishable from one written by hand.
+ *
+ * Two things are derived rather than chosen. The images arrange
+ * themselves: one fills the slot, two or three become the collage — one
+ * large frame with the rest in a row beneath. And the insight takes the
+ * big pull-quote style on its own, or the smaller stated-finding style
+ * once it carries a label, because a finding with provenance should not
+ * be set like a slogan.
  */
+function Collage({
+  images,
+  sizes,
+}: {
+  images: SanityImage[];
+  sizes: string;
+}) {
+  const [lead, ...rest] = images;
+  return (
+    <div className="grid gap-4">
+      <BlockImage image={lead} ratio="4/3" sizes={sizes} />
+      {rest.length > 0 && (
+        <div className="grid grid-cols-2 gap-4">
+          {rest.map((img, i) => (
+            <BlockImage
+              key={img.asset?._ref ?? i}
+              image={img}
+              ratio="1/1"
+              sizes={sizes}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CopyMedia({
   block,
   signal,
@@ -17,16 +54,26 @@ export default function CopyMedia({
   signal: string;
 }) {
   const headingId = `s-${block._key}`;
-  const hasMedia = Boolean(block.media?.asset);
+  const images = (block.media ?? []).filter((m) => m?.asset);
   const position = block.mediaPosition ?? "right";
+  const hasMedia = images.length > 0 || Boolean(block.mediaLabel);
   const beside = hasMedia && position !== "below";
 
   const copy = <RichText value={block.body} />;
-  const media = block.media?.asset ? (
-    <BlockImage
-      image={block.media}
-      sizes={beside ? "(max-width: 1024px) 100vw, 40vw" : "100vw"}
-    />
+  const sizes = beside
+    ? "(max-width: 1024px) 100vw, 40vw"
+    : "100vw";
+  /* No images yet but a caption on file means the section is waiting on
+     photography, not doing without it — so it renders the empty frame the
+     hand-built pages use rather than silently collapsing. */
+  const media = images.length ? (
+    images.length === 1 ? (
+      <BlockImage image={images[0]} sizes={sizes} />
+    ) : (
+      <Collage images={images} sizes={sizes} />
+    )
+  ) : block.mediaLabel ? (
+    <Placeholder label={block.mediaLabel} ratio="4/3" />
   ) : null;
 
   return (
@@ -65,11 +112,11 @@ export default function CopyMedia({
           </div>
         )}
 
-        {block.insight && (
-          <div data-reveal className="insight-frame mt-8 max-w-md">
-            <p className="font-display text-h3">{block.insight}</p>
-          </div>
-        )}
+        <InsightFrame
+          text={block.insight}
+          label={block.insightLabel}
+          footnote={block.insightFootnote}
+        />
       </div>
     </section>
   );

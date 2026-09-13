@@ -121,10 +121,11 @@ const pageFields = /* groq */ `
   blocks[]{
     ...,
     _type == "pageHero" => { aside{ ${imageFields} } },
-    _type == "copyMedia" => { media{ ${imageFields} } },
+    _type == "copyMedia" => { media[]{ ${imageFields} } },
     _type == "cardGrid" => { cards[]{ ..., image{ ${imageFields} } } },
     _type == "featuredWork" => ${featuredWorkProjection},
-    _type == "featuredTalent" => ${featuredTalentProjection}
+    _type == "featuredTalent" => ${featuredTalentProjection},
+    _type == "activationScorecard" => { media{ ${imageFields} } }
   }
 `;
 

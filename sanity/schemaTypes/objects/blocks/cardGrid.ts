@@ -21,7 +21,8 @@ export const cardGridType = defineType({
       name: "heading",
       type: "text",
       rows: 2,
-      validation: (rule) => rule.required(),
+      description:
+        "Optional. Leave it empty to run the cards directly under the section above.",
     }),
     defineField({
       name: "numbered",
@@ -85,6 +86,30 @@ export const cardGridType = defineType({
         }),
       ],
       validation: (rule) => rule.required().min(2).max(8),
+    }),
+    defineField({
+      name: "insight",
+      title: "Framed insight",
+      type: "text",
+      rows: 3,
+      description:
+        "Optional. Rendered in the framed style at the end of the section.",
+    }),
+    defineField({
+      name: "insightLabel",
+      title: "Insight label",
+      type: "string",
+      description:
+        "Optional line above it — e.g. \u201cThe payoff \u00b7 one real finding\u201d. Adding one sets the smaller, stated-finding style.",
+      hidden: ({ parent }) => !parent?.insight,
+    }),
+    defineField({
+      name: "insightFootnote",
+      title: "Insight footnote",
+      type: "string",
+      description:
+        "Optional small line beneath it — e.g. \u201cStatus \u00b7 awaiting client insight\u201d.",
+      hidden: ({ parent }) => !parent?.insight,
     }),
     defineField({
       name: "cta",

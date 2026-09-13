@@ -10,7 +10,8 @@
     "seed:sanity": "tsx --env-file=.env.local scripts/seed-sanity.ts",
     "seed:roster": "tsx --env-file=.env.local scripts/seed-roster.ts",
     "sanity": "sanity",
-    "seed:case-studies": "tsx --env-file=.env.local scripts/seed-case-studies.ts"
+    "seed:case-studies": "tsx --env-file=.env.local scripts/seed-case-studies.ts",
+    "seed:im": "tsx --env-file=.env.local scripts/seed-influencer-marketing.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

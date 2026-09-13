@@ -114,9 +114,12 @@ export interface CopyMediaBlock {
   eyebrow?: string;
   heading: string;
   body: RichText;
-  media?: SanityImage;
+  media?: SanityImage[];
+  mediaLabel?: string;
   mediaPosition?: "right" | "left" | "below";
   insight?: string;
+  insightLabel?: string;
+  insightFootnote?: string;
 }
 
 export interface MetricRowBlock {
@@ -155,9 +158,12 @@ export interface CardGridBlock {
   _type: "cardGrid";
   _key: string;
   eyebrow?: string;
-  heading: string;
+  heading?: string;
   numbered?: boolean;
   cards: Card[];
+  insight?: string;
+  insightLabel?: string;
+  insightFootnote?: string;
   cta?: Cta;
 }
 
@@ -208,6 +214,20 @@ export interface FeaturedTalentBlock {
   auto: TalentCard[];
 }
 
+export interface ActivationScorecardBlock {
+  _type: "activationScorecard";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  body?: RichText;
+  label: string;
+  source: string;
+  metrics: Metric[];
+  media?: SanityImage;
+  mediaLabel?: string;
+  footnote?: string;
+}
+
 export interface CtaBannerBlock {
   _type: "ctaBanner";
   _key: string;
@@ -224,6 +244,7 @@ export type PageBlock =
   | CardGridBlock
   | FeaturedWorkBlock
   | FeaturedTalentBlock
+  | ActivationScorecardBlock
   | CtaBannerBlock;
 
 export interface Page {
