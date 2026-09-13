@@ -3,6 +3,8 @@ import CopyMedia from "./CopyMedia";
 import MetricRow from "./MetricRow";
 import CapabilityList from "./CapabilityList";
 import CardGrid from "./CardGrid";
+import FeaturedWork from "./FeaturedWork";
+import FeaturedTalent from "./FeaturedTalent";
 import CtaBanner from "./CtaBanner";
 import type { PageBlock } from "@/lib/sanity/types";
 
@@ -46,6 +48,14 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
             );
           case "cardGrid":
             return <CardGrid key={block._key} block={block} signal={signal} />;
+          case "featuredWork":
+            return (
+              <FeaturedWork key={block._key} block={block} signal={signal} />
+            );
+          case "featuredTalent":
+            return (
+              <FeaturedTalent key={block._key} block={block} signal={signal} />
+            );
           case "ctaBanner":
             return <CtaBanner key={block._key} block={block} signal={signal} />;
           default:

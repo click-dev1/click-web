@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { siteUrl } from "@/lib/site";
 import { fetchTalentSitemap } from "@/lib/sanity/talent";
 import { fetchPageSitemap } from "@/lib/sanity/page";
-import { campaigns, isCampaignPublishable } from "@/content/site";
+import { fetchCaseStudySitemap } from "@/lib/sanity/caseStudy";
 import { isLegalPublishable, legalPages } from "@/content/legal";
 
 /* Every indexable route.
@@ -11,8 +11,8 @@ import { isLegalPublishable, legalPages } from "@/content/legal";
    AND is meant to be found. Talent comes from Sanity, which is what
    /talent and /talent/[slug] render from — the two cannot disagree, and
    the same "talent" cache tag that rebuilds those pages rebuilds this
-   file. Case studies and legal pages join once their status says CLICK
-   and counsel have signed them off. */
+   file. Case studies come from Sanity too, and join once their figures
+   are confirmed; legal pages join once counsel has signed them off. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const statics: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "monthly", priority: 1 },
@@ -33,13 +33,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     }));
 
-  const cases: MetadataRoute.Sitemap = campaigns
-    .filter(isCampaignPublishable)
-    .map((c) => ({
-      url: `${siteUrl}/work/${c.slug}`,
-      changeFrequency: "yearly",
-      priority: 0.7,
-    }));
+  /* The query already excludes case studies hidden from search and those
+     still awaiting the client's confirmation of their figures — the job
+     isCampaignPublishable() used to do in content/site.ts. */
+  const cases: MetadataRoute.Sitemap = (await fetchCaseStudySitemap()).map((c) => ({
+    url: `${siteUrl}/work/${c.slug}`,
+    lastModified: new Date(c._updatedAt),
+    changeFrequency: "yearly",
+    priority: 0.7,
+  }));
 
   const talent: MetadataRoute.Sitemap = (await fetchTalentSitemap()).map((t) => ({
     url: `${siteUrl}/talent/${t.slug}`,

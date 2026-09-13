@@ -39,14 +39,63 @@ export const pageHeroType = defineType({
       of: [defineArrayMember({ type: "cta" })],
       validation: (rule) => rule.max(2),
     }),
+    /* The right column is either a picture or a framed note. Several of
+       the built heroes use the note — an illustrative finding, with the
+       fact that it is illustrative stated on it — so the CMS has to be
+       able to do both. Making it a choice rather than "fill in whichever"
+       keeps a half-filled hero from rendering something nobody meant.
+
+       It defaults to "image", and the renderer falls back to the image
+       whenever the choice is absent, so heroes authored before this field
+       existed keep working. */
+    defineField({
+      name: "asideKind",
+      title: "Right column",
+      type: "string",
+      initialValue: "image",
+      options: {
+        list: [
+          { title: "Nothing", value: "none" },
+          { title: "An image", value: "image" },
+          { title: "A framed note", value: "note" },
+        ],
+        layout: "radio",
+      },
+    }),
     defineField({
       name: "aside",
       title: "Image (right column)",
       type: "image",
       options: { hotspot: true },
+      hidden: ({ parent }) => parent?.asideKind === "note" || parent?.asideKind === "none",
       fields: [
         defineField({ name: "alt", title: "Alt text", type: "string" }),
         defineField({ name: "credit", title: "Credit / licence", type: "string" }),
+      ],
+    }),
+    defineField({
+      name: "asideNote",
+      title: "Note (right column)",
+      type: "object",
+      hidden: ({ parent }) => parent?.asideKind !== "note",
+      fields: [
+        defineField({
+          name: "label",
+          type: "string",
+          description: "The line above the note — e.g. “Resolved insight · illustrative”.",
+        }),
+        defineField({
+          name: "text",
+          type: "text",
+          rows: 4,
+          validation: (rule) => rule.required(),
+        }),
+        defineField({
+          name: "footnote",
+          type: "string",
+          description:
+            "A small line under the note — e.g. “Status · awaiting client insight”.",
+        }),
       ],
     }),
     defineField({

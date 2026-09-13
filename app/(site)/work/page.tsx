@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import WorkExplorer from "@/components/WorkExplorer";
 import ContactButton from "@/components/contact/ContactButton";
+import { fetchCaseStudies } from "@/lib/sanity/caseStudy";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -28,7 +29,9 @@ const BEATS = [
   },
 ];
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const caseStudies = await fetchCaseStudies();
+
   return (
     <>
       <PageHero
@@ -39,7 +42,7 @@ export default function WorkPage() {
         signal="overlap"
       />
 
-      <WorkExplorer />
+      <WorkExplorer caseStudies={caseStudies} />
 
       {/* ---- the three-beat structure, explained once ---- */}
       <section

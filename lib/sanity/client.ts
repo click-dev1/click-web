@@ -38,3 +38,20 @@ export const client = createClient({
   token,
   perspective: previewDrafts ? "drafts" : "published",
 });
+
+/* A private dataset does not reject an unauthorised read — it returns an
+   empty result set. So a build with a missing or wrong
+   SANITY_API_READ_TOKEN succeeds and silently ships a site with no
+   content at all: green build, no error anywhere. For the collections
+   that are never legitimately empty, treat it as the misconfiguration it
+   always is and fail the build loudly. */
+export function assertPopulated<T>(rows: T[], what: string): T[] {
+  if (!rows.length) {
+    throw new Error(
+      `Sanity returned no ${what}. This is almost always a missing or ` +
+        `invalid SANITY_API_READ_TOKEN — the dataset is private, and an ` +
+        `unauthorised read comes back empty rather than failing. See docs/SANITY.md.`,
+    );
+  }
+  return rows;
+}

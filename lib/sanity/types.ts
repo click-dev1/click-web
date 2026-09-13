@@ -49,6 +49,38 @@ export interface Talent {
 export const platformNames = (t: Pick<Talent, "platforms">) =>
   (t.platforms ?? []).map((p) => p.platform);
 
+export interface Metric {
+  _key?: string;
+  value: string;
+  label: string;
+}
+
+/* ---------- Case studies ---------- */
+
+/** Where a case study's figures came from. Drives the disclosure line
+    under the results, and keeps unconfirmed campaigns out of the sitemap. */
+export type FiguresSource = "client-confirmed" | "verified-public" | "pending";
+
+export interface CaseStudy {
+  _id: string;
+  brand: string;
+  title: string;
+  slug: string;
+  service: string;
+  industry: string;
+  platforms: string[];
+  insight: string;
+  built: string;
+  resultsIntro?: string;
+  metrics: Metric[];
+  proofLine?: string;
+  figuresSource: FiguresSource;
+  media?: SanityImage;
+  mediaLabel?: string;
+  featured?: boolean;
+  seo?: Seo;
+}
+
 /* ---------- Pages ---------- */
 
 /** Portable Text — the shape `body` fields come back as. */
@@ -70,7 +102,9 @@ export interface PageHeroBlock {
   kicker?: string;
   lede?: string;
   ctas?: Cta[];
+  asideKind?: "none" | "image" | "note";
   aside?: SanityImage;
+  asideNote?: { label?: string; text: string; footnote?: string };
   outline?: boolean;
 }
 
@@ -83,12 +117,6 @@ export interface CopyMediaBlock {
   media?: SanityImage;
   mediaPosition?: "right" | "left" | "below";
   insight?: string;
-}
-
-export interface Metric {
-  _key?: string;
-  value: string;
-  label: string;
 }
 
 export interface MetricRowBlock {
@@ -133,6 +161,53 @@ export interface CardGridBlock {
   cta?: Cta;
 }
 
+export interface CaseStudyCard {
+  _id: string;
+  brand: string;
+  title: string;
+  slug: string;
+  service: string;
+  industry: string;
+  insight: string;
+  metrics: Metric[];
+  proofLine?: string;
+  media?: SanityImage;
+  mediaLabel?: string;
+}
+
+export interface TalentCard {
+  _id: string;
+  name: string;
+  slug: string;
+  category: string;
+  audience: string;
+  portrait?: SanityImage;
+}
+
+/** Both featured blocks resolve chosen items and an automatic fallback;
+    the renderer picks. See the projections in ./queries.ts. */
+export interface FeaturedWorkBlock {
+  _type: "featuredWork";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  limit?: number;
+  cta?: Cta;
+  picked?: CaseStudyCard[];
+  auto: CaseStudyCard[];
+}
+
+export interface FeaturedTalentBlock {
+  _type: "featuredTalent";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  limit?: number;
+  cta?: Cta;
+  picked?: TalentCard[];
+  auto: TalentCard[];
+}
+
 export interface CtaBannerBlock {
   _type: "ctaBanner";
   _key: string;
@@ -147,6 +222,8 @@ export type PageBlock =
   | MetricRowBlock
   | CapabilityListBlock
   | CardGridBlock
+  | FeaturedWorkBlock
+  | FeaturedTalentBlock
   | CtaBannerBlock;
 
 export interface Page {

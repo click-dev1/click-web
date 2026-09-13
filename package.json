@@ -9,7 +9,8 @@
     "lint": "eslint",
     "seed:sanity": "tsx --env-file=.env.local scripts/seed-sanity.ts",
     "seed:roster": "tsx --env-file=.env.local scripts/seed-roster.ts",
-    "sanity": "sanity"
+    "sanity": "sanity",
+    "seed:case-studies": "tsx --env-file=.env.local scripts/seed-case-studies.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

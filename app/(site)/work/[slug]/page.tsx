@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
+import BlockImage from "@/components/blocks/BlockImage";
 import ContactButton from "@/components/contact/ContactButton";
-import { campaigns } from "@/content/site";
+import { fetchCaseStudies, fetchCaseStudySlugs } from "@/lib/sanity/caseStudy";
+import { figuresDisclosure } from "@/lib/sanity/disclosure";
 
-export function generateStaticParams() {
-  return campaigns.map((c) => ({ slug: c.slug }));
+export async function generateStaticParams() {
+  const slugs = await fetchCaseStudySlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -15,12 +18,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const campaigns = await fetchCaseStudies();
   const c = campaigns.find((x) => x.slug === slug);
   if (!c) return { title: "Case Study" };
   return {
-    title: `${c.brand} — ${c.title}`,
-    description: c.insight,
+    title: c.seo?.title ?? `${c.brand} — ${c.title}`,
+    description: c.seo?.description ?? c.insight,
     alternates: { canonical: `/work/${c.slug}` },
+    ...(c.seo?.noIndex ? { robots: { index: false, follow: false } } : {}),
   };
 }
 
@@ -31,6 +36,9 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  /* The whole list, not just this one: the "next campaign" link at the
+     foot needs its neighbour, and the list read is already cached. */
+  const campaigns = await fetchCaseStudies();
   const c = campaigns.find((x) => x.slug === slug);
   if (!c) notFound();
 
@@ -99,7 +107,18 @@ export default async function CaseStudyPage({
               {c.built}
             </p>
             <div className="grid gap-4">
-              <Placeholder label={c.mediaLabel} ratio="16/9" />
+              {c.media?.asset ? (
+                <BlockImage
+                  image={c.media}
+                  ratio="16/9"
+                  sizes="(min-width: 1024px) 60vw, 100vw"
+                />
+              ) : (
+                <Placeholder
+                  label={c.mediaLabel ?? "Campaign film · client-supplied"}
+                  ratio="16/9"
+                />
+              )}
               <div className="grid grid-cols-2 gap-4">
                 <Placeholder label="Creator content" ratio="4/3" />
                 <Placeholder label="Behind the scenes" ratio="4/3" />
@@ -130,7 +149,7 @@ export default async function CaseStudyPage({
           {c.metrics.length > 0 ? (
             <div className="mt-6 grid gap-6 sm:grid-cols-3">
               {c.metrics.map((m) => (
-                <div key={m.label} data-reveal className="card-surface rounded-xl p-7">
+                <div key={m._key ?? m.label} data-reveal className="card-surface rounded-xl p-7">
                   <span className="tnum text-metric block">{m.value}</span>
                   <span className="mt-1 block text-sm" style={{ color: "var(--ink-muted)" }}>
                     {m.label}
@@ -144,11 +163,7 @@ export default async function CaseStudyPage({
             </div>
           )}
           <p className="mt-8 text-sm" style={{ color: "var(--ink-muted)" }}>
-            {c.status === "client-confirmed"
-              ? "Figures as confirmed by CLICK."
-              : c.status === "verified-public"
-                ? "Figures as published on clickmedia.group. Insight line is an editorial interpretation pending client confirmation."
-                : "Campaign details pending client confirmation."}
+            {figuresDisclosure(c.figuresSource)}
           </p>
         </div>
       </section>

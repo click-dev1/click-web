@@ -61,6 +61,55 @@ const imageFields = /* groq */ `
   "aspectRatio": asset->metadata.dimensions.aspectRatio
 `;
 
+
+/* ---------- Cards used inside featured blocks ---------- */
+
+/* Deliberately smaller than the full projections: a featured row shows a
+   brand, a headline, an insight line and up to three figures. Pulling
+   whole documents to render a card would bloat every page that has one. */
+const caseStudyCardFields = /* groq */ `
+  _id,
+  brand,
+  title,
+  "slug": slug.current,
+  service,
+  industry,
+  insight,
+  "metrics": coalesce(metrics[0...3]{ _key, value, label }, []),
+  proofLine,
+  media{ ${imageFields} },
+  mediaLabel
+`;
+
+const talentCardFields = /* groq */ `
+  _id,
+  name,
+  "slug": slug.current,
+  category,
+  audience,
+  portrait{ ${imageFields} }
+`;
+
+/* Both featured blocks resolve their picks AND the automatic fallback,
+   and the renderer chooses. Doing the choosing in GROQ would mean a
+   `select()` around a subquery that reaches back out to the block for its
+   limit — correct, but fragile enough that the next person to touch it
+   would break it silently. The fallback lists are small and this is a
+   build-time query. */
+const featuredWorkProjection = /* groq */ `{
+  ...,
+  "picked": picks[]->{ ${caseStudyCardFields} },
+  "auto": *[_type == "caseStudy" && featured == true && defined(slug.current)]
+    | order(sortOrder asc, brand asc)[0...6]{ ${caseStudyCardFields} }
+}`;
+
+const featuredTalentProjection = /* groq */ `{
+  ...,
+  "picked": picks[]->{ ${talentCardFields} },
+  "auto": *[_type == "talent" && featured == true && defined(slug.current)]
+    | order(sortOrder asc, name asc)[0...8]{ ${talentCardFields} }
+}`;
+
 /* Blocks come back whole (`...`), with per-type projections layered on
    for the fields that need resolving. A new block type needs a line here
    only if it references something. */
@@ -73,7 +122,9 @@ const pageFields = /* groq */ `
     ...,
     _type == "pageHero" => { aside{ ${imageFields} } },
     _type == "copyMedia" => { media{ ${imageFields} } },
-    _type == "cardGrid" => { cards[]{ ..., image{ ${imageFields} } } }
+    _type == "cardGrid" => { cards[]{ ..., image{ ${imageFields} } } },
+    _type == "featuredWork" => ${featuredWorkProjection},
+    _type == "featuredTalent" => ${featuredTalentProjection}
   }
 `;
 
@@ -88,6 +139,53 @@ export const pageSlugsQuery = defineQuery(
 /* Sitemap: everything except pages an editor has deliberately hidden. */
 export const pageSitemapQuery = defineQuery(
   `*[_type == "page" && defined(slug.current) && seo.noIndex != true] | order(slug.current asc) {
+    "slug": slug.current,
+    _updatedAt
+  }`,
+);
+
+/* ---------- Case studies ---------- */
+
+const caseStudyFields = /* groq */ `
+  _id,
+  brand,
+  title,
+  "slug": slug.current,
+  service,
+  industry,
+  "platforms": coalesce(platforms, []),
+  insight,
+  built,
+  resultsIntro,
+  "metrics": coalesce(metrics[]{ _key, value, label }, []),
+  proofLine,
+  figuresSource,
+  media{ ${imageFields} },
+  mediaLabel,
+  featured,
+  seo
+`;
+
+const caseStudyOrder = `order(featured desc, sortOrder asc, brand asc)`;
+
+export const caseStudiesQuery = defineQuery(
+  `*[_type == "caseStudy" && defined(slug.current)] | ${caseStudyOrder} { ${caseStudyFields} }`,
+);
+
+export const caseStudyBySlugQuery = defineQuery(
+  `*[_type == "caseStudy" && slug.current == $slug][0] { ${caseStudyFields} }`,
+);
+
+export const caseStudySlugsQuery = defineQuery(
+  `*[_type == "caseStudy" && defined(slug.current)].slug.current`,
+);
+
+/* Sitemap: published, not hidden, and not still awaiting the client's
+   confirmation of its figures. That last clause is what
+   isCampaignPublishable() did in content/site.ts — an unconfirmed
+   campaign still renders for review, it just stays out of search. */
+export const caseStudySitemapQuery = defineQuery(
+  `*[_type == "caseStudy" && defined(slug.current) && seo.noIndex != true && figuresSource != "pending"] | ${caseStudyOrder} {
     "slug": slug.current,
     _updatedAt
   }`,

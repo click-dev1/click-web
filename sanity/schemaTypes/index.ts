@@ -8,8 +8,11 @@ import { ctaBannerType } from "./objects/blocks/ctaBanner";
 import { metricRowType } from "./objects/blocks/metricRow";
 import { capabilityListType } from "./objects/blocks/capabilityList";
 import { cardGridType } from "./objects/blocks/cardGrid";
+import { featuredWorkType } from "./objects/blocks/featuredWork";
+import { featuredTalentType } from "./objects/blocks/featuredTalent";
 import { pageType } from "./page";
 import { talentType } from "./talent";
+import { caseStudyType } from "./caseStudy";
 
 /* Every type the Studio knows about. Documents first, then the section
    blocks a page is assembled from, then shared objects.
@@ -22,12 +25,15 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   // documents
   pageType,
   talentType,
+  caseStudyType,
   // section blocks
   pageHeroType,
   copyMediaType,
   metricRowType,
   capabilityListType,
   cardGridType,
+  featuredWorkType,
+  featuredTalentType,
   ctaBannerType,
   // shared objects
   ctaType,

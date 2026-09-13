@@ -12,6 +12,32 @@ export default function PageHeroBlock({ block }: { block: Block }) {
     ...(c.destination === "modal" ? { modal: true } : { href: c.href }),
   }));
 
+  /* Either a picture or a framed note. The image is the fallback when no
+     choice has been recorded, so heroes authored before `asideKind`
+     existed keep rendering what they always did. */
+  const note =
+    block.asideKind === "note" && block.asideNote?.text
+      ? block.asideNote
+      : undefined;
+
+  const aside = note ? (
+    <div className="insight-frame">
+      {note.label && (
+        <p className="eyebrow mb-2">
+          <span className="tick">◉</span> {note.label}
+        </p>
+      )}
+      <p className="text-sm leading-body">{note.text}</p>
+      {note.footnote && <p className="eyebrow mt-3">{note.footnote}</p>}
+    </div>
+  ) : block.asideKind !== "none" && block.aside?.asset ? (
+    <BlockImage
+      image={block.aside}
+      sizes="(max-width: 1024px) 100vw, 33vw"
+      priority
+    />
+  ) : undefined;
+
   return (
     <PageHero
       eyebrow={block.eyebrow}
@@ -20,15 +46,7 @@ export default function PageHeroBlock({ block }: { block: Block }) {
       lede={block.lede}
       ctas={ctas}
       outline={block.outline}
-      aside={
-        block.aside?.asset ? (
-          <BlockImage
-            image={block.aside}
-            sizes="(max-width: 1024px) 100vw, 33vw"
-            priority
-          />
-        ) : undefined
-      }
+      aside={aside}
     />
   );
 }

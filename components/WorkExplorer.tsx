@@ -3,15 +3,25 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import Placeholder from "./Placeholder";
-import { campaigns, workDisclosure } from "@/content/site";
+import BlockImage from "./blocks/BlockImage";
+import { workDisclosure } from "@/lib/sanity/disclosure";
+import type { CaseStudy } from "@/lib/sanity/types";
 import { brands } from "@/content/manifest";
 
 /**
  * One curated grid, filterable by Service / Industry / Platform.
  * Options generate from the data so empty values never render; the brand
  * wall click-filters by brand.
+ *
+ * The case studies are fetched by the page (server) and handed in — this
+ * component only owns the filtering UI, same contract as
+ * DirectoryExplorer.
  */
-export default function WorkExplorer() {
+export default function WorkExplorer({
+  caseStudies,
+}: {
+  caseStudies: CaseStudy[];
+}) {
   const [service, setService] = useState<string | null>(null);
   const [industry, setIndustry] = useState<string | null>(null);
   const [platform, setPlatform] = useState<string | null>(null);
@@ -19,14 +29,14 @@ export default function WorkExplorer() {
 
   const options = useMemo(
     () => ({
-      services: [...new Set(campaigns.map((c) => c.service))].sort(),
-      industries: [...new Set(campaigns.map((c) => c.industry))].sort(),
-      platforms: [...new Set(campaigns.flatMap((c) => c.platforms))].sort(),
+      services: [...new Set(caseStudies.map((c) => c.service))].sort(),
+      industries: [...new Set(caseStudies.map((c) => c.industry))].sort(),
+      platforms: [...new Set(caseStudies.flatMap((c) => c.platforms))].sort(),
     }),
-    [],
+    [caseStudies],
   );
 
-  const results = campaigns.filter(
+  const results = caseStudies.filter(
     (c) =>
       (!service || c.service === service) &&
       (!industry || c.industry === industry) &&
@@ -102,11 +112,20 @@ export default function WorkExplorer() {
                 href={`/work/${c.slug}`}
                 className="card-surface group block overflow-hidden rounded-xl"
               >
-                <Placeholder
-                  label={c.mediaLabel}
-                  ratio="16/9"
-                  className="rounded-none border-0"
-                />
+                {c.media?.asset ? (
+                  <BlockImage
+                    image={c.media}
+                    ratio="16/9"
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="rounded-none"
+                  />
+                ) : (
+                  <Placeholder
+                    label={c.mediaLabel ?? "Campaign film · client-supplied"}
+                    ratio="16/9"
+                    className="rounded-none border-0"
+                  />
+                )}
                 <div className="p-6 sm:p-7">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <p className="eyebrow">
@@ -124,7 +143,7 @@ export default function WorkExplorer() {
                   </p>
                   <div className="mt-5 flex flex-wrap gap-x-8 gap-y-3">
                     {c.metrics.slice(0, 3).map((m) => (
-                      <div key={m.label}>
+                      <div key={m._key ?? m.label}>
                         <span className="tnum block text-xl font-bold">
                           {m.value}
                         </span>
@@ -154,7 +173,7 @@ export default function WorkExplorer() {
           )}
 
           <p className="mt-10 text-sm" style={{ color: "var(--ink-muted)" }}>
-            {workDisclosure}
+            {workDisclosure(caseStudies)}
           </p>
         </div>
       </section>
@@ -174,7 +193,7 @@ export default function WorkExplorer() {
           </h2>
           <div className="mt-10 flex flex-wrap gap-x-10 gap-y-6">
             {brands.clients.map((b) => {
-              const hasWork = campaigns.some((c) => c.brand === b);
+              const hasWork = caseStudies.some((c) => c.brand === b);
               return hasWork ? (
                 <button
                   key={b}

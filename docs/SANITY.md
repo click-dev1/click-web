@@ -140,6 +140,8 @@ Delivered blocks:
 | `metricRow` | Two to four measured figures, optional heading and provenance footnote |
 | `capabilityList` | One to four groups of capability chips |
 | `cardGrid` | Two to eight short cards, optionally numbered and imaged, optional link below |
+| `featuredWork` | A row of case studies — chosen, or the featured ones automatically |
+| `featuredTalent` | A row of creators — chosen, or the featured ones automatically |
 | `ctaBanner` | Closing call to action |
 
 Anything derived from the *number* of items an editor adds is derived on
@@ -147,6 +149,13 @@ purpose. Column counts come from the item count so a grid never ends in a
 ragged row, and `cardGrid`'s 01/02/03 marks come from position so
 reordering the cards renumbers them. Hand-typed numbering survives
 exactly until someone drags a card.
+
+The two `featured*` blocks take an optional list of picks. Left empty
+they show whatever is currently marked **Featured**, so a service page
+keeps showing current work without anyone remembering to go back and
+edit it; name specific items and those appear, in the order given. "How
+many to show" applies only to the automatic list — an editor who named
+four meant four.
 
 A CMS page lives at `/<slug>` via `app/(site)/[slug]/page.tsx`. Every
 hand-built route is static and therefore wins over it, so a CMS page can
@@ -171,6 +180,38 @@ If the block resolves a reference or an image, add its projection to
 > outside the self-service scope*. Assembling a new page from the blocks
 > above is within it.
 
+## Case studies
+
+`/work` and `/work/[slug]` render from the `caseStudy` type. Two things
+about the migration from `content/site.ts` are worth knowing:
+
+**`VerificationStatus` split in two.** Whether a case study is fit to
+publish is now draft vs published — that is what the draft state is for.
+Where its *figures* came from stays as a field, `figuresSource`, because
+it drives a disclosure line the reader sees. Truth discipline is the
+site's whole premise and it does not survive being folded into a publish
+button.
+
+| `figuresSource` | Disclosure under the results | In the sitemap? |
+| --- | --- | --- |
+| Confirmed by CLICK | "Figures as confirmed by CLICK." | yes |
+| Published on clickmedia.group | "…as published on clickmedia.group. Insight line is an editorial interpretation…" | yes |
+| Awaiting client confirmation | "Campaign details pending client confirmation." | **no** |
+
+That last row is what `isCampaignPublishable()` used to do: the page
+still renders for review, it just stays out of search.
+
+**The `/work` disclosure is derived, not written.** It used to be a
+sentence in `content/site.ts` naming four brands by hand. It was correct
+the day it was written and would have started quietly lying the first
+time CLICK published a fifth case study. `lib/sanity/disclosure.ts`
+builds it from the documents instead.
+
+`pnpm seed:case-studies` moved the five campaigns in. **Do not run it
+again** once CLICK has edited anything in the Studio — it reads
+`content/site.ts` and would overwrite their edits. It exists to move the
+content once.
+
 ## Environment variables
 
 | Variable | Needed where | Purpose |
@@ -187,3 +228,7 @@ If the block resolves a reference or an image, add its projection to
 `pnpm seed:roster` (`scripts/seed-roster.ts`) is the canonical roster
 seed and is idempotent. Do **not** run `pnpm seed:sanity` — it recreates
 placeholder creators that were deliberately deleted.
+
+`pnpm seed:case-studies` migrated the five campaigns out of
+`content/site.ts`. It was a one-time move; see **Case studies** above
+before ever running it again.
