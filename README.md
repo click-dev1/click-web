@@ -18,9 +18,28 @@ Open http://localhost:3000.
 - `pnpm start` – run production build
 - `pnpm lint` – lint
 
+## Project status
+
+`docs/STATUS.md` is the running answer to "what is left" — pages still to
+move into the CMS, content types outstanding, what is blocked on CLICK,
+and the contract items not yet started.
+
 ## Environment
 
-Nothing is required to deploy. `lib/site.ts` resolves the absolute origin
+Two variables **are** required to build, since the Sanity dataset is
+private:
+
+- `SANITY_API_READ_TOKEN` — without it the build fails deliberately. A
+  private dataset returns an *empty* result rather than a 401, so an
+  unauthenticated build would otherwise ship an empty site with a green
+  build.
+- `SANITY_REVALIDATE_SECRET` — verifies the Sanity webhook that
+  republishes pages on publish.
+
+Both belong on Preview **and** Production in Vercel. `docs/SANITY.md`
+has the full table and explains the caching rules.
+
+`lib/site.ts` resolves the absolute origin
 used by canonical tags, Open Graph URLs, `robots.txt`, `sitemap.xml` and
 the JSON-LD `@id`s: `https://www.clickmedia.group` in production,
 `http://localhost:3000` in development. Set `NEXT_PUBLIC_SITE_URL` only to

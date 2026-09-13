@@ -11,8 +11,10 @@ import { HUBSPOT_EMBED_SRC, HUBSPOT_FORM } from "./hubspot";
  * Nothing about the form changes: identical portal / form ids from
  * ./hubspot.ts, HubSpot's own loader, HubSpot's own styling. This only
  * places the `.hs-form-frame` in the document instead of in a <dialog>.
- * The loader is already on every page via the modal; <Script> dedupes by
- * src, so declaring it here just makes this component self-sufficient.
+ * The loader is declared here because on /contact the form IS the page —
+ * someone arriving has already asked for it. The modal deliberately does
+ * NOT load it until first open, so this is the one place it is fetched up
+ * front, and <Script> dedupes by src if the modal opens afterwards.
  */
 const LOAD_TIMEOUT_MS = 10_000;
 

@@ -216,24 +216,28 @@ export default function Footer() {
         >
           <p>© {year} Click Management Pty. Ltd., trading as CLICK. All rights reserved.</p>
           <nav aria-label="Legal">
-            <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {/* py-1.5 on each control, not on the list: at 12px these
+                links were under the 24px minimum tap target and stacked
+                4px apart on a phone. The padding grows the hit area to
+                ~28px without moving the text. */}
+            <ul className="flex flex-wrap items-center gap-x-4">
               {legalNav.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
-                    className="transition-colors hover:text-[var(--signal)]"
+                    className="inline-block py-1.5 transition-colors hover:text-[var(--signal)]"
                   >
                     {l.label}
                   </Link>
                 </li>
               ))}
               <li>
-                <CookiePreferencesButton className="underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
+                <CookiePreferencesButton className="inline-block py-1.5 underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
                   Cookie Preferences
                 </CookiePreferencesButton>
               </li>
               <li>
-                <CookiePreferencesButton className="underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
+                <CookiePreferencesButton className="inline-block py-1.5 underline underline-offset-4 transition-colors hover:text-[var(--signal)]">
                   Do Not Sell or Share My Personal Information
                 </CookiePreferencesButton>
               </li>

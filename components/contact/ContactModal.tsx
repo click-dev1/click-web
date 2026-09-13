@@ -76,13 +76,20 @@ export default function ContactModal({
 
   return (
     <>
-      {/* Loaded once the page is interactive so the form is ready by the
-          time anyone clicks a CTA. Next dedupes by src. */}
-      <Script
-        src={HUBSPOT_EMBED_SRC}
-        strategy="afterInteractive"
-        onError={() => setEmbedFailed(true)}
-      />
+      {/* Loaded on the first open, NOT on page load. The frame below was
+          already gated on `hasOpened` for exactly this reason, but the
+          loader sat outside the gate — so every pageview on every route
+          fetched js.hsforms.net and took HubSpot's __cf_bm cookie with it,
+          before the visitor had consented to anything and whether or not
+          they ever went near the form. Next dedupes by src, so the first
+          CTA click still loads it once and reopening is free. */}
+      {hasOpened && (
+        <Script
+          src={HUBSPOT_EMBED_SRC}
+          strategy="afterInteractive"
+          onError={() => setEmbedFailed(true)}
+        />
+      )}
 
       <dialog
         ref={dialogRef}

@@ -6,6 +6,9 @@ import CardGrid from "./CardGrid";
 import FeaturedWork from "./FeaturedWork";
 import FeaturedTalent from "./FeaturedTalent";
 import MediaBand from "./MediaBand";
+import TeamGrid from "./TeamGrid";
+import Timeline from "./Timeline";
+import Recognition from "./Recognition";
 import ActivationScorecard from "./ActivationScorecard";
 import CtaBanner from "./CtaBanner";
 import type { PageBlock } from "@/lib/sanity/types";
@@ -65,6 +68,14 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
             );
           case "mediaBlock":
             return <MediaBand key={block._key} block={block} signal={signal} />;
+          case "teamGrid":
+            return <TeamGrid key={block._key} block={block} signal={signal} />;
+          case "timeline":
+            return <Timeline key={block._key} block={block} signal={signal} />;
+          case "recognition":
+            return (
+              <Recognition key={block._key} block={block} signal={signal} />
+            );
           case "activationScorecard":
             return (
               <ActivationScorecard

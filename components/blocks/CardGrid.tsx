@@ -141,6 +141,12 @@ export default function CardGrid({
           )}
         </div>
 
+        {block.footnote && (
+          <p className="mt-8 text-sm" style={{ color: "var(--ink-muted)" }}>
+            {block.footnote}
+          </p>
+        )}
+
         <InsightFrame
           text={block.insight}
           label={block.insightLabel}

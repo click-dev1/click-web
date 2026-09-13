@@ -121,6 +121,12 @@ export const cardGridType = defineType({
       hidden: ({ parent }) => !parent?.insight,
     }),
     defineField({
+      name: "footnote",
+      type: "string",
+      description:
+        "A line under the grid — a source, a caveat, or what is still to be confirmed.",
+    }),
+    defineField({
       name: "cta",
       title: "Link below the grid",
       type: "cta",

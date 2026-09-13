@@ -74,6 +74,14 @@ export default function Fx() {
             linesClass: "split-line",
             autoSplit: true,
             mask: "lines",
+            /* SplitText's default ("auto") puts aria-label on the element
+               it splits and hides the generated lines. That is correct on
+               an <h1>, but several of these sit on a bare <span>, where
+               aria-label is prohibited ARIA and fails the audit outright.
+               Splitting by LINES keeps whole words in each line, so the
+               plain DOM text reads perfectly well in order — no ARIA
+               needed. */
+            aria: "none",
           });
           gsap.from(split.lines, {
             yPercent: 110,

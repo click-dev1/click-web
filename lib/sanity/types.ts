@@ -118,6 +118,7 @@ export interface CopyMediaBlock {
   media?: SanityImage[];
   mediaLabels?: string[];
   mediaPosition?: "right" | "left" | "below";
+  cta?: Cta;
   insight?: string;
   insightLabel?: string;
   insightFootnote?: string;
@@ -166,6 +167,7 @@ export interface CardGridBlock {
   insight?: string;
   insightLabel?: string;
   insightFootnote?: string;
+  footnote?: string;
   cta?: Cta;
 }
 
@@ -216,6 +218,53 @@ export interface FeaturedTalentBlock {
   auto: TalentCard[];
 }
 
+export interface PersonCard {
+  _id: string;
+  name: string;
+  role: string;
+  photo?: SanityImage;
+  perspective?: string;
+  recognition?: string;
+}
+
+export interface TeamGridBlock {
+  _type: "teamGrid";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  footnote?: string;
+  picked?: PersonCard[];
+  auto: PersonCard[];
+}
+
+export interface Milestone {
+  _key?: string;
+  year: string;
+  text: string;
+}
+
+export interface TimelineBlock {
+  _type: "timeline";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  body?: RichText;
+  entries: Milestone[];
+}
+
+export interface Award {
+  _key?: string;
+  line: string;
+  detail?: string;
+}
+
+export interface RecognitionBlock {
+  _type: "recognition";
+  _key: string;
+  eyebrow?: string;
+  entries: Award[];
+}
+
 export interface MediaBlock {
   _type: "mediaBlock";
   _key: string;
@@ -257,6 +306,9 @@ export type PageBlock =
   | FeaturedWorkBlock
   | FeaturedTalentBlock
   | MediaBlock
+  | TeamGridBlock
+  | TimelineBlock
+  | RecognitionBlock
   | ActivationScorecardBlock
   | CtaBannerBlock;
 

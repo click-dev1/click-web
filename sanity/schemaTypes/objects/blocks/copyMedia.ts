@@ -114,6 +114,12 @@ export const copyMediaType = defineType({
       },
       hidden: ({ parent }) => !parent?.media?.length && !parent?.mediaLabels?.length,
     }),
+    defineField({
+      name: "cta",
+      title: "Link",
+      type: "cta",
+      description: "Optional. Sits at the end of the copy.",
+    }),
     /* The framed insight at the foot of a section. On its own it reads as
        a pull quote; give it a label and it becomes a stated finding, which
        is how the built pages use it — and the footnote is where the

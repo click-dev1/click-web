@@ -11,10 +11,14 @@ import { cardGridType } from "./objects/blocks/cardGrid";
 import { featuredWorkType } from "./objects/blocks/featuredWork";
 import { featuredTalentType } from "./objects/blocks/featuredTalent";
 import { mediaBlockType } from "./objects/blocks/mediaBlock";
+import { teamGridType } from "./objects/blocks/teamGrid";
+import { timelineType } from "./objects/blocks/timeline";
+import { recognitionType } from "./objects/blocks/recognition";
 import { activationScorecardType } from "./objects/blocks/activationScorecard";
 import { pageType } from "./page";
 import { talentType } from "./talent";
 import { caseStudyType } from "./caseStudy";
+import { personType } from "./person";
 
 /* Every type the Studio knows about. Documents first, then the section
    blocks a page is assembled from, then shared objects.
@@ -28,6 +32,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   pageType,
   talentType,
   caseStudyType,
+  personType,
   // section blocks
   pageHeroType,
   copyMediaType,
@@ -37,6 +42,9 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   featuredWorkType,
   featuredTalentType,
   mediaBlockType,
+  teamGridType,
+  timelineType,
+  recognitionType,
   activationScorecardType,
   ctaBannerType,
   // shared objects

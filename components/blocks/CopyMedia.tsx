@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import BlockImage from "./BlockImage";
 import RichText from "./RichText";
 import InsightFrame from "./InsightFrame";
+import CtaLink from "./CtaLink";
 import Placeholder from "@/components/Placeholder";
 import type { CopyMediaBlock as Block } from "@/lib/sanity/types";
 
@@ -75,7 +76,17 @@ export default function CopyMedia({
         />
       ));
 
-  const copy = <RichText value={block.body} />;
+  /* Only wrapped when there is a link to hang off the copy — RichText
+     already supplies its own flex container, so nesting a second one
+     unconditionally would change every section that has no CTA. */
+  const copy = block.cta ? (
+    <div className="flex flex-col items-start gap-8">
+      <RichText value={block.body} />
+      <CtaLink cta={{ ...block.cta, style: block.cta.style ?? "ghost" }} />
+    </div>
+  ) : (
+    <RichText value={block.body} />
+  );
   const media = <MediaSlot frames={frames} />;
 
   return (

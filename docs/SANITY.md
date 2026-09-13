@@ -142,6 +142,10 @@ Delivered blocks:
 | `cardGrid` | Two to eight short cards, optionally numbered and imaged, optional link below |
 | `featuredWork` | A row of case studies — chosen, or the featured ones automatically |
 | `featuredTalent` | A row of creators — chosen, or the featured ones automatically |
+| `mediaBlock` | A band of images on their own — one banner, or 2–4 portraits |
+| `teamGrid` | The team — chosen people, or everyone, from the `person` type |
+| `timeline` | Signature block: copy beside a dated list of milestones |
+| `recognition` | Awards and listings, centred and stacked |
 | `activationScorecard` | Signature block: copy beside a framed scorecard of 2–4 figures |
 | `ctaBanner` | Closing call to action |
 
@@ -200,6 +204,23 @@ If the block resolves a reference or an image, add its projection to
 > Per SOW §4, *designing a new section type is development work and falls
 > outside the self-service scope*. Assembling a new page from the blocks
 > above is within it.
+
+## The team
+
+`/about`'s grid renders from the `person` type, so CLICK can add someone
+to the team without a developer. `teamGrid` with no picks shows everyone
+in their sort order — add a person and they appear on the page.
+
+Two editorial rules are built into the type rather than left to habit:
+
+- **Nobody gets an invented quote.** `perspective` is collected from that
+  person in their own voice. Empty renders "Perspective line · collected
+  in their own voice", not filler.
+- **No stock headshots.** An empty `photo` renders the awaiting-portrait
+  frame. Ten of the twelve are in that state today, by design.
+
+`pnpm seed:team` moved the twelve across. As with the other seeds, it
+reads `content/site.ts`, so stop running it once CLICK has edited anyone.
 
 ## Case studies
 

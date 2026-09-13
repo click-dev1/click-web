@@ -96,6 +96,15 @@ const talentCardFields = /* groq */ `
    limit — correct, but fragile enough that the next person to touch it
    would break it silently. The fallback lists are small and this is a
    build-time query. */
+const personCardFields = /* groq */ `
+  _id,
+  name,
+  role,
+  photo{ ${imageFields} },
+  perspective,
+  recognition
+`;
+
 const featuredWorkProjection = /* groq */ `{
   ...,
   "picked": picks[]->{ ${caseStudyCardFields} },
@@ -108,6 +117,14 @@ const featuredTalentProjection = /* groq */ `{
   "picked": picks[]->{ ${talentCardFields} },
   "auto": *[_type == "talent" && featured == true && defined(slug.current)]
     | order(sortOrder asc, name asc)[0...8]{ ${talentCardFields} }
+}`;
+
+/* The team grid's fallback is the WHOLE team, not a featured subset:
+   adding someone to the team should add them to the About page. */
+const teamGridProjection = /* groq */ `{
+  ...,
+  "picked": picks[]->{ ${personCardFields} },
+  "auto": *[_type == "person"] | order(sortOrder asc, name asc){ ${personCardFields} }
 }`;
 
 /* Blocks come back whole (`...`), with per-type projections layered on
@@ -126,6 +143,7 @@ const pageFields = /* groq */ `
     _type == "featuredWork" => ${featuredWorkProjection},
     _type == "featuredTalent" => ${featuredTalentProjection},
     _type == "mediaBlock" => { images[]{ ${imageFields} } },
+    _type == "teamGrid" => ${teamGridProjection},
     _type == "activationScorecard" => { media{ ${imageFields} } }
   }
 `;
