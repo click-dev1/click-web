@@ -147,7 +147,10 @@ Delivered blocks:
 | `timeline` | Signature block: copy beside a dated list of milestones |
 | `recognition` | Awards and listings, centred and stacked |
 | `activationScorecard` | Signature block: copy beside a framed scorecard of 2–4 figures |
-| `ctaBanner` | Closing call to action |
+| `splitCopy` | Two short arguments side by side, each with its own heading |
+| `journeySequence` | One word per stage, arrows between, the last set larger |
+| `journeyPanels` | Signature block: two full-bleed routes, the second outlined |
+| `ctaBanner` | Closing call to action, optionally with a second button |
 
 Anything derived from the *number* of items an editor adds is derived on
 purpose. Column counts come from the item count so a grid never ends in a

@@ -295,6 +295,42 @@ export interface CtaBannerBlock {
   heading: string;
   body?: string;
   cta: Cta;
+  secondaryCta?: Cta;
+}
+
+export interface SplitColumn {
+  _key?: string;
+  eyebrow?: string;
+  heading: string;
+  body: string;
+}
+
+export interface SplitCopyBlock {
+  _type: "splitCopy";
+  _key: string;
+  columns: SplitColumn[];
+}
+
+export interface JourneySequenceBlock {
+  _type: "journeySequence";
+  _key: string;
+  eyebrow?: string;
+  heading: string;
+  stages: string[];
+}
+
+export interface JourneyPanel {
+  eyebrow: string;
+  title: string;
+  body: string;
+  cta: Cta;
+}
+
+export interface JourneyPanelsBlock {
+  _type: "journeyPanels";
+  _key: string;
+  first: JourneyPanel;
+  second: JourneyPanel;
 }
 
 export type PageBlock =
@@ -310,6 +346,9 @@ export type PageBlock =
   | TimelineBlock
   | RecognitionBlock
   | ActivationScorecardBlock
+  | SplitCopyBlock
+  | JourneySequenceBlock
+  | JourneyPanelsBlock
   | CtaBannerBlock;
 
 export interface Page {

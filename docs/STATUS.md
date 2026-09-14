@@ -35,10 +35,10 @@ the most schedule-critical of them.
 | `/[slug]` — any CMS page | Sanity | ✅ fully |
 | `/influencer-marketing` | `content/site.ts` | ⏳ rebuilt as `influencer-marketing-cms`, awaiting swap |
 | `/about` | `content/site.ts` | ⏳ rebuilt as `about-cms`, awaiting swap |
+| `/talent-management` | page copy in code | ⏳ rebuilt as `talent-management-cms`, awaiting swap |
 | `/` (home) | `content/manifest.ts` | ❌ singleton, not started |
 | `/experiential` | `content/site.ts` | ❌ |
 | `/contact` | `content/manifest.ts` | ❌ |
-| `/talent-management` | page copy in code | ❌ partial — roster already from Sanity |
 | `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
 | `/insights`, `/news`, `/press` | — | ❌ routes do not exist |
 
@@ -55,12 +55,25 @@ side by side first. To finish one: delete the hand-built route file,
 change the slug to the real one, clear `noIndex`. See
 **Migrating a bespoke page** in `docs/SANITY.md`.
 
-Both rebuilt pages diff to zero against their originals (`/about`) or to
-a single non-difference (`/influencer-marketing` — the scorecard source
-splits across two text nodes in the original and renders the same
-characters).
+`/about` and `/talent-management` diff to **zero** against their
+originals. `/influencer-marketing` differs by a single non-difference:
+the scorecard source splits across two text nodes in the original and
+renders the same characters.
 
 ---
+
+### `/contact` is blocked on anchors, not on the form
+
+That page routes on `#enquiry` and `#creator-network` — its cards, its
+hero and its in-page CTAs all point at them. No block can carry an
+anchor id today, so it cannot be assembled yet whatever else is built.
+
+Most of its remaining content is not page content at all. The email
+address is used in `Nav`, `Footer`, `StructuredData` and on the page
+itself, and the socials row is duplicated between `Footer` and the page.
+Those belong in **`siteSettings`**, which also happens to be what lets
+CLICK edit the footer and the menu. Build that before finishing
+`/contact`, or the same values get typed into three places.
 
 ## Content types
 
@@ -76,23 +89,23 @@ characters).
 | `siteSettings` | ❌ |
 | `legalPage` | ❌ |
 
-## Block library — 13 delivered
+## Block library — 16 delivered
 
 `pageHero` · `copyMedia` · `metricRow` · `capabilityList` · `cardGrid` ·
 `featuredWork` · `featuredTalent` · `mediaBlock` · `teamGrid` ·
-`timeline` · `recognition` · `activationScorecard` · `ctaBanner`
+`timeline` · `recognition` · `activationScorecard` · `splitCopy` ·
+`journeySequence` · `journeyPanels` · `ctaBanner`
 
 **Still to build**, with the page that needs each:
 
 | Block | Needed by |
 | --- | --- |
 | `contactForm` | `/contact` — the HubSpot embed |
+| `linkChips` | `/contact` — the socials row |
 | `logoWall` | home, `/work` brand wall |
 | `homeHero` | home |
 | `intelligenceDiagram` | home |
 | `ecosystem` | home |
-| journey sequence | `/talent-management` |
-| split journey panels | `/talent-management`, `/talent` |
 
 This list is the **SOW §4 scope boundary**. §4 says designing a new
 section type is development work, so anything outside it is a §3 change
@@ -100,10 +113,15 @@ at $50/h. Worth having Chris agree it in writing.
 
 ### Known gaps in the delivered blocks
 
+- **No block can carry an anchor id.** `/contact` routes on `#enquiry`
+  and `#creator-network`, so it cannot be assembled until blocks can be
+  given a target. This is the blocker on that page, not the form.
 - `pageHero`'s `asideNote` is plain text and cannot hold a link —
-  `/contact`'s hero aside is a mailto.
-- `cardGrid`'s CTA cannot target modal state. `/contact`'s routing cards
-  each carry an `id` (`enquiry` / `creator-network`) that does.
+  `/contact`'s hero aside is a large mailto.
+- `cardGrid` renders its CTA as a button inside the card; `/contact`'s
+  routing cards are links across the whole card surface.
+- `copyMedia`'s aside is an image; `/contact`'s creator-network section
+  puts a framed list there.
 - `copyMedia` stacks its paragraphs; two built sections set them in two
   columns.
 - `copyMedia`'s collage fixes its frames at 4/3 + 1/1; `/experiential`'s

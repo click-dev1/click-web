@@ -15,6 +15,12 @@ const COLUMNS: Record<number, string> = {
   4: "md:grid-cols-2 lg:grid-cols-4",
 };
 
+/* Three groups get room to breathe and carry the larger heading; past
+   that the cards get narrower and the label has to come down with them.
+   Derived, like everything else — the editor adds a group, not a size. */
+const headingScale = (n: number) =>
+  n <= 3 ? "font-display text-h3 mb-5" : "font-display text-2xl mb-4";
+
 export default function CapabilityList({
   block,
   signal,
@@ -26,7 +32,8 @@ export default function CapabilityList({
   if (!groups.length) return null;
 
   const headingId = `s-${block._key}`;
-  const columns = COLUMNS[groups.length] ?? "md:grid-cols-2 lg:grid-cols-3";
+  const columns =
+    COLUMNS[groups.length] ?? "sm:grid-cols-2 lg:grid-cols-3";
 
   return (
     <section
@@ -51,7 +58,7 @@ export default function CapabilityList({
               data-reveal
               className="card-surface rounded-xl p-7"
             >
-              <h3 className="font-display text-h3 mb-5">{group.label}</h3>
+              <h3 className={headingScale(groups.length)}>{group.label}</h3>
               <ul className="flex flex-wrap gap-2">
                 {(group.items ?? []).map((item) => (
                   <li key={item} className="chip">

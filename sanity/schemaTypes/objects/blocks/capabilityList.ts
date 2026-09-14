@@ -55,7 +55,7 @@ export const capabilityListType = defineType({
           },
         }),
       ],
-      validation: (rule) => rule.required().min(1).max(4),
+      validation: (rule) => rule.required().min(1).max(6),
     }),
   ],
   preview: {

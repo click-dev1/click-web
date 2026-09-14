@@ -31,9 +31,24 @@ export default function CtaBanner({
             {block.body}
           </p>
         )}
-        <div data-reveal className="mt-9">
-          <CtaLink cta={block.cta} />
-        </div>
+        {/* The wrapping row only appears when there IS a second button —
+            a single CTA keeps exactly the markup the hand-built closers
+            use. */}
+        {block.secondaryCta ? (
+          <div data-reveal className="mt-9 flex flex-wrap justify-center gap-4">
+            <CtaLink cta={block.cta} />
+            <CtaLink
+              cta={{
+                ...block.secondaryCta,
+                style: block.secondaryCta.style ?? "ghost",
+              }}
+            />
+          </div>
+        ) : (
+          <div data-reveal className="mt-9">
+            <CtaLink cta={block.cta} />
+          </div>
+        )}
       </div>
     </section>
   );

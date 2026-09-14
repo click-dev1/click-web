@@ -10,6 +10,9 @@ import TeamGrid from "./TeamGrid";
 import Timeline from "./Timeline";
 import Recognition from "./Recognition";
 import ActivationScorecard from "./ActivationScorecard";
+import SplitCopy from "./SplitCopy";
+import JourneySequence from "./JourneySequence";
+import JourneyPanels from "./JourneyPanels";
 import CtaBanner from "./CtaBanner";
 import type { PageBlock } from "@/lib/sanity/types";
 
@@ -83,6 +86,16 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
                 block={block}
                 signal={signal}
               />
+            );
+          case "splitCopy":
+            return <SplitCopy key={block._key} block={block} signal={signal} />;
+          case "journeySequence":
+            return (
+              <JourneySequence key={block._key} block={block} signal={signal} />
+            );
+          case "journeyPanels":
+            return (
+              <JourneyPanels key={block._key} block={block} signal={signal} />
             );
           case "ctaBanner":
             return <CtaBanner key={block._key} block={block} signal={signal} />;

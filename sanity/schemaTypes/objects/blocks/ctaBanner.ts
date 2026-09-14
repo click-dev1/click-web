@@ -25,6 +25,13 @@ export const ctaBannerType = defineType({
       type: "cta",
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: "secondaryCta",
+      title: "Second button",
+      type: "cta",
+      description:
+        "Optional. Sits beside the first — use it where a page genuinely has two audiences.",
+    }),
   ],
   preview: {
     select: { title: "heading", subtitle: "cta.label" },

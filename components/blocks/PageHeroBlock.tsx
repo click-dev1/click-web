@@ -1,6 +1,7 @@
 import PageHero, { type HeroCta } from "@/components/PageHero";
 import BlockImage from "./BlockImage";
 import Placeholder from "@/components/Placeholder";
+import InsightFrame from "./InsightFrame";
 import type { PageHeroBlock as Block } from "@/lib/sanity/types";
 
 /* Adapter, not a second hero. The bespoke pages already render
@@ -21,16 +22,16 @@ export default function PageHeroBlock({ block }: { block: Block }) {
       ? block.asideNote
       : undefined;
 
+  /* The hero note IS an insight frame — same two styles, same rule: a
+     bare line is set large, a labelled one small with its provenance
+     under it. Sharing the component keeps the two from drifting. */
   const aside = note ? (
-    <div className="insight-frame">
-      {note.label && (
-        <p className="eyebrow mb-2">
-          <span className="tick">◉</span> {note.label}
-        </p>
-      )}
-      <p className="text-sm leading-body">{note.text}</p>
-      {note.footnote && <p className="eyebrow mt-3">{note.footnote}</p>}
-    </div>
+    <InsightFrame
+      text={note.text}
+      label={note.label}
+      footnote={note.footnote}
+      className="insight-frame"
+    />
   ) : block.asideKind === "none" ? undefined : block.aside?.asset ? (
     <BlockImage
       image={block.aside}

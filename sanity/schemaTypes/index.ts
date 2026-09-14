@@ -15,6 +15,9 @@ import { teamGridType } from "./objects/blocks/teamGrid";
 import { timelineType } from "./objects/blocks/timeline";
 import { recognitionType } from "./objects/blocks/recognition";
 import { activationScorecardType } from "./objects/blocks/activationScorecard";
+import { splitCopyType } from "./objects/blocks/splitCopy";
+import { journeySequenceType } from "./objects/blocks/journeySequence";
+import { journeyPanelsType, journeyPanelType } from "./objects/blocks/journeyPanels";
 import { pageType } from "./page";
 import { talentType } from "./talent";
 import { caseStudyType } from "./caseStudy";
@@ -46,9 +49,13 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   timelineType,
   recognitionType,
   activationScorecardType,
+  splitCopyType,
+  journeySequenceType,
+  journeyPanelsType,
   ctaBannerType,
   // shared objects
   ctaType,
   metricType,
+  journeyPanelType,
   seoType,
 ];
