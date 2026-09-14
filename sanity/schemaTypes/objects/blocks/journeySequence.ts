@@ -31,6 +31,21 @@ export const journeySequenceType = defineType({
         "One word each, in order. The last is set larger — it is the destination.",
       validation: (rule) => rule.required().min(3).max(8),
     }),
+    /* An id other pages and in-page links can point at. Blocks with an
+       anchor get scroll-margin from `section[id]` in globals.css, so the
+       fixed nav does not cover the target. */
+    defineField({
+      name: "anchor",
+      title: "Link target",
+      type: "string",
+      description:
+        "Optional. Lets a link point straight at this section, e.g. an anchor of “enquiry” is reachable as /contact#enquiry. Letters, numbers and hyphens.",
+      validation: (rule) =>
+        rule.regex(/^[a-z0-9-]+$/, {
+          name: "anchor",
+          invert: false,
+        }).error("Use lowercase letters, numbers and hyphens only."),
+    }),
   ],
   preview: {
     select: { title: "heading", stages: "stages" },

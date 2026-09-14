@@ -3,19 +3,27 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SignalCanvas from "@/components/SignalCanvas";
 import FxRouter from "@/components/FxRouter";
+import { fetchNavigation, fetchSiteSettings } from "@/lib/sanity/settings";
 
 /* Global 404 renders inside the bare root layout (outside the (site)
    group), so it brings the main-site chrome with it explicitly. */
-export default function NotFound() {
+export default async function NotFound() {
+  /* The 404 sits outside the (site) group, so it fetches the chrome's
+     data itself rather than inheriting it from that layout. */
+  const [settings, navigation] = await Promise.all([
+    fetchSiteSettings(),
+    fetchNavigation(),
+  ]);
+
   return (
     <>
       <SignalCanvas />
       <FxRouter />
-      <Nav />
+      <Nav items={navigation.main} email={settings.email} />
       <main id="main" className="relative">
         <NotFoundBody />
       </main>
-      <Footer />
+      <Footer settings={settings} navigation={navigation} />
     </>
   );
 }

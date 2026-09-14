@@ -14,7 +14,9 @@
     "seed:im": "tsx --env-file=.env.local scripts/seed-influencer-marketing.ts",
     "seed:team": "tsx --env-file=.env.local scripts/seed-team.ts",
     "seed:about": "tsx --env-file=.env.local scripts/seed-about.ts",
-    "seed:tm": "tsx --env-file=.env.local scripts/seed-talent-management.ts"
+    "seed:tm": "tsx --env-file=.env.local scripts/seed-talent-management.ts",
+    "seed:settings": "tsx --env-file=.env.local scripts/seed-settings.ts",
+    "seed:contact": "tsx --env-file=.env.local scripts/seed-contact.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

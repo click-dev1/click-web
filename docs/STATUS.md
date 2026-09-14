@@ -38,14 +38,16 @@ the most schedule-critical of them.
 | `/talent-management` | page copy in code | ⏳ rebuilt as `talent-management-cms`, awaiting swap |
 | `/` (home) | `content/manifest.ts` | ❌ singleton, not started |
 | `/experiential` | `content/site.ts` | ❌ |
-| `/contact` | `content/manifest.ts` | ❌ |
+| `/contact` | `content/manifest.ts` | ⏳ rebuilt as `contact-cms`, awaiting swap |
 | `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
 | `/insights`, `/news`, `/press` | — | ❌ routes do not exist |
 
-Nine components still read hand-authored content, including **`Nav` and
-`Footer`** — so CLICK cannot currently change a menu item or a footer
-link. `content/site.ts`, `content/manifest.ts` and `content/legal.ts`
-total ~1,300 lines and retire as the pages above migrate.
+**`Nav` and `Footer` now read from Sanity** — CLICK can change a menu
+item, a footer link, the enquiries address or a social profile without a
+developer. The remaining components on hand-authored content are the home
+page's sections, the legal pages and the ecosystem diagram.
+`content/site.ts`, `content/manifest.ts` and `content/legal.ts` total
+~1,300 lines and retire as the pages above migrate.
 
 ### Swapping a rebuilt page in
 
@@ -56,24 +58,13 @@ change the slug to the real one, clear `noIndex`. See
 **Migrating a bespoke page** in `docs/SANITY.md`.
 
 `/about` and `/talent-management` diff to **zero** against their
-originals. `/influencer-marketing` differs by a single non-difference:
-the scorecard source splits across two text nodes in the original and
-renders the same characters.
+originals. `/influencer-marketing` and `/contact` each differ by one
+understood item: the scorecard source splits across two text nodes in
+the original (same characters), and the contact page's social chips now
+follow the footer's order. The site previously listed those three links
+in two different orders in two places; they come from one list now.
 
 ---
-
-### `/contact` is blocked on anchors, not on the form
-
-That page routes on `#enquiry` and `#creator-network` — its cards, its
-hero and its in-page CTAs all point at them. No block can carry an
-anchor id today, so it cannot be assembled yet whatever else is built.
-
-Most of its remaining content is not page content at all. The email
-address is used in `Nav`, `Footer`, `StructuredData` and on the page
-itself, and the socials row is duplicated between `Footer` and the page.
-Those belong in **`siteSettings`**, which also happens to be what lets
-CLICK edit the footer and the menu. Build that before finishing
-`/contact`, or the same values get typed into three places.
 
 ## Content types
 
@@ -85,23 +76,25 @@ CLICK edit the footer and the menu. Build that before finishing
 | `page` | ✅ |
 | `article` (insight \| news) | ❌ |
 | `pressItem` | ❌ |
-| `navigation` | ❌ — blocks CLICK editing the menu |
-| `siteSettings` | ❌ |
+| `navigation` | ✅ singleton — main menu and footer columns |
+| `siteSettings` | ✅ singleton — email, socials, company name |
 | `legalPage` | ❌ |
 
-## Block library — 16 delivered
+## Block library — 18 delivered
 
 `pageHero` · `copyMedia` · `metricRow` · `capabilityList` · `cardGrid` ·
 `featuredWork` · `featuredTalent` · `mediaBlock` · `teamGrid` ·
 `timeline` · `recognition` · `activationScorecard` · `splitCopy` ·
-`journeySequence` · `journeyPanels` · `ctaBanner`
+`journeySequence` · `journeyPanels` · `contactForm` · `linkChips` ·
+`ctaBanner`
+
+Every block that renders its own section can carry an **anchor**, so a
+link can point straight at it.
 
 **Still to build**, with the page that needs each:
 
 | Block | Needed by |
 | --- | --- |
-| `contactForm` | `/contact` — the HubSpot embed |
-| `linkChips` | `/contact` — the socials row |
 | `logoWall` | home, `/work` brand wall |
 | `homeHero` | home |
 | `intelligenceDiagram` | home |
@@ -113,15 +106,8 @@ at $50/h. Worth having Chris agree it in writing.
 
 ### Known gaps in the delivered blocks
 
-- **No block can carry an anchor id.** `/contact` routes on `#enquiry`
-  and `#creator-network`, so it cannot be assembled until blocks can be
-  given a target. This is the blocker on that page, not the form.
-- `pageHero`'s `asideNote` is plain text and cannot hold a link —
-  `/contact`'s hero aside is a large mailto.
 - `cardGrid` renders its CTA as a button inside the card; `/contact`'s
-  routing cards are links across the whole card surface.
-- `copyMedia`'s aside is an image; `/contact`'s creator-network section
-  puts a framed list there.
+  routing cards were links across the whole card surface.
 - `copyMedia` stacks its paragraphs; two built sections set them in two
   columns.
 - `copyMedia`'s collage fixes its frames at 4/3 + 1/1; `/experiential`'s

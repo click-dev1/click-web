@@ -30,6 +30,7 @@ export default function PageHeroBlock({ block }: { block: Block }) {
       text={note.text}
       label={note.label}
       footnote={note.footnote}
+      href={note.href}
       className="insight-frame"
     />
   ) : block.asideKind === "none" ? undefined : block.aside?.asset ? (

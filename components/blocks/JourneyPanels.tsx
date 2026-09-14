@@ -81,6 +81,7 @@ export default function JourneyPanels({
   return (
     <section
       data-signal={signal}
+      {...(block.anchor ? { id: block.anchor } : {})}
       className="hairline-t relative z-10"
       aria-label="Two ways to work with us"
     >

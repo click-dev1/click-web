@@ -210,3 +210,28 @@ export const caseStudySitemapQuery = defineQuery(
     _updatedAt
   }`,
 );
+
+/* ---------- Site settings and navigation ---------- */
+
+/* Both are singletons with a fixed id, so they are fetched by id rather
+   than by a filter that could quietly match a second document. */
+export const siteSettingsQuery = defineQuery(
+  `*[_type == "siteSettings" && _id == "siteSettings"][0] {
+    email,
+    "socials": coalesce(socials[]{ platform, url }, []),
+    legalName,
+    footerTagline
+  }`,
+);
+
+export const navigationQuery = defineQuery(
+  `*[_type == "navigation" && _id == "navigation"][0] {
+    "main": coalesce(main[]{
+      _type, _key, label, href,
+      _type == "navGroup" => { "children": children[]{ label, href } }
+    }, []),
+    "footerColumns": coalesce(footerColumns[]{
+      _key, label, "links": links[]{ label, href, external }
+    }, [])
+  }`,
+);

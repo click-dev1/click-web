@@ -55,3 +55,18 @@ export function assertPopulated<T>(rows: T[], what: string): T[] {
   }
   return rows;
 }
+
+/** The singleton counterpart to assertPopulated: a missing site-wide
+    document is never a legitimate state, and letting the build ship a
+    site with no navigation would be worse than failing it. */
+export function assertPresent<T>(doc: T | null, what: string): T {
+  if (!doc) {
+    throw new Error(
+      `Sanity returned no ${what}. Either the document has not been ` +
+        `created (run the seed) or SANITY_API_READ_TOKEN is missing or ` +
+        `invalid — the dataset is private, and an unauthorised read comes ` +
+        `back empty rather than failing. See docs/SANITY.md.`,
+    );
+  }
+  return doc;
+}

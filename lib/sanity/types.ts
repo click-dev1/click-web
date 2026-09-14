@@ -55,6 +55,40 @@ export interface Metric {
   label: string;
 }
 
+/* ---------- Site-wide ---------- */
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+export interface SiteSettings {
+  email: string;
+  socials: SocialLink[];
+  legalName: string;
+  footerTagline?: string;
+}
+
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
+export type NavItem =
+  | ({ _type: "navLink"; _key: string } & NavLink)
+  | { _type: "navGroup"; _key: string; label: string; children: NavLink[] };
+
+export interface FooterColumn {
+  _key: string;
+  label: string;
+  links: (NavLink & { external?: boolean })[];
+}
+
+export interface Navigation {
+  main: NavItem[];
+  footerColumns: FooterColumn[];
+}
+
 /* ---------- Case studies ---------- */
 
 /** Where a case study's figures came from. Drives the disclosure line
@@ -105,13 +139,19 @@ export interface PageHeroBlock {
   asideKind?: "none" | "image" | "note";
   aside?: SanityImage;
   asideLabel?: string;
-  asideNote?: { label?: string; text: string; footnote?: string };
+  asideNote?: {
+    label?: string;
+    text: string;
+    footnote?: string;
+    href?: string;
+  };
   outline?: boolean;
 }
 
 export interface CopyMediaBlock {
   _type: "copyMedia";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading?: string;
   body: RichText;
@@ -121,12 +161,14 @@ export interface CopyMediaBlock {
   cta?: Cta;
   insight?: string;
   insightLabel?: string;
+  insightItems?: string[];
   insightFootnote?: string;
 }
 
 export interface MetricRowBlock {
   _type: "metricRow";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading?: string;
   metrics: Metric[];
@@ -142,6 +184,7 @@ export interface CapabilityGroup {
 export interface CapabilityListBlock {
   _type: "capabilityList";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   groups: CapabilityGroup[];
@@ -160,6 +203,7 @@ export interface Card {
 export interface CardGridBlock {
   _type: "cardGrid";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading?: string;
   numbered?: boolean;
@@ -199,6 +243,7 @@ export interface TalentCard {
 export interface FeaturedWorkBlock {
   _type: "featuredWork";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   limit?: number;
@@ -210,6 +255,7 @@ export interface FeaturedWorkBlock {
 export interface FeaturedTalentBlock {
   _type: "featuredTalent";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   limit?: number;
@@ -230,6 +276,7 @@ export interface PersonCard {
 export interface TeamGridBlock {
   _type: "teamGrid";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   footnote?: string;
@@ -246,6 +293,7 @@ export interface Milestone {
 export interface TimelineBlock {
   _type: "timeline";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   body?: RichText;
@@ -261,6 +309,7 @@ export interface Award {
 export interface RecognitionBlock {
   _type: "recognition";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   entries: Award[];
 }
@@ -268,6 +317,7 @@ export interface RecognitionBlock {
 export interface MediaBlock {
   _type: "mediaBlock";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading?: string;
   images?: SanityImage[];
@@ -278,6 +328,7 @@ export interface MediaBlock {
 export interface ActivationScorecardBlock {
   _type: "activationScorecard";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   body?: RichText;
@@ -289,9 +340,30 @@ export interface ActivationScorecardBlock {
   footnote?: string;
 }
 
+export interface ContactFormBlock {
+  _type: "contactForm";
+  _key: string;
+  anchor?: string;
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  emailPrompt?: string;
+}
+
+export interface LinkChipsBlock {
+  _type: "linkChips";
+  _key: string;
+  anchor?: string;
+  eyebrow?: string;
+  heading: string;
+  useSocials?: boolean;
+  links?: NavLink[];
+}
+
 export interface CtaBannerBlock {
   _type: "ctaBanner";
   _key: string;
+  anchor?: string;
   heading: string;
   body?: string;
   cta: Cta;
@@ -308,12 +380,14 @@ export interface SplitColumn {
 export interface SplitCopyBlock {
   _type: "splitCopy";
   _key: string;
+  anchor?: string;
   columns: SplitColumn[];
 }
 
 export interface JourneySequenceBlock {
   _type: "journeySequence";
   _key: string;
+  anchor?: string;
   eyebrow?: string;
   heading: string;
   stages: string[];
@@ -329,6 +403,7 @@ export interface JourneyPanel {
 export interface JourneyPanelsBlock {
   _type: "journeyPanels";
   _key: string;
+  anchor?: string;
   first: JourneyPanel;
   second: JourneyPanel;
 }
@@ -349,6 +424,8 @@ export type PageBlock =
   | SplitCopyBlock
   | JourneySequenceBlock
   | JourneyPanelsBlock
+  | ContactFormBlock
+  | LinkChipsBlock
   | CtaBannerBlock;
 
 export interface Page {

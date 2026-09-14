@@ -5,41 +5,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ContactButton from "./contact/ContactButton";
 import { useContactModal } from "./contact/ContactModalProvider";
-import { contact } from "@/content/manifest";
 
-type NavLink = { href: string; label: string };
-type NavItem = NavLink | { label: string; children: NavLink[] };
-
-/* The blueprint's primary navigation: Solutions ▾ (Influencer Marketing,
-   Experiential) / Talent ▾ (Talent Management, Talent Directory) / Work /
-   About / Contact. Solutions and Talent are dropdowns only — neither has a
-   landing page, and the blueprint says not to build one. The two dropdowns
-   mirror the homepage's two journeys: Solutions is the brand path, Talent
-   is the creator path. */
-const LINKS: NavItem[] = [
-  {
-    label: "Solutions",
-    children: [
-      { href: "/influencer-marketing", label: "Influencer Marketing" },
-      { href: "/experiential", label: "Experiential" },
-    ],
-  },
-  {
-    label: "Talent",
-    children: [
-      { href: "/talent-management", label: "Talent Management" },
-      { href: "/talent", label: "Talent Directory" },
-    ],
-  },
-  { href: "/work", label: "Work" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
+import type { NavItem } from "@/lib/sanity/types";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-export default function Nav() {
+export default function Nav({
+  items,
+  email,
+}: {
+  /* The menu and the enquiries address come from the CMS, fetched once in
+     the site layout — this is a client component and cannot read them
+     itself. See sanity/schemaTypes/navigation.ts for why nesting stops
+     at one level. */
+  items: NavItem[];
+  email: string;
+}) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   /* The overlay remembers which route it was opened on, so navigating
@@ -136,8 +118,8 @@ export default function Nav() {
         <div className="flex items-center gap-3 lg:gap-7">
           {/* desktop links */}
           <ul className="hidden items-center gap-7 lg:flex">
-            {LINKS.map((l) =>
-              "children" in l ? (
+            {items.map((l) =>
+              l._type === "navGroup" ? (
                 <li key={l.label} className="nav-drop relative">
                   <button
                     type="button"
@@ -213,8 +195,8 @@ export default function Nav() {
         >
           <nav aria-label="Mobile" className="mx-auto w-full max-w-7xl">
             <ul className="flex flex-col">
-              {LINKS.map((l) =>
-                "children" in l ? (
+              {items.map((l) =>
+                l._type === "navGroup" ? (
                   <li key={l.label} className="py-1">
                     <p className="eyebrow pill mb-2">
                       <span className="tick">●</span> {l.label}
@@ -260,10 +242,10 @@ export default function Nav() {
               Start the Conversation <span className="btn-arrow">→</span>
             </button>
             <a
-              href={`mailto:${contact.email}`}
+              href={`mailto:${email}`}
               className="mt-5 block text-sm underline underline-offset-4"
             >
-              {contact.email}
+              {email}
             </a>
           </div>
         </div>

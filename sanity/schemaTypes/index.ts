@@ -18,10 +18,14 @@ import { activationScorecardType } from "./objects/blocks/activationScorecard";
 import { splitCopyType } from "./objects/blocks/splitCopy";
 import { journeySequenceType } from "./objects/blocks/journeySequence";
 import { journeyPanelsType, journeyPanelType } from "./objects/blocks/journeyPanels";
+import { contactFormType } from "./objects/blocks/contactForm";
+import { linkChipsType } from "./objects/blocks/linkChips";
 import { pageType } from "./page";
 import { talentType } from "./talent";
 import { caseStudyType } from "./caseStudy";
 import { personType } from "./person";
+import { siteSettingsType } from "./siteSettings";
+import { navigationType } from "./navigation";
 
 /* Every type the Studio knows about. Documents first, then the section
    blocks a page is assembled from, then shared objects.
@@ -36,6 +40,8 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   talentType,
   caseStudyType,
   personType,
+  siteSettingsType,
+  navigationType,
   // section blocks
   pageHeroType,
   copyMediaType,
@@ -52,6 +58,8 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   splitCopyType,
   journeySequenceType,
   journeyPanelsType,
+  contactFormType,
+  linkChipsType,
   ctaBannerType,
   // shared objects
   ctaType,

@@ -14,7 +14,9 @@ import SplitCopy from "./SplitCopy";
 import JourneySequence from "./JourneySequence";
 import JourneyPanels from "./JourneyPanels";
 import CtaBanner from "./CtaBanner";
-import type { PageBlock } from "@/lib/sanity/types";
+import ContactForm from "./ContactForm";
+import LinkChips from "./LinkChips";
+import type { PageBlock, SiteSettings } from "@/lib/sanity/types";
 
 /**
  * Renders a page's sections, top to bottom.
@@ -43,7 +45,17 @@ function signalFor(block: PageBlock, index: number): string {
   return MIDDLE_SIGNALS[middleIndex % MIDDLE_SIGNALS.length];
 }
 
-export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
+export default function Blocks({
+  blocks,
+  settings,
+}: {
+  blocks: PageBlock[];
+  /* Two blocks render site-wide values rather than their own copy — the
+     contact form's enquiries address and the chip row's social profiles.
+     Handed down rather than fetched per block so there is still one read
+     per page. */
+  settings: SiteSettings;
+}) {
   return (
     <>
       {blocks.map((block, i) => {
@@ -96,6 +108,24 @@ export default function Blocks({ blocks }: { blocks: PageBlock[] }) {
           case "journeyPanels":
             return (
               <JourneyPanels key={block._key} block={block} signal={signal} />
+            );
+          case "contactForm":
+            return (
+              <ContactForm
+                key={block._key}
+                block={block}
+                signal={signal}
+                settings={settings}
+              />
+            );
+          case "linkChips":
+            return (
+              <LinkChips
+                key={block._key}
+                block={block}
+                signal={signal}
+                settings={settings}
+              />
             );
           case "ctaBanner":
             return <CtaBanner key={block._key} block={block} signal={signal} />;

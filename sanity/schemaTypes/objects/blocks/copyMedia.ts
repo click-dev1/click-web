@@ -143,12 +143,36 @@ export const copyMediaType = defineType({
       hidden: ({ parent }) => !parent?.insight,
     }),
     defineField({
+      name: "insightItems",
+      title: "Insight list",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      description:
+        "Optional marked list inside the frame — use it instead of, or as well as, the paragraph above.",
+      hidden: ({ parent }) => !parent?.insight && !parent?.insightLabel,
+    }),
+    defineField({
       name: "insightFootnote",
       title: "Insight footnote",
       type: "string",
       description:
         "Optional small line beneath it — e.g. “Status · awaiting client insight”.",
       hidden: ({ parent }) => !parent?.insight,
+    }),
+    /* An id other pages and in-page links can point at. Blocks with an
+       anchor get scroll-margin from `section[id]` in globals.css, so the
+       fixed nav does not cover the target. */
+    defineField({
+      name: "anchor",
+      title: "Link target",
+      type: "string",
+      description:
+        "Optional. Lets a link point straight at this section, e.g. an anchor of “enquiry” is reachable as /contact#enquiry. Letters, numbers and hyphens.",
+      validation: (rule) =>
+        rule.regex(/^[a-z0-9-]+$/, {
+          name: "anchor",
+          invert: false,
+        }).error("Use lowercase letters, numbers and hyphens only."),
     }),
   ],
   preview: {

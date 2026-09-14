@@ -62,6 +62,8 @@ export const pageType = defineType({
         defineArrayMember({ type: "splitCopy" }),
         defineArrayMember({ type: "journeySequence" }),
         defineArrayMember({ type: "journeyPanels" }),
+        defineArrayMember({ type: "contactForm" }),
+        defineArrayMember({ type: "linkChips" }),
         defineArrayMember({ type: "ctaBanner" }),
       ],
       validation: (rule) => rule.required().min(1),

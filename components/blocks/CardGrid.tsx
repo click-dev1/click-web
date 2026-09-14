@@ -92,6 +92,7 @@ export default function CardGrid({
   return (
     <section
       data-signal={signal}
+      {...(block.anchor ? { id: block.anchor } : {})}
       className="hairline-t relative z-10 px-5 py-24 md:px-8"
       {...(block.heading ? { "aria-labelledby": headingId } : {})}
     >

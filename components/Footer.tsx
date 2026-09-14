@@ -1,75 +1,24 @@
 import Link from "next/link";
 import ContactButton from "@/components/contact/ContactButton";
 import CookiePreferencesButton from "@/components/consent/CookiePreferencesButton";
-import { contact, recognition } from "@/content/manifest";
+import { recognition } from "@/content/manifest";
+import type { Navigation, SiteSettings } from "@/lib/sanity/types";
 import { legalNav } from "@/content/legal";
 
-type FooterLink = { href: string; label: string; external?: boolean };
-
-const COLUMNS: { label: string; links: FooterLink[] }[] = [
-  {
-    label: "Solutions",
-    links: [
-      { href: "/influencer-marketing", label: "Influencer Marketing" },
-      { href: "/experiential", label: "Experiential" },
-    ],
-  },
-  {
-    label: "Talent",
-    links: [
-      { href: "/talent-management", label: "Talent Management" },
-      { href: "/talent", label: "Talent Directory" },
-      { href: "/contact#creator-network", label: "Creator Network" },
-    ],
-  },
-  {
-    label: "Company",
-    links: [
-      { href: "/work", label: "Work" },
-      { href: "/about", label: "About" },
-      { href: "/contact", label: "Contact" },
-    ],
-  },
-  {
-    label: "Connect",
-    links: [
-      { href: `mailto:${contact.email}`, label: "General enquiries" },
-      {
-        href: "https://www.linkedin.com/company/clickmediagroup/",
-        label: "LinkedIn",
-        external: true,
-      },
-      {
-        href: "https://www.instagram.com/weareclicktalent",
-        label: "Instagram",
-        external: true,
-      },
-      {
-        href: "https://www.tiktok.com/@clickmgmt",
-        label: "TikTok",
-        external: true,
-      },
-    ],
-  },
-];
-
-const SOCIALS = [
-  {
-    href: "https://www.instagram.com/weareclicktalent",
-    label: "Instagram",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+/* Social marks stay in code. The CMS chooses the platform and the URL
+   (see sanity/schemaTypes/siteSettings.ts); letting an editor paste SVG
+   into a field is how a CMS turns into an XSS hole. A platform with no
+   mark here simply renders no icon rather than breaking the row. */
+const SOCIAL_ICONS: Record<string, React.ReactNode> = {
+  Instagram: (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.6" />
         <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="1.6" />
         <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" />
       </svg>
-    ),
-  },
-  {
-    href: "https://www.linkedin.com/company/clickmediagroup/",
-    label: "LinkedIn",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  ),
+  LinkedIn: (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.6" />
         <path d="M7.5 10v6.2M7.5 7.8v.01" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         <path
@@ -79,13 +28,9 @@ const SOCIALS = [
           strokeLinecap="round"
         />
       </svg>
-    ),
-  },
-  {
-    href: "https://www.tiktok.com/@clickmgmt",
-    label: "TikTok",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  ),
+  TikTok: (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M14 3.5c.5 2 2 3.4 4 3.6v2.7c-1.5 0-2.9-.4-4-1.2v6.1c0 3-2.4 5.3-5.3 5.3s-5.3-2.3-5.3-5.3 2.4-5.3 5.3-5.3c.3 0 .6 0 .9.1v2.8a2.5 2.5 0 1 0 1.7 2.4V3.5H14z"
           stroke="currentColor"
@@ -93,11 +38,18 @@ const SOCIALS = [
           strokeLinejoin="round"
         />
       </svg>
-    ),
-  },
-];
+  ),
+};
 
-export default function Footer() {
+export default function Footer({
+  settings,
+  navigation,
+}: {
+  settings: SiteSettings;
+  navigation: Navigation;
+}) {
+  const { email, socials, legalName, footerTagline } = settings;
+  const columns = navigation.footerColumns;
   const year = new Date().getFullYear();
 
   return (
@@ -124,24 +76,24 @@ export default function Footer() {
               then building the partnerships that move culture.
             </p>
             <a
-              href={`mailto:${contact.email}`}
+              href={`mailto:${email}`}
               className="mt-4 inline-block text-sm underline underline-offset-4 transition-colors hover:text-[var(--signal)]"
             >
-              {contact.email}
+              {email}
             </a>
 
             <div className="mt-5 flex items-center gap-4">
-              {SOCIALS.map((s) => (
+              {socials.map((s) => (
                 <a
-                  key={s.label}
-                  href={s.href}
+                  key={s.platform}
+                  href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={s.label}
+                  aria-label={s.platform}
                   className="transition-colors hover:text-[var(--signal)]"
                   style={{ color: "var(--ink-muted)" }}
                 >
-                  <span className="block h-5 w-5">{s.icon}</span>
+                  <span className="block h-5 w-5">{SOCIAL_ICONS[s.platform]}</span>
                 </a>
               ))}
             </div>
@@ -151,7 +103,7 @@ export default function Footer() {
             aria-label="Footer"
             className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-10"
           >
-            {COLUMNS.map((col) => (
+            {columns.map((col) => (
               <div key={col.label}>
                 <p className="eyebrow mb-3">{col.label}</p>
                 <ul className="flex flex-col gap-2">
@@ -214,7 +166,7 @@ export default function Footer() {
           className="hairline-t mt-12 flex flex-col gap-3 pt-6 text-xs lg:flex-row lg:items-center lg:justify-between"
           style={{ color: "var(--ink-muted)" }}
         >
-          <p>© {year} Click Management Pty. Ltd., trading as CLICK. All rights reserved.</p>
+          <p>© {year} {legalName}. All rights reserved.</p>
           <nav aria-label="Legal">
             {/* py-1.5 on each control, not on the list: at 12px these
                 links were under the 24px minimum tap target and stacked
@@ -244,7 +196,7 @@ export default function Footer() {
             </ul>
           </nav>
           <p className="font-data text-[0.62rem]">
-            Influencer Marketing · Talent · Experiential
+            {footerTagline}
           </p>
         </div>
       </div>

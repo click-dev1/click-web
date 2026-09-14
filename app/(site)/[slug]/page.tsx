@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Blocks from "@/components/blocks/registry";
 import { fetchPage, fetchPageSlugs } from "@/lib/sanity/page";
+import { fetchSiteSettings } from "@/lib/sanity/settings";
 import { urlFor } from "@/lib/sanity/image";
 
 /**
@@ -48,8 +49,11 @@ export default async function CmsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const page = await fetchPage(slug);
+  const [page, settings] = await Promise.all([
+    fetchPage(slug),
+    fetchSiteSettings(),
+  ]);
   if (!page) notFound();
 
-  return <Blocks blocks={page.blocks} />;
+  return <Blocks blocks={page.blocks} settings={settings} />;
 }

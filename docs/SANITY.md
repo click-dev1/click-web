@@ -150,6 +150,8 @@ Delivered blocks:
 | `splitCopy` | Two short arguments side by side, each with its own heading |
 | `journeySequence` | One word per stage, arrows between, the last set larger |
 | `journeyPanels` | Signature block: two full-bleed routes, the second outlined |
+| `contactForm` | Copy beside the HubSpot embed |
+| `linkChips` | A row of outbound chips — the social profiles by default |
 | `ctaBanner` | Closing call to action, optionally with a second button |
 
 Anything derived from the *number* of items an editor adds is derived on
@@ -224,6 +226,43 @@ Two editorial rules are built into the type rather than left to habit:
 
 `pnpm seed:team` moved the twelve across. As with the other seeds, it
 reads `content/site.ts`, so stop running it once CLICK has edited anyone.
+
+## Site-wide values
+
+`siteSettings` and `navigation` are **singletons** — one of each, pinned
+at the top of the Studio rather than shown as a list of one. Between them
+they hold everything used in more than one place:
+
+| | Where it shows |
+| --- | --- |
+| Enquiries email | nav, footer, structured data, the contact page |
+| Social profiles | footer icons, the contact page's chip row |
+| Main menu | the nav, one level of nesting, no deeper |
+| Footer columns | the footer sitemap |
+| Company name, tagline | the footer legal bar |
+
+Both are fetched once in `app/(site)/layout.tsx` and handed down as
+props. `Nav` is a client component and cannot read them itself, and the
+footer would otherwise repeat the same two queries on every page.
+
+**Social icons are not editable.** They are inline SVG, kept in
+`components/Footer.tsx` and keyed by platform. Letting an editor paste
+markup into a field is how a CMS becomes an XSS hole, so the platform is
+a choice from a list and the mark stays in code. A platform with no mark
+renders no icon rather than breaking the row.
+
+`pnpm seed:settings` created both. One-time, like the others.
+
+## Anchors
+
+Every block that renders its own section can carry an **anchor** — a link
+target, so `/contact#enquiry` lands on the right section. `globals.css`
+gives `section[id]` a `scroll-margin-top`, which is why the id goes on
+the section and not on a wrapper: without it the fixed nav covers the
+target.
+
+`/contact` is the page that needs this — its routing cards, its hero and
+its in-page CTAs all point at `#enquiry` and `#creator-network`.
 
 ## Case studies
 

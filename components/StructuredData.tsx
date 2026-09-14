@@ -1,22 +1,22 @@
-import { contact, recognition } from "@/content/manifest";
+import { recognition } from "@/content/manifest";
+import type { SiteSettings } from "@/lib/sanity/types";
 import { siteUrl } from "@/lib/site";
 
 /**
  * Organization + WebSite JSON-LD.
  *
- * Every claim here is one the manifest already carries as verified-public
- * — name, parent org, award, contact address, social profiles. Nothing is
+ * Every claim here is one the site already carries as verified-public —
+ * name, parent org, award, contact address, social profiles. Nothing is
  * asserted that isn't rendered somewhere on the page, which is both the
  * blueprint's rule and Google's (structured data must reflect visible
- * content).
+ * content). The email and the social profiles come from site settings for
+ * exactly that reason: they are the ones the footer shows.
  */
-const SOCIAL_PROFILES = [
-  "https://www.instagram.com/weareclicktalent",
-  "https://www.linkedin.com/company/clickmediagroup/",
-  "https://www.tiktok.com/@clickmgmt",
-];
-
-export default function StructuredData() {
+export default function StructuredData({
+  settings,
+}: {
+  settings: SiteSettings;
+}) {
   const graph = {
     "@context": "https://schema.org",
     "@graph": [
@@ -28,8 +28,8 @@ export default function StructuredData() {
         logo: `${siteUrl}/click-logo.png`,
         description:
           "Global influencer marketing, experiential and talent management agency.",
-        email: contact.email,
-        sameAs: SOCIAL_PROFILES,
+        email: settings.email,
+        sameAs: settings.socials.map((s) => s.url),
         parentOrganization: { "@type": "Organization", name: "GameSquare" },
         award: `${recognition.line} (${recognition.years.replace(" · ", ", ")})`,
       },
