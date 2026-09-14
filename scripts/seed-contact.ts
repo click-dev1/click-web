@@ -14,6 +14,11 @@
  *
  * The anchors matter: this page routes on #creator-network and #enquiry,
  * and its own cards point at them.
+
+ * ⚠ THIS PAGE IS NOW LIVE. The slug below is the real one, so running
+ * this overwrites what CLICK sees — and anything they have edited in the
+ * Studio. It is kept for reference and for rebuilding from scratch, not
+ * for routine use.
  */
 import { createClient } from "@sanity/client";
 import { contact } from "../content/manifest";
@@ -27,7 +32,7 @@ if (!projectId || !token) {
 }
 const client = createClient({ projectId, dataset, token, apiVersion: "2026-08-01", useCdn: false });
 
-const SLUG = "contact-cms";
+const SLUG = "contact";
 const EMAIL = contact.email;
 let n = 0;
 const k = (p: string) => `${p}${(n += 1)}`;
@@ -132,7 +137,7 @@ async function main() {
     seo: {
       _type: "seo",
       description:
-        "Let's start the conversation. Whether you're a brand, a creator or a potential partner, tell us what you're building and we'll connect you with the right team.",
+        "Let's start the conversation. Whether you're a brand looking to drive business results, a creator building your next chapter, or a potential partner — tell us what you're building.",
       noIndex: true,
     },
   });

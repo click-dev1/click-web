@@ -14,15 +14,15 @@ import { isLegalPublishable, legalPages } from "@/content/legal";
    file. Case studies come from Sanity too, and join once their figures
    are confirmed; legal pages join once counsel has signed them off. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  /* Only the routes that are still hand-built. As each bespoke page moves
+     onto the `page` type its entry comes from Sanity instead, with a real
+     lastModified — listing it here as well is how the same URL ends up in
+     the file twice. The dedupe at the bottom is the backstop. */
   const statics: MetadataRoute.Sitemap = [
     { url: siteUrl, changeFrequency: "monthly", priority: 1 },
-    { url: `${siteUrl}/influencer-marketing`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${siteUrl}/experiential`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${siteUrl}/talent-management`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${siteUrl}/talent`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/work`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${siteUrl}/about`, changeFrequency: "yearly", priority: 0.6 },
-    { url: `${siteUrl}/contact`, changeFrequency: "yearly", priority: 0.7 },
   ];
 
   const legal: MetadataRoute.Sitemap = Object.values(legalPages)
@@ -60,5 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...statics, ...legal, ...cases, ...talent, ...cmsPages];
+  /* One entry per URL. A page that has migrated to the CMS would
+     otherwise appear twice — once from the hardcoded list above and once
+     from Sanity — and duplicate <loc>s are a real SEO defect, not a
+     cosmetic one. The CMS entry wins: it carries a lastModified. */
+  const all = [...statics, ...legal, ...cases, ...talent, ...cmsPages];
+  const byUrl = new Map<string, MetadataRoute.Sitemap[number]>();
+  for (const entry of all) byUrl.set(entry.url, entry);
+  return [...byUrl.values()];
 }

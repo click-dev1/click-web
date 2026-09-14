@@ -13,6 +13,11 @@
  * a second Australian gaming creator. Picks are also the better CMS
  * answer here: the selection is editorial, so it should be visible and
  * editable rather than emergent.
+
+ * ⚠ THIS PAGE IS NOW LIVE. The slug below is the real one, so running
+ * this overwrites what CLICK sees — and anything they have edited in the
+ * Studio. It is kept for reference and for rebuilding from scratch, not
+ * for routine use.
  */
 import { createClient } from "@sanity/client";
 import { recognition } from "../content/manifest";
@@ -26,7 +31,7 @@ if (!projectId || !token) {
 }
 const client = createClient({ projectId, dataset, token, apiVersion: "2026-08-01", useCdn: false });
 
-const SLUG = "talent-management-cms";
+const SLUG = "talent-management";
 
 let n = 0;
 const k = (p: string) => `${p}${(n += 1)}`;

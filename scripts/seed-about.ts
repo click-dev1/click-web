@@ -11,6 +11,11 @@
  * `person` documents that pnpm seed:team created, which is the whole
  * point of making the team a type. Leave its picks empty and adding
  * someone to the team adds them to this page.
+
+ * ⚠ THIS PAGE IS NOW LIVE. The slug below is the real one, so running
+ * this overwrites what CLICK sees — and anything they have edited in the
+ * Studio. It is kept for reference and for rebuilding from scratch, not
+ * for routine use.
  */
 import { createClient } from "@sanity/client";
 import { timeline, offices, officesDisclosure } from "../content/site";
@@ -26,7 +31,7 @@ if (!projectId || !token) {
 
 const client = createClient({ projectId, dataset, token, apiVersion: "2026-08-01", useCdn: false });
 
-const SLUG = "about-cms";
+const SLUG = "about";
 
 let n = 0;
 const k = (p: string) => `${p}${(n += 1)}`;

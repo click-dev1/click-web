@@ -3,7 +3,7 @@
 Where the CLICK website rebuild stands against the executed Website
 Development Agreement and its Exhibit A Statement of Work.
 
-**Last updated:** 14 September 2026
+**Last updated:** 15 September 2026
 **Kickoff:** 13 August 2026 · **Launch-ready target:** ~8 October 2026
 **Paid to date:** $4,000 of $8,000 (kickoff + design). The remaining
 $4,000 releases on launch-ready acceptance (§11).
@@ -33,12 +33,12 @@ the most schedule-critical of them.
 | `/talent`, `/talent/[slug]` | Sanity | ✅ profiles (page furniture is code) |
 | `/work`, `/work/[slug]` | Sanity | ✅ case studies (page furniture is code) |
 | `/[slug]` — any CMS page | Sanity | ✅ fully |
-| `/influencer-marketing` | `content/site.ts` | ⏳ rebuilt as `influencer-marketing-cms`, awaiting swap |
-| `/about` | `content/site.ts` | ⏳ rebuilt as `about-cms`, awaiting swap |
-| `/talent-management` | page copy in code | ⏳ rebuilt as `talent-management-cms`, awaiting swap |
+| `/influencer-marketing` | Sanity | ✅ fully |
+| `/about` | Sanity | ✅ fully |
+| `/talent-management` | Sanity | ✅ fully |
 | `/` (home) | `content/manifest.ts` | ❌ singleton, not started |
 | `/experiential` | `content/site.ts` | ❌ |
-| `/contact` | `content/manifest.ts` | ⏳ rebuilt as `contact-cms`, awaiting swap |
+| `/contact` | Sanity | ✅ fully |
 | `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
 | `/insights`, `/news`, `/press` | — | ❌ routes do not exist |
 
@@ -49,20 +49,22 @@ page's sections, the legal pages and the ecosystem diagram.
 `content/site.ts`, `content/manifest.ts` and `content/legal.ts` total
 ~1,300 lines and retire as the pages above migrate.
 
-### Swapping a rebuilt page in
+### Four pages are live from the CMS
 
-A static route wins over a CMS page with the same slug, so each rebuild
-is seeded to a temporary `-cms` slug with `noIndex` and compared
-side by side first. To finish one: delete the hand-built route file,
-change the slug to the real one, clear `noIndex`. See
-**Migrating a bespoke page** in `docs/SANITY.md`.
+`/influencer-marketing`, `/about`, `/contact` and `/talent-management`
+now render from Sanity at their real addresses. The hand-built route
+files are deleted; CLICK edits these pages in the Studio.
 
-`/about` and `/talent-management` diff to **zero** against their
-originals. `/influencer-marketing` and `/contact` each differ by one
-understood item: the scorecard source splits across two text nodes in
-the original (same characters), and the contact page's social chips now
-follow the footer's order. The site previously listed those three links
-in two different orders in two places; they come from one list now.
+Each was verified by diffing its rendered text against the hand-built
+page it replaced. `/about` and `/talent-management` are **identical**.
+`/influencer-marketing` differs by one text-node split (same characters)
+and `/contact` by the order of three social links — the site previously
+listed those in two different orders in two places, and they come from
+one list now.
+
+`pnpm swap:pages` does the promotion; see **Migrating a bespoke page** in
+`docs/SANITY.md` for the full procedure, including removing the page from
+the hardcoded list in `app/sitemap.ts`.
 
 ---
 

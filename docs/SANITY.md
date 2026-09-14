@@ -309,8 +309,20 @@ The sequence that avoids that:
    a duplicate-content problem, not a staging detail.
 2. Compare the two rendered pages. Stripping the tags out of both builds
    and diffing the text is the fastest way to prove nothing was dropped.
-3. Delete the hand-built route, change the slug to the real one, clear
-   the `noIndex` flag.
+3. Run `pnpm swap:pages` (dry run) then `pnpm swap:pages --apply`. It
+   copies `page-<slug>-cms` to `page-<slug>`, sets the real slug and
+   clears `noIndex`. **Delete the hand-built route file in the same
+   commit** — a static route wins, so until the file goes the CMS page
+   builds and nobody can reach it.
+4. **Remove the page from the hardcoded `statics` list in
+   `app/sitemap.ts`.** Its entry now comes from Sanity with a real
+   `lastModified`, and leaving it in both places puts the same `<loc>` in
+   the sitemap twice. There is a dedupe at the bottom of that file as a
+   backstop, but the list should still be correct.
+
+Reversible: `git restore` the route file and re-run the page's seed
+script. Note those scripts now point at the **live** slugs, so running
+one overwrites whatever CLICK has edited.
 
 `pnpm seed:im` did step 1 for `/influencer-marketing`. The two pages'
 rendered text is **identical** — the only line the diff reports is the

@@ -17,6 +17,11 @@
  * awaiting-image captions, and `data-signal` is derived from position
  * rather than hand-set, so the canvas cues differ slightly from the
  * original by design.
+
+ * ⚠ THIS PAGE IS NOW LIVE. The slug below is the real one, so running
+ * this overwrites what CLICK sees — and anything they have edited in the
+ * Studio. It is kept for reference and for rebuilding from scratch, not
+ * for routine use.
  */
 import { createClient } from "@sanity/client";
 
@@ -38,7 +43,7 @@ const client = createClient({
   useCdn: false,
 });
 
-const SLUG = "influencer-marketing-cms";
+const SLUG = "influencer-marketing";
 
 /** Portable Text paragraphs. `muted` marks the greyed paragraphs the
     hand-built page sets with an inline style. */
