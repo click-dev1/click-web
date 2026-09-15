@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Ecosystem from "@/components/Ecosystem";
+import { fetchHomePage } from "@/lib/sanity/home";
 import {
   Hero,
   Journeys,
@@ -10,21 +11,31 @@ import {
   FinalCta,
 } from "@/components/Sections";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const home = await fetchHomePage();
+  return {
+    ...(home.seo?.title ? { title: home.seo.title } : {}),
+    ...(home.seo?.description ? { description: home.seo.description } : {}),
+    alternates: { canonical: "/" },
+  };
+}
 
-export default function Home() {
+/* The home page is a singleton with editable copy per section, not a
+   block canvas — see sanity/schemaTypes/homePage.ts. The sections and
+   their order are fixed; every word in them comes from the CMS. */
+export default async function Home() {
+  const home = await fetchHomePage();
+
   return (
     <>
-      <Hero />
-      <Journeys />
-      <Marquee />
-      <Intelligence />
-      <Work />
-      <Recognition />
+      <Hero home={home} />
+      <Journeys home={home} />
+      <Marquee home={home} />
+      <Intelligence home={home} />
+      <Work home={home} />
+      <Recognition home={home} />
       <Ecosystem />
-      <FinalCta />
+      <FinalCta home={home} />
     </>
   );
 }

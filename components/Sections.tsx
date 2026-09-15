@@ -1,17 +1,13 @@
 import ContactButton from "@/components/contact/ContactButton";
 import IntelligenceDiagram from "@/components/IntelligenceDiagram";
 import { ScribbleCircle, ScribbleUnderline } from "@/components/Scribble";
-import {
-  brands,
-  caseStudies,
-  heroAnnotation,
-  heroProof,
-  recognition,
-} from "@/content/manifest";
+import type { Beat, CaseStudy, HomePage } from "@/lib/sanity/types";
+import CtaLink from "@/components/blocks/CtaLink";
 
 /* ============ HERO ============ */
 
-export function Hero() {
+export function Hero({ home }: { home: HomePage }) {
+  const { heroCreed: creed, heroAnnotation, heroProof } = home;
   return (
     <section
       data-signal="overlap"
@@ -20,8 +16,7 @@ export function Hero() {
     >
       <div className="mx-auto w-full max-w-7xl">
         <p className="eyebrow pill anim-fade-up mb-6">
-          <span className="tick">●</span> Influencer marketing · Talent
-          management · Global
+          <span className="tick">●</span> {home.heroEyebrow}
         </p>
 
         <h1
@@ -29,7 +24,7 @@ export function Hero() {
           data-split
           className="font-display text-hero max-w-4xl"
         >
-          Understand Audiences. Move People.
+          {home.heroHeadline}
         </h1>
 
         {/* The brand triad leads the body copy: it is the positioning
@@ -38,33 +33,27 @@ export function Hero() {
           className="anim-fade-up font-display hero-creed mt-8 max-w-2xl"
           style={{ animationDelay: "0.25s" }}
         >
-          Science reveals the audience.
+          {creed.line1}
           <br />
-          Creators shape the culture.
+          {creed.line2}
           <br />
-          <span className="creed-payoff">CLICK powers the connection.</span>
+          <span className="creed-payoff">{creed.payoff}</span>
         </p>
 
         <p
           className="anim-fade-up mt-7 max-w-xl text-lg leading-body"
           style={{ color: "var(--ink-muted)", animationDelay: "0.4s" }}
         >
-          Audience intelligence, human expertise, and the world&apos;s most
-          influential creators — combined to build partnerships that move
-          culture and grow your business.
+          {home.heroLede}
         </p>
 
         <div
           className="anim-fade-up mt-9 flex flex-wrap items-center gap-4"
           style={{ animationDelay: "0.5s" }}
         >
-          <ContactButton className="btn-primary">
-            Start the Conversation <span className="btn-arrow">→</span>
-          </ContactButton>
-          {/* in-page until /work exists */}
-          <a href="#work" className="btn-ghost">
-            View Our Work <span className="btn-arrow">→</span>
-          </a>
+          {(home.heroCtas ?? []).map((cta) => (
+            <CtaLink key={cta._key ?? cta.label} cta={cta} />
+          ))}
         </div>
       </div>
 
@@ -78,11 +67,11 @@ export function Hero() {
             style={{ animationDelay: "2s" }}
           >
             <p className="eyebrow mb-2">
-              <span className="tick">◉</span> {heroAnnotation.eyebrow}
+              <span className="tick">◉</span> {heroAnnotation?.eyebrow}
             </p>
-            <p className="text-sm leading-body">{heroAnnotation.body}</p>
+            <p className="text-sm leading-body">{heroAnnotation?.body}</p>
             <p className="eyebrow mt-3" style={{ color: "var(--signal)" }}>
-              {heroAnnotation.statusLabel}
+              {heroAnnotation?.statusLabel}
             </p>
           </div>
         </div>
@@ -95,11 +84,11 @@ export function Hero() {
           style={{ animationDelay: "0.7s" }}
         >
           <span className="eyebrow">
-            <span className="tick">▸</span> {heroProof.eyebrow}
+            <span className="tick">▸</span> {heroProof?.eyebrow}
           </span>
-          <span className="tnum text-2xl font-medium">{heroProof.value}</span>
+          <span className="tnum text-2xl font-medium">{heroProof?.value}</span>
           <span className="text-sm" style={{ color: "var(--ink-muted)" }}>
-            {heroProof.label}
+            {heroProof?.label}
           </span>
         </div>
       </div>
@@ -109,7 +98,13 @@ export function Hero() {
 
 /* ============ CHOOSE YOUR JOURNEY ============ */
 
-export function Journeys() {
+export function Journeys({ home }: { home: HomePage }) {
+  const j = home.journeys ?? {};
+  /* The hand-drawn mark hugs the LAST word of the left heading — see
+     Scribble.tsx. Split here rather than asking an editor to mark it up. */
+  const firstWords = (j.firstHeading ?? "").split(" ");
+  const firstLead = firstWords.slice(0, -1).join(" ");
+  const firstMarked = firstWords[firstWords.length - 1] ?? "";
   return (
     <section
       id="journeys"
@@ -122,16 +117,16 @@ export function Journeys() {
         <ContactButton className="journey-a texture-grid group relative block w-full px-5 py-16 text-left transition-colors md:px-10 md:py-24">
           <p className="mb-4">
             <span className="eyebrow pill">
-              <span className="tick">01</span> For brands
+              <span className="tick">01</span> {j.firstEyebrow}
             </span>
           </p>
           {/* One device per panel: the brand side gets the hand-drawn mark,
               the creator side keeps the outlined-caps poster treatment.
               Stacking both on one word just reads as noise. */}
           <h2 className="font-display text-h2">
-            I&apos;m a{" "}
+            {firstLead}{" "}
             <span className="relative inline-block">
-              Brand
+              {firstMarked}
               {/* 1 of 2 marks on this page — see Scribble.tsx. Hugs the line
                   box; any looser and it crosses the sentence underneath. */}
               <ScribbleCircle className="pointer-events-none absolute -inset-x-5 top-1 bottom-1 text-[var(--ink)]" />
@@ -141,30 +136,30 @@ export function Journeys() {
             className="mt-4 max-w-md text-lg"
             style={{ color: "var(--ink-muted)" }}
           >
-            Make smarter creator decisions before a dollar is spent.
+            {j.firstBody}
           </p>
           <span className="btn-ghost mt-8 inline-flex group-hover:border-[var(--signal)]">
-            Start the Conversation <span className="btn-arrow">→</span>
+            {j.firstCta} <span className="btn-arrow">→</span>
           </span>
         </ContactButton>
 
         <ContactButton className="journey-b group relative block w-full border-t px-5 py-16 text-left transition-colors md:border-t-0 md:border-l md:px-10 md:py-24 [border-color:var(--hairline)]">
           <p className="mb-4">
             <span className="eyebrow pill">
-              <span className="tick">02</span> For creators
+              <span className="tick">02</span> {j.secondEyebrow}
             </span>
           </p>
           <h2 className="font-display text-h2 display-outline">
-            I&apos;m a Creator
+            {j.secondHeading}
           </h2>
           <p
             className="mt-4 max-w-md text-lg"
             style={{ color: "var(--ink-muted)" }}
           >
-            Build a business that outlasts the algorithm.
+            {j.secondBody}
           </p>
           <span className="btn-ghost mt-8 inline-flex group-hover:border-[var(--signal)]">
-            Join CLICK Talent <span className="btn-arrow">→</span>
+            {j.secondCta} <span className="btn-arrow">→</span>
           </span>
         </ContactButton>
       </div>
@@ -174,7 +169,9 @@ export function Journeys() {
 
 /* ============ BRAND MARQUEE ============ */
 
-export function Marquee() {
+export function Marquee({ home }: { home: HomePage }) {
+  const clients = home.brandClients ?? [];
+  const platforms = home.brandPlatforms ?? [];
   const row = (items: string[], label: string) => (
     <div className="marquee" aria-hidden="true">
       {[0, 1].map((copy) => (
@@ -203,14 +200,14 @@ export function Marquee() {
         <span className="tick" aria-hidden="true">
           ●
         </span>{" "}
-        Trusted by leading brands
+        {home.brandsHeading}
       </h2>
-      {row(brands.clients, "")}
-      <div className="mt-6 opacity-60">{row(brands.platforms, "")}</div>
+      {row(clients, "")}
+      <div className="mt-6 opacity-60">{row(platforms, "")}</div>
       {/* full lists for assistive tech & no-motion contexts */}
       <p className="visually-hidden">
-        Client work includes {brands.clients.join(", ")}. Platform partnerships:{" "}
-        {brands.platforms.join(", ")}.
+        Client work includes {clients.join(", ")}. Platform partnerships:{" "}
+        {platforms.join(", ")}.
       </p>
     </section>
   );
@@ -222,33 +219,6 @@ export function Marquee() {
    style labels: the science → people → creators → culture → results
    progression is a structural principle in the blueprint, explicitly not
    copy — "do not print this progression as text on any page". */
-const BEATS = [
-  {
-    layers: "Platforms → Audience Intelligence",
-    title: "The strongest partnerships aren't built on assumptions.",
-    body: "Before a campaign launches, we map how your audience and creator communities actually overlap — the behaviors, passions and cultural signals that determine whether a partnership works.",
-  },
-  {
-    layers: "Communities → Creator Expertise",
-    title: "The overlap is the opportunity.",
-    body: "Where a brand's audience and a creator's community are already the same people, the partnership has a foundation — and we can see it before anyone posts.",
-  },
-  {
-    layers: "Creative Strategy",
-    title: "Strategy, before the first post.",
-    body: "Our strategists turn that intelligence into creator selection, creative direction, and media decisions — so every dollar is working before the first post goes live.",
-  },
-  {
-    layers: "Cultural Impact → Business Growth",
-    title: "Then creators do what only creators can.",
-    body: "They turn insight into culture — and culture into measurable business outcomes.",
-    proof: {
-      value: "51.93%",
-      label: "market share increase · Optus — Gaming on the Go",
-    },
-  },
-];
-
 /* Beat text and the diagram layer share this grid: text in column one,
    drawing in column two. Column two IS the drawing's width (--diag-w,
    set on #intel-stage in globals.css: height-capped for the pinned
@@ -258,7 +228,8 @@ const BEATS = [
 const INTEL_GRID =
   "mx-auto w-full max-w-7xl lg:grid lg:grid-cols-[minmax(0,1fr)_var(--diag-w)] lg:gap-10 lg:items-center";
 
-export function Intelligence() {
+export function Intelligence({ home }: { home: HomePage }) {
+  const beats: Beat[] = home.beats ?? [];
   return (
     <section
       id="intelligence"
@@ -332,12 +303,12 @@ export function Intelligence() {
             </div>
           </div>
 
-          {BEATS.map((b) => (
+          {beats.map((b) => (
             /* On desktop Fx.tsx stacks these with position:absolute against
                #intel-stage, so the gutter + max-width live on the inner
                wrapper — otherwise the pinned beats lose their margins. */
             <div
-              key={b.title}
+              key={b._key ?? b.title}
               data-beat
               className="flex flex-col justify-center px-5 md:px-8 lg:min-h-[80vh]"
             >
@@ -388,7 +359,12 @@ export function Intelligence() {
 
 /* ============ FEATURED WORK ============ */
 
-export function Work() {
+export function Work({ home }: { home: HomePage }) {
+  /* Chosen case studies win; with none, the featured ones fill the
+     section — so publishing a case study can reach the home page without
+     anyone editing the home document. */
+  const picked = home.workPicked?.filter(Boolean) ?? [];
+  const studies: CaseStudy[] = picked.length ? picked : (home.workAuto ?? []);
   return (
     <section
       id="work"
@@ -402,18 +378,18 @@ export function Work() {
             <span className="tick" aria-hidden="true">
               ●
             </span>{" "}
-            Featured work
+            {home.workEyebrow}
           </span>
           <span className="visually-hidden"> — </span>
           <span data-split className="block">
-            Smarter decisions. Stronger partnerships. Better results.
+            {home.workHeading}
           </span>
         </h2>
 
         <div className="mt-16 flex flex-col gap-6">
-          {caseStudies.map((cs, i) => (
+          {studies.map((cs, i) => (
             <article
-              key={cs.brand}
+              key={cs._id}
               data-reveal
               className="card-surface rounded-xl p-6 sm:p-7 md:p-10"
             >
@@ -425,7 +401,7 @@ export function Work() {
                 What the intelligence found
               </p>
               <p className="max-w-4xl text-xl leading-snug md:text-2xl">
-                {cs.understood}
+                {cs.insight}
               </p>
 
               <div
@@ -434,12 +410,12 @@ export function Work() {
               >
                 <div>
                   <p className="eyebrow mb-2">{cs.brand}</p>
-                  <h3 className="font-display text-h3 text-balance">{cs.campaign}</h3>
+                  <h3 className="font-display text-h3 text-balance">{cs.headline ?? cs.title}</h3>
                 </div>
 
                 <div>
                   <p className="eyebrow mb-1.5">What we built</p>
-                  <p className="leading-body">{cs.created}</p>
+                  <p className="leading-body">{cs.built}</p>
                 </div>
 
                 <div
@@ -501,7 +477,7 @@ export function Work() {
 
 /* ============ RECOGNITION ============ */
 
-export function Recognition() {
+export function Recognition({ home }: { home: HomePage }) {
   return (
     <section
       data-signal="quiet"
@@ -510,7 +486,7 @@ export function Recognition() {
     >
       <p data-reveal className="font-display text-h3">
         <span className="relative inline-block">
-          {recognition.line}
+          {home.recognitionLine}
           {/* 2 of 2 — the award line is the one claim the blueprint says to
               state once and leave alone, so it gets the emphasis */}
           <ScribbleUnderline className="pointer-events-none absolute -bottom-4 left-0 h-3 w-full text-[var(--ink)]" />
@@ -518,7 +494,7 @@ export function Recognition() {
       </p>
       {/* extra clearance: the scribble underline hangs below the line above */}
       <p className="eyebrow mt-7">
-        <span className="tick">◆</span> {recognition.years}
+        <span className="tick">◆</span> {home.recognitionYears}
       </p>
     </section>
   );
@@ -526,7 +502,7 @@ export function Recognition() {
 
 /* ============ FINAL CTA ============ */
 
-export function FinalCta() {
+export function FinalCta({ home }: { home: HomePage }) {
   return (
     <section
       data-signal="settle"
@@ -535,21 +511,17 @@ export function FinalCta() {
     >
       <div className="mx-auto max-w-4xl text-center">
         <h2 id="cta-heading" data-split className="font-display text-h2">
-          Great partnerships begin with understanding people.
+          {home.ctaHeading}
         </h2>
         <p
           data-reveal
           className="mx-auto mt-6 max-w-xl text-lg"
           style={{ color: "var(--ink-muted)" }}
         >
-          Whether you&apos;re building a brand, growing a creator business, or
-          looking for your next breakthrough campaign, let&apos;s start with a
-          conversation.
+          {home.ctaBody}
         </p>
         <div data-reveal className="mt-9">
-          <ContactButton className="btn-primary">
-            Start the Conversation <span className="btn-arrow">→</span>
-          </ContactButton>
+          {home.ctaButton && <CtaLink cta={home.ctaButton} />}
         </div>
       </div>
     </section>

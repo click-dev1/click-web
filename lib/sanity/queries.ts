@@ -170,6 +170,7 @@ const caseStudyFields = /* groq */ `
   _id,
   brand,
   title,
+  headline,
   "slug": slug.current,
   service,
   industry,
@@ -233,5 +234,21 @@ export const navigationQuery = defineQuery(
     "footerColumns": coalesce(footerColumns[]{
       _key, label, "links": links[]{ label, href, external }
     }, [])
+  }`,
+);
+
+/* ---------- Home ---------- */
+
+/* Featured work on the home page resolves the same way the featuredWork
+   block does: chosen case studies, or the featured ones automatically, so
+   publishing a case study can put it on the home page without anyone
+   editing this document. The projection is the full one — home shows the
+   whole three-beat card, not a summary. */
+export const homePageQuery = defineQuery(
+  `*[_type == "homePage" && _id == "homePage"][0] {
+    ...,
+    "workPicked": workPicks[]->{ ${caseStudyFields} },
+    "workAuto": *[_type == "caseStudy" && featured == true && defined(slug.current)]
+      | order(sortOrder asc, brand asc)[0...4]{ ${caseStudyFields} }
   }`,
 );

@@ -18,6 +18,7 @@
  */
 import { createClient } from "@sanity/client";
 import { campaigns } from "../content/site";
+import { caseStudies } from "../content/manifest";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production";
@@ -57,6 +58,14 @@ async function main() {
 
   for (const [i, c] of campaigns.entries()) {
     const draft = isDraft(c.status);
+    /* content/manifest.ts carried a longer editorial line for some
+       campaigns and the home page led with it. Kept only where it
+       actually differs from the campaign name. */
+    const manifestEntry = caseStudies.find((x) => x.brand === c.brand);
+    const headline =
+      manifestEntry && manifestEntry.campaign !== c.title
+        ? manifestEntry.campaign
+        : undefined;
     const _id = `${draft ? "drafts." : ""}caseStudy-${c.slug}`;
 
     await client.createOrReplace({
@@ -64,6 +73,7 @@ async function main() {
       _type: "caseStudy",
       brand: c.brand,
       title: c.title,
+      ...(headline ? { headline } : {}),
       slug: { _type: "slug", current: c.slug },
       service: c.service,
       industry: c.industry,

@@ -17,7 +17,8 @@
     "seed:tm": "tsx --env-file=.env.local scripts/seed-talent-management.ts",
     "seed:settings": "tsx --env-file=.env.local scripts/seed-settings.ts",
     "seed:contact": "tsx --env-file=.env.local scripts/seed-contact.ts",
-    "swap:pages": "tsx --env-file=.env.local scripts/swap-cms-pages.ts"
+    "swap:pages": "tsx --env-file=.env.local scripts/swap-cms-pages.ts",
+    "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

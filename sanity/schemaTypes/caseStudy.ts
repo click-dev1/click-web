@@ -79,6 +79,20 @@ export const caseStudyType = defineType({
       description: "Pragmata, Gaming on the Go, Summer '24.",
       validation: (rule) => rule.required(),
     }),
+    /* The campaign's NAME is `title` ("Pragmata"); this is the longer
+       editorial line the home page leads with ("Sending Pragmata into
+       orbit with creator content"). The site carried both before the
+       migration — one in content/site.ts, one in content/manifest.ts —
+       and they are genuinely different things, so both survive. Most case
+       studies need only the name. */
+    defineField({
+      name: "headline",
+      title: "Editorial headline",
+      type: "string",
+      group: "content",
+      description:
+        "Optional. A fuller line used where the campaign is featured, e.g. on the home page. Leave it empty and the campaign name is used.",
+    }),
     defineField({
       name: "slug",
       type: "slug",

@@ -99,6 +99,7 @@ export interface CaseStudy {
   _id: string;
   brand: string;
   title: string;
+  headline?: string;
   slug: string;
   service: string;
   industry: string;
@@ -112,6 +113,50 @@ export interface CaseStudy {
   media?: SanityImage;
   mediaLabel?: string;
   featured?: boolean;
+  seo?: Seo;
+}
+
+/* ---------- Home ---------- */
+
+export interface Beat {
+  _key?: string;
+  layers?: string;
+  title: string;
+  body: string;
+  proof?: Metric;
+}
+
+export interface HomePage {
+  heroEyebrow: string;
+  heroHeadline: string;
+  heroCreed: { line1: string; line2: string; payoff: string };
+  heroLede: string;
+  heroCtas?: Cta[];
+  heroAnnotation?: { eyebrow?: string; body?: string; statusLabel?: string };
+  heroProof?: { eyebrow?: string; value?: string; label?: string };
+  journeys?: {
+    firstEyebrow?: string;
+    firstHeading?: string;
+    firstBody?: string;
+    firstCta?: string;
+    secondEyebrow?: string;
+    secondHeading?: string;
+    secondBody?: string;
+    secondCta?: string;
+  };
+  brandsHeading?: string;
+  brandClients?: string[];
+  brandPlatforms?: string[];
+  beats?: Beat[];
+  workEyebrow?: string;
+  workHeading?: string;
+  workPicked?: CaseStudy[];
+  workAuto: CaseStudy[];
+  recognitionLine?: string;
+  recognitionYears?: string;
+  ctaHeading?: string;
+  ctaBody?: string;
+  ctaButton?: Cta;
   seo?: Seo;
 }
 

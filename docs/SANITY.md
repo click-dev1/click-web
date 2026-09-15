@@ -253,6 +253,29 @@ renders no icon rather than breaking the row.
 
 `pnpm seed:settings` created both. One-time, like the others.
 
+## The home page
+
+A **singleton**, `homePage`, with one field group per section rather than
+a blocks array. That was deliberate: nobody will ever assemble a second
+home page, and a block canvas would hand an editor the ability to reorder
+the argument the whole site rests on — intelligence, then the two
+journeys, then proof, then the ecosystem behind it. The sections and
+their order are fixed. Every word in them is editable.
+
+Two things resolve rather than being typed:
+
+- **Featured work** reads `caseStudy` documents. It is pinned to three by
+  default because the hand-built page led with a specific three — which
+  is not the same as the first three featured. Clear the picks and it
+  follows the featured flag instead.
+- `caseStudy.headline` is the longer editorial line the home page leads
+  with ("Sending Pragmata into orbit with creator content"); `title` is
+  the campaign's name ("Pragmata"), which is what `/work` shows. The site
+  carried both before the migration, in two different files. Most case
+  studies need only the name.
+
+The GameSquare ecosystem diagram is still in code.
+
 ## Anchors
 
 Every block that renders its own section can carry an **anchor** — a link

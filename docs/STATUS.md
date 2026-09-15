@@ -49,10 +49,10 @@ page's sections, the legal pages and the ecosystem diagram.
 `content/site.ts`, `content/manifest.ts` and `content/legal.ts` total
 ~1,300 lines and retire as the pages above migrate.
 
-### Four pages are live from the CMS
+### Five pages are live from the CMS
 
-`/influencer-marketing`, `/about`, `/contact` and `/talent-management`
-now render from Sanity at their real addresses. The hand-built route
+The home page, `/influencer-marketing`, `/about`, `/contact` and
+`/talent-management` now render from Sanity at their real addresses. The hand-built route
 files are deleted; CLICK edits these pages in the Studio.
 
 Each was verified by diffing its rendered text against the hand-built
@@ -62,7 +62,13 @@ and `/contact` by the order of three social links — the site previously
 listed those in two different orders in two places, and they come from
 one list now.
 
-`pnpm swap:pages` does the promotion; see **Migrating a bespoke page** in
+The home page is a **singleton with editable copy per section**, not a
+block canvas — nobody assembles a second home page, and decomposing it
+would let an editor reorder the argument the whole site rests on. Its
+diff against the hand-built version is **zero**. The one part still in
+code is the GameSquare ecosystem diagram.
+
+`pnpm swap:pages` does the promotion for block-built pages; see **Migrating a bespoke page** in
 `docs/SANITY.md` for the full procedure, including removing the page from
 the hardcoded list in `app/sitemap.ts`.
 
@@ -76,6 +82,7 @@ the hardcoded list in `app/sitemap.ts`.
 | `caseStudy` | ✅ 5 campaigns migrated |
 | `person` | ✅ 12 team members (2 portraits, 10 awaiting) |
 | `page` | ✅ |
+| `homePage` | ✅ singleton |
 | `article` (insight \| news) | ❌ |
 | `pressItem` | ❌ |
 | `navigation` | ✅ singleton — main menu and footer columns |
@@ -97,10 +104,11 @@ link can point straight at it.
 
 | Block | Needed by |
 | --- | --- |
-| `logoWall` | home, `/work` brand wall |
-| `homeHero` | home |
-| `intelligenceDiagram` | home |
-| `ecosystem` | home |
+| `logoWall` | `/work` brand wall |
+
+The home page turned out not to need `homeHero`, `intelligenceDiagram` or
+`ecosystem` as blocks: it is a singleton, so those are fixed sections
+reading fields rather than block types anyone can place.
 
 This list is the **SOW §4 scope boundary**. §4 says designing a new
 section type is development work, so anything outside it is a §3 change
@@ -135,6 +143,20 @@ CLICK:
    animation, not network.
 
 ---
+
+## A deliberate change from `main`
+
+HubSpot's loader used to fetch on **every pageview of every route**,
+setting its `__cf_bm` cookie before the visitor consented to anything and
+whether or not they ever opened the form. It now loads on the first time
+someone opens the contact modal; on `/contact` it still loads up front,
+because there the form is the page. Same portal, same form id, same
+embed — only *when* the script fetches changed.
+
+This belongs in the §8.9 tracking inventory, and Chris should know it is
+a deliberate difference from what `main` serves. Reverting it would put a
+third-party cookie back on every pre-consent pageview and drop the Best
+Practices score below the §6 threshold of 90.
 
 ## Not started
 
