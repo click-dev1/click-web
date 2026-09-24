@@ -4,8 +4,9 @@ import {
   caseStudyBySlugQuery,
   caseStudySitemapQuery,
   caseStudySlugsQuery,
+  workPageQuery,
 } from "./queries";
-import type { CaseStudy } from "./types";
+import type { CaseStudy, WorkPage } from "./types";
 
 /* Server-side accessors for case studies. Same contract as ./talent:
    published reads are cached and tagged with the document type so the
@@ -35,3 +36,12 @@ export const fetchCaseStudySitemap = () =>
     {},
     readOptions,
   );
+
+/* The /work singleton. Allowed to be missing — the page falls back to its
+   built-in copy — so the route renders before the document is seeded. */
+const workPageReadOptions = previewDrafts
+  ? {}
+  : { next: { revalidate: 3600, tags: ["workPage"] } };
+
+export const fetchWorkPage = () =>
+  client.fetch<WorkPage | null>(workPageQuery, {}, workPageReadOptions);

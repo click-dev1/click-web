@@ -77,7 +77,7 @@ export default function ActivationScorecard({
                 {block.media?.asset ? (
                   <BlockImage
                     image={block.media}
-                    ratio="21/9"
+                    ratio={block.media.display === "fit" ? "16/9" : "21/9"}
                     sizes="(min-width: 1024px) 55vw, 100vw"
                   />
                 ) : (

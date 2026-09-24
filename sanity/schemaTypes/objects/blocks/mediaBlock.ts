@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "../imageDisplay";
 
 /* A band of images on their own, not beside copy.
 
@@ -40,6 +41,7 @@ export const mediaBlockType = defineType({
               title: "Credit / licence",
               type: "string",
             }),
+            imageDisplayField,
           ],
         }),
       ],

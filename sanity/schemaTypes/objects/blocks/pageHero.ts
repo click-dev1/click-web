@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "../imageDisplay";
 
 /* The top of a page. One per page, always first — the renderer gives it
    the full-height treatment and the "overlap" signal, so there is no
@@ -71,6 +72,7 @@ export const pageHeroType = defineType({
       fields: [
         defineField({ name: "alt", title: "Alt text", type: "string" }),
         defineField({ name: "credit", title: "Credit / licence", type: "string" }),
+        imageDisplayField,
       ],
     }),
     defineField({

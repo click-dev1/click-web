@@ -301,7 +301,7 @@ button.
 
 | `figuresSource` | Disclosure under the results | In the sitemap? |
 | --- | --- | --- |
-| Confirmed by CLICK | "Figures as confirmed by CLICK." | yes |
+| Confirmed by CLICK | "Figures as confirmed by CLICK Influence." | yes |
 | Published on clickmedia.group | "…as published on clickmedia.group. Insight line is an editorial interpretation…" | yes |
 | Awaiting client confirmation | "Campaign details pending client confirmation." | **no** |
 
@@ -313,6 +313,43 @@ sentence in `content/site.ts` naming four brands by hand. It was correct
 the day it was written and would have started quietly lying the first
 time CLICK published a fifth case study. `lib/sanity/disclosure.ts`
 builds it from the documents instead.
+
+**Deck case studies (Sep 2026).** CLICK's Narrative and Case Studies
+decks added 13 CLICK Influence case studies and 8 GameSquare
+activations. The fields that came with them:
+
+- **Delivered by** (`attribution`) — CLICK Influence or GameSquare.
+  GameSquare work shows a "GameSquare" badge on its card and a credit
+  line on its page, so the site never claims work CLICK did not
+  deliver. CLICK's own work leads the `/work` grid.
+- **Engagement type** — how CLICK sold it (Mass Awareness, Kit
+  Seeding, Onsite Support…). Filterable on `/work`.
+- **Gallery** — imagery beyond the lead image, laid out as a masonry
+  wall where every picture keeps its own shape.
+- **Client quote** — the client's own words, with name, role and photo.
+
+`/work` shows six case studies and a "View more" button that adds six
+at a time; the filters and the count live in the URL. Every case study
+still has its own page in the sitemap.
+
+**The Work page** (`workPage` singleton) holds the `/work` hero, the
+closing CTA and the four **industry reels** (Beauty, Consumer Tech,
+Sport & Lifestyle, Food & Bev). A reel's industry must match a case
+study industry for its "See the work" link to appear. Video playback
+arrives with the Mux integration; until then a reel shows its poster.
+
+### Image display: Fill or Fit
+
+Every image slot has a fixed shape — cards are 4:3, banners 21:9 — and
+each image has a **Display** option:
+
+- **Fill** (default) crops to the frame around the hotspot. Use it for
+  photography, and set the hotspot on the face or subject.
+- **Fit** shows the whole image on the brand Dark Blue. Use it for the
+  deck collages (they are built on that same blue, so the edges vanish),
+  key art and screenshots.
+
+Images under ~600px wide belong in a gallery, never as a lead image.
 
 `pnpm seed:case-studies` moved the five campaigns in. **Do not run it
 again** once CLICK has edited anything in the Studio — it reads
@@ -372,3 +409,12 @@ placeholder creators that were deliberately deleted.
 `pnpm seed:case-studies` migrated the five campaigns out of
 `content/site.ts`. It was a one-time move; see **Case studies** above
 before ever running it again.
+
+`pnpm seed:deck` (`scripts/seed-deck.ts`) brought the Sep 2026 deck
+content in: the deck case studies, the Work page, `/experiential` as a
+block page, and new sections on Influencer Marketing and About, with
+their images. Unlike the older seeds it is **additive**: it creates only
+what does not exist yet and inserts page sections only when their
+`deck-*` key is absent, so re-running it cannot overwrite Studio edits.
+It reads images from `DECK_ASSETS_DIR`. Dry run by default; `--apply`
+writes.

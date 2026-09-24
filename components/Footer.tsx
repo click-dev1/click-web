@@ -61,7 +61,7 @@ export default function Footer({
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-sm">
             <p>
-              <span className="logo-mark h-11" aria-hidden="true" />
+              <span className="logo-mark h-14" aria-hidden="true" />
               <span className="visually-hidden">CLICK</span>
             </p>
             <p className="eyebrow mt-3">

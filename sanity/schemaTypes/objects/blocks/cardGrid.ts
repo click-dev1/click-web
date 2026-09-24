@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "../imageDisplay";
 
 /* A grid of short cards — the technology stack on /influencer-marketing,
    the "how we work" steps on /work, the office list on /about.
@@ -76,6 +77,7 @@ export const cardGridType = defineType({
                   title: "Credit / licence",
                   type: "string",
                 }),
+                imageDisplayField,
               ],
             }),
             defineField({

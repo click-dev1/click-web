@@ -20,7 +20,7 @@ function list(items: string[]): string {
 }
 
 const CLAUSES: Record<FiguresSource, (brands: string) => string> = {
-  "client-confirmed": (b) => `${b} figures as confirmed by CLICK`,
+  "client-confirmed": (b) => `${b} figures as confirmed by CLICK Influence`,
   "verified-public": (b) => `${b} figures as published on clickmedia.group`,
   pending: (b) => `${b} details pending client confirmation`,
 };
@@ -43,14 +43,22 @@ export function workDisclosure(caseStudies: CaseStudy[]): string {
   }).filter(Boolean);
 
   if (!clauses.length) return "";
-  return `${clauses.join("; ")}. Insight lines are editorial interpretations pending client confirmation.`;
+  /* The editorial caveat belongs to the case studies lifted from
+     clickmedia.group, whose insight lines were written here. CLICK's own
+     deck case studies are in CLICK's words and need no caveat. */
+  const editorial = caseStudies.some((c) => c.figuresSource === "verified-public");
+  return `${clauses.join("; ")}.${
+    editorial
+      ? " Insight lines on campaigns published at clickmedia.group are editorial interpretations pending client confirmation."
+      : ""
+  }`;
 }
 
 /** The disclosure under one case study's results. */
 export function figuresDisclosure(source: FiguresSource): string {
   switch (source) {
     case "client-confirmed":
-      return "Figures as confirmed by CLICK.";
+      return "Figures as confirmed by CLICK Influence.";
     case "verified-public":
       return "Figures as published on clickmedia.group. Insight line is an editorial interpretation pending client confirmation.";
     default:

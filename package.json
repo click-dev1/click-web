@@ -18,10 +18,12 @@
     "seed:settings": "tsx --env-file=.env.local scripts/seed-settings.ts",
     "seed:contact": "tsx --env-file=.env.local scripts/seed-contact.ts",
     "swap:pages": "tsx --env-file=.env.local scripts/swap-cms-pages.ts",
-    "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts"
+    "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts",
+    "seed:deck": "tsx --env-file=.env.local scripts/seed-deck.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@mux/mux-player-react": "^3.13.4",
     "@sanity/client": "^8.4.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^6.11.0",
@@ -32,6 +34,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sanity": "^6.11.0",
+    "sanity-plugin-mux-input": "^5.0.12",
     "styled-components": "^6.5.3"
   },
   "devDependencies": {

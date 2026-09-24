@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BlockImage from "./BlockImage";
+import AttributionBadge from "@/components/work/AttributionBadge";
 import CtaLink from "./CtaLink";
 import type { FeaturedWorkBlock as Block } from "@/lib/sanity/types";
 
@@ -68,14 +69,23 @@ export default function FeaturedWork({
                   a compact text card — which is what the hand-built proof
                   sections used. */}
               {c.media?.asset && (
-                <BlockImage
-                  image={c.media}
-                  ratio="16/9"
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="rounded-none"
-                />
+                <div className="relative">
+                  <BlockImage
+                    image={c.media}
+                    ratio="4/3"
+                    width={1200}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="rounded-none"
+                  />
+                  <AttributionBadge attribution={c.attribution} overlay />
+                </div>
               )}
               <div className="p-6">
+                {!c.media?.asset && (
+                  <div className="mb-3">
+                    <AttributionBadge attribution={c.attribution} />
+                  </div>
+                )}
                 <p className="eyebrow mb-2">
                   <span className="tick">▸</span> {c.brand}
                 </p>

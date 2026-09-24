@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "../imageDisplay";
 
 /* The workhorse section: eyebrow, heading, body copy, and optionally an
    image beside or beneath it. Roughly a third of every section on the
@@ -82,6 +83,7 @@ export const copyMediaType = defineType({
               title: "Credit / licence",
               type: "string",
             }),
+            imageDisplayField,
           ],
         }),
       ],

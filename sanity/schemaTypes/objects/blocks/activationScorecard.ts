@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "../imageDisplay";
 
 /* A signature block: fixed layout, editable copy.
 
@@ -80,6 +81,7 @@ export const activationScorecardType = defineType({
       fields: [
         defineField({ name: "alt", title: "Alt text", type: "string" }),
         defineField({ name: "credit", title: "Credit / licence", type: "string" }),
+        imageDisplayField,
       ],
     }),
     defineField({

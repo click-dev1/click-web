@@ -74,6 +74,8 @@ const caseStudyCardFields = /* groq */ `
   "slug": slug.current,
   service,
   industry,
+  engagementType,
+  "attribution": coalesce(attribution, "click"),
   insight,
   "metrics": coalesce(metrics[0...3]{ _key, value, label }, []),
   proofLine,
@@ -174,6 +176,8 @@ const caseStudyFields = /* groq */ `
   "slug": slug.current,
   service,
   industry,
+  engagementType,
+  "attribution": coalesce(attribution, "click"),
   "platforms": coalesce(platforms, []),
   insight,
   built,
@@ -182,6 +186,8 @@ const caseStudyFields = /* groq */ `
   proofLine,
   figuresSource,
   media{ ${imageFields} },
+  "gallery": coalesce(gallery[]{ ${imageFields} }, []),
+  quote{ ..., photo{ ${imageFields} } },
   mediaLabel,
   featured,
   seo
@@ -209,6 +215,19 @@ export const caseStudySitemapQuery = defineQuery(
   `*[_type == "caseStudy" && defined(slug.current) && seo.noIndex != true && figuresSource != "pending"] | ${caseStudyOrder} {
     "slug": slug.current,
     _updatedAt
+  }`,
+);
+
+/* The /work singleton. Reel posters are projected like every other image
+   so their slots can reserve space before they load. */
+export const workPageQuery = defineQuery(
+  `*[_type == "workPage" && _id == "workPage"][0] {
+    ...,
+    "reels": coalesce(reels[]{
+      _key, label, industry,
+      poster{ ${imageFields} },
+      "playbackId": video.asset->playbackId
+    }, [])
   }`,
 );
 

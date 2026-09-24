@@ -111,7 +111,7 @@ export default function Nav({
         className="relative z-50 mx-auto flex max-w-7xl items-center justify-between gap-4 py-4"
       >
         <Link href="/" className="flex items-center gap-3">
-          <span className="logo-mark h-6 md:h-8" aria-hidden="true" />
+          <span className="logo-mark h-8 md:h-10" aria-hidden="true" />
           <span className="visually-hidden">CLICK — home</span>
         </Link>
 

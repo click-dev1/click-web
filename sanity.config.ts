@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { visionTool } from "@sanity/vision";
+import { muxInput } from "sanity-plugin-mux-input";
 import { apiVersion, dataset, projectId, studioBasePath } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
@@ -22,5 +23,12 @@ export default defineConfig({
     structureTool({ structure }),
     /* GROQ playground — for developers, harmless for editors. */
     visionTool({ defaultApiVersion: apiVersion }),
+    /* Video, for the /work industry reels. Editors upload in the Studio;
+       Mux transcodes and streams it (adaptive quality, so a phone gets a
+       phone-sized file). The API token is entered once in the Studio and
+       stored in the dataset as `secrets.mux` — never in this repo.
+       Basic quality keeps encoding free and suits short reels; 1080p is
+       the ceiling because nothing on the site shows video larger. */
+    muxInput({ video_quality: "basic", max_resolution_tier: "1080p" }),
   ],
 });

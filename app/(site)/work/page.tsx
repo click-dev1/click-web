@@ -2,14 +2,19 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import WorkExplorer from "@/components/WorkExplorer";
 import ContactButton from "@/components/contact/ContactButton";
-import { fetchCaseStudies } from "@/lib/sanity/caseStudy";
+import { fetchCaseStudies, fetchWorkPage } from "@/lib/sanity/caseStudy";
 
-export const metadata: Metadata = {
-  title: "Work",
-  description:
-    "Smarter decisions. Stronger partnerships. Better results. Explore CLICK's influencer marketing and experiential campaigns — each one starting with what the intelligence found.",
-  alternates: { canonical: "/work" },
-};
+const DESCRIPTION =
+  "Smarter decisions. Stronger partnerships. Better results. Explore CLICK Influence's influencer marketing, experiential and in-game campaigns — each one starting with what the intelligence found.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await fetchWorkPage();
+  return {
+    title: page?.seo?.title ?? "Work",
+    description: page?.seo?.description ?? DESCRIPTION,
+    alternates: { canonical: "/work" },
+  };
+}
 
 const BEATS = [
   {
@@ -30,19 +35,33 @@ const BEATS = [
 ];
 
 export default async function WorkPage() {
-  const caseStudies = await fetchCaseStudies();
+  const [caseStudies, page] = await Promise.all([
+    fetchCaseStudies(),
+    fetchWorkPage(),
+  ]);
 
   return (
     <>
       <PageHero
-        eyebrow="Our Work"
-        title="Smarter decisions. Stronger partnerships. Better results."
-        lede="Every campaign starts with what the intelligence found. Explore the partnerships that show what happens next."
+        eyebrow={page?.heroEyebrow ?? "Our Work"}
+        title={
+          page?.heroTitle ??
+          "Smarter decisions. Stronger partnerships. Better results."
+        }
+        lede={
+          page?.heroLede ??
+          "Every campaign starts with what the intelligence found. Explore the partnerships that show what happens next."
+        }
         ctas={[{ label: "Talk With Our Team", primary: true, modal: true }]}
         signal="overlap"
       />
 
-      <WorkExplorer caseStudies={caseStudies} />
+      <WorkExplorer
+        caseStudies={caseStudies}
+        reels={page?.reels ?? []}
+        reelsEyebrow={page?.reelsEyebrow}
+        reelsHeading={page?.reelsHeading}
+      />
 
       {/* ---- the three-beat structure, explained once ---- */}
       <section
@@ -81,12 +100,11 @@ export default async function WorkPage() {
       >
         <div className="mx-auto max-w-4xl text-center">
           <h2 id="work-cta-heading" data-split className="font-display text-h2">
-            Ready to build your next success story?
+            {page?.ctaHeading ?? "Ready to build your next success story?"}
           </h2>
           <p data-reveal className="mx-auto mt-6 max-w-xl text-lg leading-body" style={{ color: "var(--ink-muted)" }}>
-            Whether you&apos;re launching a product, growing your brand, or
-            creating your next cultural moment, we&apos;ll help connect your
-            business with the right creators, audiences, and ideas.
+            {page?.ctaBody ??
+              "Whether you're launching a product, growing your brand, or creating your next cultural moment, we'll help connect your business with the right creators, audiences, and ideas."}
           </p>
           <div data-reveal className="mt-9">
             <ContactButton className="btn-primary">

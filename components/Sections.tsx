@@ -1,4 +1,8 @@
+import Link from "next/link";
 import ContactButton from "@/components/contact/ContactButton";
+import BlockImage from "@/components/blocks/BlockImage";
+import AttributionBadge from "@/components/work/AttributionBadge";
+import { workDisclosure } from "@/lib/sanity/disclosure";
 import IntelligenceDiagram from "@/components/IntelligenceDiagram";
 import { ScribbleCircle, ScribbleUnderline } from "@/components/Scribble";
 import type { Beat, CaseStudy, HomePage } from "@/lib/sanity/types";
@@ -391,84 +395,107 @@ export function Work({ home }: { home: HomePage }) {
             <article
               key={cs._id}
               data-reveal
-              className="card-surface rounded-xl p-6 sm:p-7 md:p-10"
+              className="card-surface overflow-hidden rounded-xl lg:grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,2fr)]"
             >
-              {/* The insight opens the card, before the brand or the
-                  campaign name — blueprint: "One insight line — 'What we
-                  found' — before anything else." */}
-              <p className="eyebrow mb-3">
-                <span className="tick">{String(i + 1).padStart(2, "0")}</span>{" "}
-                What the intelligence found
-              </p>
-              <p className="max-w-4xl text-xl leading-snug md:text-2xl">
-                {cs.insight}
-              </p>
-
-              <div
-                className="mt-8 grid gap-8 border-t pt-8 lg:grid-cols-[1fr_1.2fr_1fr]"
-                style={{ borderColor: "var(--hairline)" }}
-              >
-                <div>
-                  <p className="eyebrow mb-2">{cs.brand}</p>
-                  <h3 className="font-display text-h3 text-balance">{cs.headline ?? cs.title}</h3>
-                </div>
-
-                <div>
-                  <p className="eyebrow mb-1.5">What we built</p>
-                  <p className="leading-body">{cs.built}</p>
-                </div>
+              {/* The campaign's lead image, beside the three beats on a
+                  wide screen and above them on a phone. Cards without one
+                  stay text-only rather than showing an empty frame in the
+                  middle of the home page. */}
+              {cs.media?.asset && (
+                <Link href={`/work/${cs.slug}`} className="relative block" tabIndex={-1} aria-hidden="true">
+                  <BlockImage
+                    image={cs.media}
+                    ratio="4/3"
+                    width={1200}
+                    sizes="(min-width: 1024px) 28vw, 100vw"
+                    className="rounded-none lg:h-full lg:aspect-auto!"
+                  />
+                  <AttributionBadge attribution={cs.attribution} overlay />
+                </Link>
+              )}
+              <div className="p-6 sm:p-7 md:p-10">
+                {/* The insight opens the card, before the brand or the
+                    campaign name — blueprint: "One insight line — 'What we
+                    found' — before anything else." */}
+                <p className="eyebrow mb-3">
+                  <span className="tick">{String(i + 1).padStart(2, "0")}</span>{" "}
+                  What the intelligence found
+                </p>
+                <p className="max-w-4xl text-xl leading-snug md:text-2xl">
+                  {cs.insight}
+                </p>
 
                 <div
-                  className="flex flex-col justify-center gap-5 lg:border-l lg:pl-8"
+                  className="mt-8 grid gap-8 border-t pt-8 lg:grid-cols-[1fr_1.2fr_1fr]"
                   style={{ borderColor: "var(--hairline)" }}
                 >
-                  <p className="eyebrow">What it delivered</p>
-                  {cs.resultsIntro && (
-                    <p
-                      className="leading-body -mt-2 text-sm"
-                      style={{ color: "var(--ink-muted)" }}
-                    >
-                      {cs.resultsIntro}
-                    </p>
-                  )}
-                  {cs.metrics.length > 0 ? (
-                    cs.metrics.slice(0, 3).map((m) => (
-                      <div key={m.label}>
-                        <span className="tnum text-metric block">
-                          {m.value}
-                        </span>
+                  <div>
+                    <p className="eyebrow mb-2">{cs.brand}</p>
+                    <h3 className="font-display text-h3 text-balance">{cs.headline ?? cs.title}</h3>
+                  </div>
+
+                  <div>
+                    <p className="eyebrow mb-1.5">What we built</p>
+                    <p className="leading-body">{cs.built}</p>
+                  </div>
+
+                  <div
+                    className="flex flex-col justify-center gap-5 lg:border-l lg:pl-8"
+                    style={{ borderColor: "var(--hairline)" }}
+                  >
+                    <p className="eyebrow">What it delivered</p>
+                    {cs.resultsIntro && (
+                      <p
+                        className="leading-body -mt-2 text-sm"
+                        style={{ color: "var(--ink-muted)" }}
+                      >
+                        {cs.resultsIntro}
+                      </p>
+                    )}
+                    {cs.metrics.length > 0 ? (
+                      cs.metrics.slice(0, 3).map((m) => (
+                        <div key={m.label}>
+                          <span className="tnum text-metric block">
+                            {m.value}
+                          </span>
+                          <span
+                            className="text-sm"
+                            style={{ color: "var(--ink-muted)" }}
+                          >
+                            {m.label}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div>
                         <span
-                          className="text-sm"
-                          style={{ color: "var(--ink-muted)" }}
+                          className="font-display block text-2xl"
+                          style={{ color: "var(--signal)" }}
                         >
-                          {m.label}
+                          {cs.proofLine}
                         </span>
                       </div>
-                    ))
-                  ) : (
-                    <div>
-                      <span
-                        className="font-display block text-2xl"
-                        style={{ color: "var(--signal)" }}
-                      >
-                        {cs.proofLine}
-                      </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
+                <Link
+                  href={`/work/${cs.slug}`}
+                  className="btn-ghost mt-8 inline-flex px-4 py-2 text-xs"
+                >
+                  View Case Study <span className="btn-arrow">→</span>
+                </Link>
               </div>
             </article>
           ))}
         </div>
 
-        {/* The per-case "View Case Study" and "View All Work" CTAs are held
-            back until /work and /work/* exist — they were pointing at
-            routes that 404. They return with those pages. */}
-        <div className="mt-10">
-          <p className="text-sm" style={{ color: "var(--ink-muted)" }}>
-            Campaign figures as published on clickmedia.group. Insight lines are
-            editorial interpretations pending client confirmation.
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
+          <p className="max-w-2xl text-sm" style={{ color: "var(--ink-muted)" }}>
+            {workDisclosure(studies)}
           </p>
+          <Link href="/work" className="btn-ghost">
+            View All Work <span className="btn-arrow">→</span>
+          </Link>
         </div>
       </div>
     </section>

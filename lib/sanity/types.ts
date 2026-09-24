@@ -10,6 +10,9 @@ export interface SanityImage {
   credit?: string;
   lqip?: string;
   aspectRatio?: number;
+  /** Fill crops to the slot around the hotspot; fit shows the whole image
+      on navy. See sanity/schemaTypes/objects/imageDisplay.ts. */
+  display?: "fill" | "fit";
 }
 
 export interface Seo {
@@ -95,6 +98,15 @@ export interface Navigation {
     under the results, and keeps unconfirmed campaigns out of the sitemap. */
 export type FiguresSource = "client-confirmed" | "verified-public" | "pending";
 
+export type Attribution = "click" | "gamesquare";
+
+export interface ClientQuote {
+  text: string;
+  name?: string;
+  role?: string;
+  photo?: SanityImage;
+}
+
 export interface CaseStudy {
   _id: string;
   brand: string;
@@ -103,6 +115,8 @@ export interface CaseStudy {
   slug: string;
   service: string;
   industry: string;
+  engagementType?: string;
+  attribution: Attribution;
   platforms: string[];
   insight: string;
   built: string;
@@ -111,8 +125,31 @@ export interface CaseStudy {
   proofLine?: string;
   figuresSource: FiguresSource;
   media?: SanityImage;
+  gallery: SanityImage[];
+  quote?: ClientQuote;
   mediaLabel?: string;
   featured?: boolean;
+  seo?: Seo;
+}
+
+export interface Reel {
+  _key: string;
+  label: string;
+  industry?: string;
+  poster?: SanityImage;
+  /** Mux public playback id, once a film has been uploaded and processed. */
+  playbackId?: string;
+}
+
+export interface WorkPage {
+  heroEyebrow?: string;
+  heroTitle?: string;
+  heroLede?: string;
+  reelsEyebrow?: string;
+  reelsHeading?: string;
+  reels: Reel[];
+  ctaHeading?: string;
+  ctaBody?: string;
   seo?: Seo;
 }
 
@@ -267,6 +304,8 @@ export interface CaseStudyCard {
   slug: string;
   service: string;
   industry: string;
+  engagementType?: string;
+  attribution: Attribution;
   insight: string;
   metrics: Metric[];
   proofLine?: string;

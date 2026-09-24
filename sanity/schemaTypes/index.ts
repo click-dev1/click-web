@@ -27,6 +27,7 @@ import { personType } from "./person";
 import { siteSettingsType } from "./siteSettings";
 import { navigationType } from "./navigation";
 import { homePageType } from "./homePage";
+import { workPageType } from "./workPage";
 
 /* Every type the Studio knows about. Documents first, then the section
    blocks a page is assembled from, then shared objects.
@@ -44,6 +45,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   siteSettingsType,
   navigationType,
   homePageType,
+  workPageType,
   // section blocks
   pageHeroType,
   copyMediaType,

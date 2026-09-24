@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { imageDisplayField } from "./objects/imageDisplay";
 
 /* A campaign case study. Mirrors the Campaign interface the site rendered
    from content/site.ts, with the three-beat structure intact: what the
@@ -24,20 +25,46 @@ import { defineArrayMember, defineField, defineType } from "sanity";
 export const SERVICES = [
   "Influencer Marketing",
   "Experiential",
+  "In-Game",
   "Talent Partnerships",
 ] as const;
 
+/* Beauty, Consumer Tech, Sport & Lifestyle and Food & Beverage are the four
+   categories CLICK cuts its video reels by, so they are the ones the /work
+   reels link into — keep those four names in step with the reels. */
 export const INDUSTRIES = [
   "Gaming",
+  "Beauty",
+  "Consumer Tech",
+  "Sport & Lifestyle",
+  "Food & Beverage",
+  "Entertainment",
+  "Finance",
   "Technology",
   "Consumer Packaged Goods",
   "Retail",
   "Public Sector",
-  "Entertainment",
-  "Sports",
-  "Finance",
   "Automotive",
-  "Food & Beverage",
+] as const;
+
+/* How CLICK sells the work — the labels on its own case-study slides. */
+export const ENGAGEMENT_TYPES = [
+  "Mass Awareness",
+  "Mass Deployment",
+  "Tailored Activations",
+  "Kit Seeding",
+  "Onsite Support",
+  "Community Engagement",
+  "UA Content Development",
+] as const;
+
+/* Who delivered the campaign. CLICK Influence's own work is the default;
+   activations run elsewhere in the GameSquare group are shown with CLICK's
+   approval, badged as GameSquare so the site never claims work it did not
+   deliver. */
+export const ATTRIBUTIONS = [
+  { title: "CLICK Influence", value: "click" },
+  { title: "GameSquare", value: "gamesquare" },
 ] as const;
 
 export const CAMPAIGN_PLATFORMS = [
@@ -118,6 +145,25 @@ export const caseStudyType = defineType({
       type: "string",
       group: "content",
       options: { list: [...INDUSTRIES], layout: "dropdown" },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "engagementType",
+      title: "Engagement type",
+      type: "string",
+      group: "content",
+      description: "How the work was sold. Shown on the card and filterable on /work.",
+      options: { list: [...ENGAGEMENT_TYPES], layout: "dropdown" },
+    }),
+    defineField({
+      name: "attribution",
+      title: "Delivered by",
+      type: "string",
+      group: "content",
+      initialValue: "click",
+      description:
+        "GameSquare activations carry a GameSquare badge on the card and a credit line on the case study.",
+      options: { list: [...ATTRIBUTIONS], layout: "radio", direction: "horizontal" },
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -203,6 +249,25 @@ export const caseStudyType = defineType({
     }),
 
     defineField({
+      name: "quote",
+      title: "Client quote",
+      type: "object",
+      group: "results",
+      description: "Optional. A client's own words about the work — never paraphrased.",
+      fields: [
+        defineField({ name: "text", title: "Quote", type: "text", rows: 3 }),
+        defineField({ name: "name", type: "string" }),
+        defineField({ name: "role", title: "Role and company", type: "string" }),
+        defineField({
+          name: "photo",
+          type: "image",
+          options: { hotspot: true },
+          fields: [defineField({ name: "alt", title: "Alt text", type: "string" })],
+        }),
+      ],
+    }),
+
+    defineField({
       name: "media",
       title: "Campaign image",
       type: "image",
@@ -222,7 +287,36 @@ export const caseStudyType = defineType({
           type: "string",
           description: "Internal — never shown on the site.",
         }),
+        imageDisplayField,
       ],
+    }),
+    /* Everything past the lead image. Laid out as a masonry wall on the
+       case study, each picture at its own shape, so a phone-shot portrait
+       and a wide key-art banner can sit together without either being
+       cropped — which is exactly the mix the campaign assets come in. */
+    defineField({
+      name: "gallery",
+      title: "Gallery",
+      type: "array",
+      group: "media",
+      description:
+        "More campaign imagery, shown beneath the lead image on the case study. Each keeps its own shape. Images under ~600px wide belong here, never as the lead image.",
+      of: [
+        defineArrayMember({
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({ name: "alt", title: "Alt text", type: "string" }),
+            defineField({
+              name: "credit",
+              title: "Credit / licence",
+              type: "string",
+              description: "Internal — never shown on the site.",
+            }),
+          ],
+        }),
+      ],
+      validation: (rule) => rule.max(12),
     }),
     defineField({
       name: "mediaLabel",
@@ -275,12 +369,13 @@ export const caseStudyType = defineType({
       brand: "brand",
       title: "title",
       service: "service",
+      attribution: "attribution",
       media: "media",
       featured: "featured",
     },
-    prepare: ({ brand, title, service, media, featured }) => ({
+    prepare: ({ brand, title, service, attribution, media, featured }) => ({
       title: `${featured ? "★ " : ""}${brand} — ${title}`,
-      subtitle: service,
+      subtitle: attribution === "gamesquare" ? `GameSquare · ${service}` : service,
       media,
     }),
   },

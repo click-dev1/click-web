@@ -518,16 +518,48 @@ button:hover .btn-arrow {
   background-size: 44px 44px;
 }
 
-/* ---------- logo (official CLICK mark, painted via mask so it takes the
-   theme ink automatically rather than shipping a second colourway) ---------- */
+/* ---------- logo (official CLICK Influence mark, painted via mask so it
+   takes the theme ink automatically rather than shipping a second colourway).
+   The deck artwork carries a blue swirl; it is dropped from the mask because
+   a blue stroke on the Electric Blue ground disappears anyway, and a mask
+   can only paint one colour. ---------- */
 
 .logo-mark {
   display: inline-block;
-  aspect-ratio: 965 / 290;
+  aspect-ratio: 960 / 450;
   background-color: var(--ink);
-  -webkit-mask: url("/click-logo.png") no-repeat center / contain;
-  mask: url("/click-logo.png") no-repeat center / contain;
+  -webkit-mask: url("/click-influence-logo.png") no-repeat center / contain;
+  mask: url("/click-influence-logo.png") no-repeat center / contain;
   transition: background-color 0.5s ease;
+}
+
+/* ---------- fitted media ----------
+   An image set to "Fit" in the Studio sits whole inside its frame on the
+   brand Dark Blue. CLICK's case-study collages are built on that same
+   colour, so the letterbox reads as part of the artwork, not as bars. */
+
+.media-fit {
+  background: #00234a; /* Dark Blue */
+}
+
+/* The GameSquare credit pinned to a card's image corner. It sits on
+   photography, so it carries its own Dark Blue ground to stay legible. */
+.attribution-overlay {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  background: #00234a;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* The "Watch with sound" button sits on moving footage, so it carries
+   its own Dark Blue ground to stay legible over any frame. */
+.reel-watch {
+  z-index: 1;
+  background: #00234a;
+  color: #ffffff;
 }
 
 /* ---------- nav ---------- */

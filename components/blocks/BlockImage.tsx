@@ -17,6 +17,7 @@ export default function BlockImage({
   className = "",
   priority = false,
   ratio,
+  width = 1600,
 }: {
   image: SanityImage;
   sizes: string;
@@ -26,27 +27,33 @@ export default function BlockImage({
       crop — a card grid, for instance. Omit it and the asset's own
       aspect ratio wins, which is the better default everywhere else. */
   ratio?: string;
+  /** Pixel width requested from the Sanity CDN. Size it to the slot: ~1200
+      for a card, ~2000 for a full-width hero. */
+  width?: number;
 }) {
   const { hotspot, lqip, aspectRatio } = image;
+  const fit = image.display === "fit";
   const objectPosition = hotspot
     ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`
     : "center";
 
   return (
     <div
-      className={`talent-media relative w-full overflow-hidden ${className}`}
+      className={`talent-media relative w-full overflow-hidden ${
+        fit ? "media-fit" : ""
+      } ${className}`}
       style={{ aspectRatio: ratio ?? (aspectRatio ? String(aspectRatio) : "4/3") }}
     >
       <Image
-        src={urlFor(image).width(1600).quality(80).url()}
+        src={urlFor(image).width(width).quality(80).url()}
         alt={image.alt ?? ""}
         fill
         sizes={sizes}
         priority={priority}
-        placeholder={lqip ? "blur" : "empty"}
+        placeholder={lqip && !fit ? "blur" : "empty"}
         blurDataURL={lqip}
-        className="object-cover"
-        style={{ objectPosition }}
+        className={fit ? "object-contain" : "object-cover"}
+        style={fit ? undefined : { objectPosition }}
       />
     </div>
   );

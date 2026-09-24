@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Placeholder from "@/components/Placeholder";
 import BlockImage from "@/components/blocks/BlockImage";
+import AttributionBadge, {
+  GAMESQUARE_CREDIT,
+} from "@/components/work/AttributionBadge";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchCaseStudies, fetchCaseStudySlugs } from "@/lib/sanity/caseStudy";
 import { figuresDisclosure } from "@/lib/sanity/disclosure";
@@ -58,7 +61,8 @@ export default async function CaseStudyPage({
             <Link href="/work" className="transition-opacity hover:opacity-70">
               Work
             </Link>{" "}
-            <span className="tick">/</span> {c.service} · {c.industry}
+            <span className="tick">/</span> {c.engagementType ?? c.service} ·{" "}
+            {c.industry}
           </p>
           <p className="font-display anim-fade-up text-h3" style={{ color: "var(--ink-muted)" }}>
             {c.brand}
@@ -66,9 +70,18 @@ export default async function CaseStudyPage({
           <h1 id="case-heading" data-split className="font-display text-hero max-w-5xl">
             {c.title}
           </h1>
-          <p className="eyebrow anim-fade-up mt-6" style={{ animationDelay: "0.3s" }}>
-            {c.platforms.join(" · ")}
-          </p>
+          <div
+            className="anim-fade-up mt-6 flex flex-wrap items-center gap-4"
+            style={{ animationDelay: "0.3s" }}
+          >
+            <AttributionBadge attribution={c.attribution} />
+            <p className="eyebrow">{c.platforms.join(" · ")}</p>
+          </div>
+          {c.attribution === "gamesquare" && (
+            <p className="anim-fade-up mt-4 max-w-2xl text-sm leading-body" style={{ color: "var(--ink-muted)" }}>
+              {GAMESQUARE_CREDIT}
+            </p>
+          )}
         </div>
       </section>
 
@@ -106,25 +119,41 @@ export default async function CaseStudyPage({
             >
               {c.built}
             </p>
-            <div className="grid gap-4">
-              {c.media?.asset ? (
-                <BlockImage
-                  image={c.media}
-                  ratio="16/9"
-                  sizes="(min-width: 1024px) 60vw, 100vw"
-                />
-              ) : (
-                <Placeholder
-                  label={c.mediaLabel ?? "Campaign film · client-supplied"}
-                  ratio="16/9"
-                />
-              )}
-              <div className="grid grid-cols-2 gap-4">
-                <Placeholder label="Creator content" ratio="4/3" />
-                <Placeholder label="Behind the scenes" ratio="4/3" />
-              </div>
-            </div>
+            {c.media?.asset ? (
+              <BlockImage
+                image={c.media}
+                ratio="4/3"
+                width={2000}
+                sizes="(min-width: 1024px) 58vw, 100vw"
+              />
+            ) : (
+              <Placeholder
+                label={c.mediaLabel ?? "Campaign film · client-supplied"}
+                ratio="4/3"
+              />
+            )}
           </div>
+
+          {/* The rest of the campaign imagery, each at its own shape — a
+              masonry wall, so phone-shot portraits and wide key art sit
+              together without either being cropped. */}
+          {c.gallery.length > 0 && (
+            <div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3">
+              {c.gallery.map((img, n) => (
+                <div
+                  key={img.asset?._ref ?? n}
+                  data-reveal
+                  className="mb-4 break-inside-avoid"
+                >
+                  <BlockImage
+                    image={img}
+                    width={1200}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -165,6 +194,38 @@ export default async function CaseStudyPage({
           <p className="mt-8 text-sm" style={{ color: "var(--ink-muted)" }}>
             {figuresDisclosure(c.figuresSource)}
           </p>
+
+          {c.quote?.text && (
+            <figure data-reveal className="insight-frame mt-14 max-w-3xl">
+              <blockquote className="font-display text-h3 leading-snug">
+                “{c.quote.text}”
+              </blockquote>
+              {(c.quote.name || c.quote.role) && (
+                <figcaption className="mt-6 flex items-center gap-4">
+                  {c.quote.photo?.asset && (
+                    <div className="w-14 shrink-0 overflow-hidden rounded-full">
+                      <BlockImage
+                        image={c.quote.photo}
+                        ratio="1/1"
+                        width={240}
+                        sizes="56px"
+                      />
+                    </div>
+                  )}
+                  <span>
+                    {c.quote.name && (
+                      <span className="eyebrow block">{c.quote.name}</span>
+                    )}
+                    {c.quote.role && (
+                      <span className="block text-sm" style={{ color: "var(--ink-muted)" }}>
+                        {c.quote.role}
+                      </span>
+                    )}
+                  </span>
+                </figcaption>
+              )}
+            </figure>
+          )}
         </div>
       </section>
 
