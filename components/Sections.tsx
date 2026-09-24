@@ -290,7 +290,7 @@ export function Intelligence() {
               style={{ lineHeight: 0.94 }}
             >
               <span data-split className="block">
-                We start with the audience, not the creator.
+                We start with the audience.
               </span>
             </h2>
             <p
