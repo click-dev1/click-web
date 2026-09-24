@@ -570,6 +570,26 @@ button:hover .btn-arrow {
   border-radius: 999px;
   background: color-mix(in srgb, #00234a 88%, transparent);
   color: #ffffff;
+  /* Hidden until wanted — hover, keyboard focus, or a tap on touch. */
+  opacity: 0;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.reel-frame:hover .reel-controls,
+.reel-frame:focus-within .reel-controls,
+.reel-frame[data-revealed] .reel-controls {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reel-controls {
+    transition: none;
+    transform: none;
+  }
 }
 .reel-controls button {
   display: inline-flex;

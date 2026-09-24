@@ -23,6 +23,8 @@ const SOLO = "reel:solo";
  * - Once someone presses a control, they are in charge — the reel stops
  *   auto-pausing on its own.
  * - Unmuting one reel pauses any other that is playing with sound.
+ * - The controls stay out of the film until wanted: they appear on hover
+ *   or keyboard focus, and on touch a tap reveals them for a few seconds.
  * - Reduced motion: nothing plays until asked.
  *
  * Mux's viewer analytics are switched off. The site only measures with
@@ -46,6 +48,21 @@ export default function ReelPlayer({
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [volume, setVolume] = useState(1);
+  /* Touch has no hover: a tap on the film shows the controls briefly. */
+  const [revealed, setRevealed] = useState(false);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const reveal = () => {
+    setRevealed(true);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setRevealed(false), 3000);
+  };
+  useEffect(
+    () => () => {
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    },
+    [],
+  );
 
   const posterUrl =
     poster ??
@@ -142,7 +159,11 @@ export default function ReelPlayer({
   return (
     <div
       ref={frame}
-      className="relative w-full overflow-hidden"
+      className="reel-frame relative w-full overflow-hidden"
+      data-revealed={revealed || undefined}
+      onPointerDown={(e) => {
+        if (e.pointerType !== "mouse") reveal();
+      }}
       style={{ aspectRatio: "9/16" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- stand-in
