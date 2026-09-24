@@ -8,15 +8,21 @@ import MuxPlayer from "@mux/mux-player-react/lazy";
 
 type MuxPlayerElement = ComponentRef<typeof MuxPlayer>;
 
+/* One reel with sound at a time: a reel that starts playing out loud
+   tells the others to stop. */
+const SOLO = "reel:solo";
+
 /**
- * One industry reel: a muted, looping preview that becomes the full film.
+ * One industry reel: a muted, looping preview with three controls —
+ * play/pause, restart, volume. The player's own chrome stays hidden; at
+ * a quarter of the page width it would bury the film.
  *
- * - On a device with a mouse, a reel plays while the pointer is over it —
- *   four previews running at once in a row would be noise.
- * - On touch, the reel most in view plays by itself; scrolling on pauses
- *   it.
- * - "Watch with sound" unmutes and goes fullscreen with the player's own
- *   controls; leaving fullscreen puts it back to a silent preview.
+ * - Until someone touches the controls it previews by itself: on a
+ *   device with a mouse while the pointer is over it (four running at
+ *   once would be noise), on touch while it is the reel in view.
+ * - Once someone presses a control, they are in charge — the reel stops
+ *   auto-pausing on its own.
+ * - Unmuting one reel pauses any other that is playing with sound.
  * - Reduced motion: nothing plays until asked.
  *
  * Mux's viewer analytics are switched off. The site only measures with
@@ -35,24 +41,27 @@ export default function ReelPlayer({
 }) {
   const frame = useRef<HTMLDivElement>(null);
   const player = useRef<MuxPlayerElement | null>(null);
-  const [full, setFull] = useState(false);
+  /* True once the visitor has used a control — auto play/pause stops. */
+  const driven = useRef(false);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const [volume, setVolume] = useState(1);
 
   const posterUrl =
     poster ??
     `https://image.mux.com/${playbackId}/thumbnail.webp?time=1&width=720`;
 
+  /* Automatic preview, until the visitor takes over. */
   useEffect(() => {
     const el = frame.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const play = () => {
-      const p = player.current;
-      if (p && p.muted) p.play()?.catch(() => {});
+      if (!driven.current) player.current?.play()?.catch(() => {});
     };
     const pause = () => {
-      const p = player.current;
-      if (p && p.muted) p.pause();
+      if (!driven.current) player.current?.pause();
     };
 
     if (window.matchMedia("(hover: hover)").matches) {
@@ -72,36 +81,68 @@ export default function ReelPlayer({
     return () => io.disconnect();
   }, []);
 
-  /* Back to a silent preview whenever fullscreen ends, however it ends. */
+  /* Another reel went loud — this one stops. */
   useEffect(() => {
-    const onChange = () => {
-      if (document.fullscreenElement) return;
+    const onSolo = (e: Event) => {
+      if ((e as CustomEvent<string>).detail === playbackId) return;
       const p = player.current;
-      if (p) p.muted = true;
-      setFull(false);
+      if (p && !p.muted && !p.paused) p.pause();
     };
-    document.addEventListener("fullscreenchange", onChange);
-    return () => document.removeEventListener("fullscreenchange", onChange);
-  }, []);
+    window.addEventListener(SOLO, onSolo);
+    return () => window.removeEventListener(SOLO, onSolo);
+  }, [playbackId]);
 
-  const watch = async () => {
+  const solo = () =>
+    window.dispatchEvent(new CustomEvent(SOLO, { detail: playbackId }));
+
+  const togglePlay = () => {
     const p = player.current;
     if (!p) return;
-    p.muted = false;
-    setFull(true);
-    try {
-      await p.requestFullscreen();
-    } catch {
-      /* iOS Safari has no element fullscreen — it plays inline with
-         sound and the controls instead. */
-    }
+    driven.current = true;
+    if (p.paused) {
+      if (!p.muted) solo();
+      p.play()?.catch(() => {});
+    } else p.pause();
+  };
+
+  const restart = () => {
+    const p = player.current;
+    if (!p) return;
+    driven.current = true;
+    p.currentTime = 0;
     p.play()?.catch(() => {});
   };
+
+  const toggleMute = () => {
+    const p = player.current;
+    if (!p) return;
+    driven.current = true;
+    p.muted = !p.muted;
+    if (!p.muted) {
+      if (p.volume === 0) p.volume = 1;
+      solo();
+      p.play()?.catch(() => {});
+    }
+  };
+
+  const changeVolume = (value: number) => {
+    const p = player.current;
+    if (!p) return;
+    driven.current = true;
+    p.volume = value;
+    p.muted = value === 0;
+    if (value > 0) {
+      solo();
+      p.play()?.catch(() => {});
+    }
+  };
+
+  const silent = muted || volume === 0;
 
   return (
     <div
       ref={frame}
-      className="reel-frame relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden"
       style={{ aspectRatio: "9/16" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- stand-in
@@ -125,26 +166,130 @@ export default function ReelPlayer({
         disableTracking
         disableCookies
         title={label}
-        accentColor="#186ffc"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onVolumeChange={() => {
+          const p = player.current;
+          if (!p) return;
+          setMuted(p.muted);
+          setVolume(p.volume);
+        }}
         className="absolute inset-0 h-full w-full"
         style={{
           aspectRatio: "9/16",
           "--media-object-fit": "cover",
-          /* Chrome-less while it previews; the player's own controls come
-             back for the full film. */
-          ...(full ? {} : { "--controls": "none" }),
+          "--controls": "none",
         }}
       />
-      {!full && (
+
+      <div
+        className="reel-controls"
+        role="group"
+        aria-label={`${label} reel controls`}
+      >
         <button
           type="button"
-          onClick={watch}
-          className="btn-ghost reel-watch absolute bottom-3 left-3 px-3 py-1.5 text-xs"
-          aria-label={`Watch the ${label} reel with sound`}
+          onClick={togglePlay}
+          aria-label={playing ? "Pause" : "Play"}
+          title={playing ? "Pause" : "Play"}
         >
-          ▶ Watch with sound
+          {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
-      )}
+        <button type="button" onClick={restart} aria-label="Restart" title="Restart">
+          <RestartIcon />
+        </button>
+        <span className="reel-volume">
+          <button
+            type="button"
+            onClick={toggleMute}
+            aria-label={silent ? "Unmute" : "Mute"}
+            title={silent ? "Unmute" : "Mute"}
+          >
+            {silent ? <MutedIcon /> : <SoundIcon />}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={silent ? 0 : volume}
+            onChange={(e) => changeVolume(Number(e.target.value))}
+            aria-label="Volume"
+          />
+        </span>
+      </div>
     </div>
+  );
+}
+
+/* Icons: 20px, currentColor, so they take the control bar's ink. */
+const icon = {
+  width: 20,
+  height: 20,
+  viewBox: "0 0 24 24",
+  fill: "currentColor",
+  "aria-hidden": true,
+} as const;
+
+function PlayIcon() {
+  return (
+    <svg {...icon}>
+      <path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg {...icon}>
+      <rect x="6" y="5" width="4" height="14" rx="1" />
+      <rect x="14" y="5" width="4" height="14" rx="1" />
+    </svg>
+  );
+}
+
+function RestartIcon() {
+  return (
+    <svg
+      {...icon}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 12a9 9 0 1 0 3-6.7" />
+      <path d="M3 4v5h5" />
+    </svg>
+  );
+}
+
+function SoundIcon() {
+  return (
+    <svg {...icon}>
+      <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+      <path
+        d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function MutedIcon() {
+  return (
+    <svg {...icon}>
+      <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+      <path
+        d="m16.5 9.5 5 5m0-5-5 5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+    </svg>
   );
 }

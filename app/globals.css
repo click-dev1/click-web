@@ -554,12 +554,66 @@ button:hover .btn-arrow {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* The "Watch with sound" button sits on moving footage, so it carries
-   its own Dark Blue ground to stay legible over any frame. */
-.reel-watch {
+/* Reel controls: play/pause, restart, volume, in a Dark Blue pill along
+   the foot of the film — its own ground so it stays legible over any
+   frame. */
+.reel-controls {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
   z-index: 1;
-  background: #00234a;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #00234a 88%, transparent);
   color: #ffffff;
+}
+.reel-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
+}
+.reel-controls button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.reel-controls button:focus-visible,
+.reel-controls input:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+.reel-volume {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+.reel-volume input {
+  flex: 1;
+  min-width: 0;
+  height: 2.25rem;
+  margin-right: 0.5rem;
+  accent-color: #ffffff;
+  cursor: pointer;
+}
+/* Phones set volume with their own buttons — iOS ignores a page's
+   volume entirely — so touch gets the mute toggle alone. */
+@media (hover: none) {
+  .reel-volume input {
+    display: none;
+  }
+  .reel-volume {
+    flex: 0;
+  }
 }
 
 /* ---------- nav ---------- */
