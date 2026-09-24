@@ -19,6 +19,9 @@ import type { MediaBlock as Block } from "@/lib/sanity/types";
  * different assets land in it.
  */
 const COLUMNS: Record<number, string> = {
+  /* Listed explicitly: missing, a lone image fell through to the
+     four-column fallback below and rendered a quarter of the width. */
+  1: "grid-cols-1",
   2: "md:grid-cols-2",
   3: "md:grid-cols-3",
   4: "md:grid-cols-2 lg:grid-cols-4",
@@ -52,6 +55,7 @@ export default function MediaBand({
           image={img}
           ratio={ratio}
           sizes={sizes}
+          width={count === 1 ? 2400 : 1200}
           className={offset(i)}
         />
       ))
