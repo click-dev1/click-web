@@ -48,16 +48,29 @@ export default function MediaBand({
   const ratio = count === 1 ? "21/9" : "3/4";
   const sizes = count === 1 ? "100vw" : "(min-width: 768px) 33vw, 100vw";
 
+  /* A lone "fit" image keeps its own shape instead of being letterboxed
+     into the banner — a portrait group shot in a 21/9 frame is mostly
+     empty ground. Its width is capped so the height stays within ~80% of
+     the viewport, and it centres in the column. */
+  const lone = count === 1 && images[0]?.display === "fit" && images[0].aspectRatio
+    ? images[0].aspectRatio
+    : null;
+
   const frames: ReactNode[] = images.length
     ? images.map((img, i) => (
-        <BlockImage
+        <div
           key={img.asset?._ref ?? i}
-          image={img}
-          ratio={ratio}
-          sizes={sizes}
-          width={count === 1 ? 2400 : 1200}
-          className={offset(i)}
-        />
+          className={lone ? "mx-auto w-full" : "contents"}
+          style={lone ? { maxWidth: `calc(80svh * ${lone})` } : undefined}
+        >
+          <BlockImage
+            image={img}
+            ratio={lone ? undefined : ratio}
+            sizes={lone ? `min(100vw, calc(80vh * ${lone}))` : sizes}
+            width={count === 1 ? 2400 : 1200}
+            className={offset(i)}
+          />
+        </div>
       ))
     : labels.map((label, i) => (
         <Placeholder

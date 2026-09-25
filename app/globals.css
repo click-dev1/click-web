@@ -1101,6 +1101,12 @@ button:hover .btn-arrow {
   transform: translateY(0);
   pointer-events: auto;
 }
+/* just clicked through — stay shut until the pointer leaves (Nav.tsx) */
+.nav-drop[data-dismissed="true"] .nav-drop-panel {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+}
 /* keeps the panel reachable while the pointer crosses the gap */
 .nav-drop::after {
   content: "";

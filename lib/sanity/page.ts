@@ -7,10 +7,20 @@ import type { Page } from "./types";
 
    The one-hour TTL is a safety net: an indefinite cache entry survives in
    .next/cache across deployments, which is how a published page can stay
-   out of a freshly built sitemap. See docs/SANITY.md. */
+   out of a freshly built sitemap. See docs/SANITY.md.
+
+   Blocks dereference other documents (teamGrid → person, featuredTalent
+   → talent, featuredWork → caseStudy), so a page read carries those tags
+   too — otherwise publishing a team portrait revalidates "person" and
+   the About page keeps serving the cached copy without it. */
 const readOptions = previewDrafts
   ? {}
-  : { next: { revalidate: 3600, tags: ["page"] } };
+  : {
+      next: {
+        revalidate: 3600,
+        tags: ["page", "person", "talent", "caseStudy"],
+      },
+    };
 
 export const fetchPage = (slug: string) =>
   client.fetch<Page | null>(pageBySlugQuery, { slug }, readOptions);

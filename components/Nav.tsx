@@ -32,6 +32,15 @@ export default function Nav({
   const overlayRef = useRef<HTMLDivElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const { open: openContact } = useContactModal();
+  /* Desktop dropdowns open on :hover / :focus-within. Navigation is
+     client-side, so after a click the pointer is still over the panel and
+     the link still holds focus — it would stay open on the new page. The
+     clicked group is held shut until the pointer leaves it. */
+  const [dismissed, setDismissed] = useState<string | null>(null);
+  const onNavClick = (group?: string) => (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.blur();
+    if (group) setDismissed(group);
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -120,7 +129,12 @@ export default function Nav({
           <ul className="hidden items-center gap-7 lg:flex">
             {items.map((l) =>
               l._type === "navGroup" ? (
-                <li key={l.label} className="nav-drop relative">
+                <li
+                  key={l.label}
+                  className="nav-drop relative"
+                  data-dismissed={dismissed === l.label || undefined}
+                  onMouseLeave={() => dismissed === l.label && setDismissed(null)}
+                >
                   <button
                     type="button"
                     className="text-sm transition-opacity hover:opacity-100"
@@ -137,6 +151,7 @@ export default function Nav({
                       <Link
                         key={c.href}
                         href={c.href}
+                        onClick={onNavClick(l.label)}
                         className="block px-4 py-2.5 text-sm transition-opacity hover:opacity-100"
                         style={linkStyle(c.href)}
                         aria-current={isActive(c.href) ? "page" : undefined}
@@ -150,6 +165,7 @@ export default function Nav({
                 <li key={l.href}>
                   <Link
                     href={l.href}
+                    onClick={onNavClick()}
                     className="text-sm transition-opacity hover:opacity-100"
                     style={linkStyle(l.href)}
                     aria-current={isActive(l.href) ? "page" : undefined}
