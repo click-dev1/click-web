@@ -6,7 +6,6 @@ import Placeholder from "./Placeholder";
 import BlockImage from "./blocks/BlockImage";
 import AttributionBadge from "./work/AttributionBadge";
 import WorkReels from "./work/WorkReels";
-import { workDisclosure } from "@/lib/sanity/disclosure";
 import type { CaseStudy, Reel } from "@/lib/sanity/types";
 import { brands } from "@/content/manifest";
 
@@ -319,10 +318,6 @@ export default function WorkExplorer({
               </p>
             </div>
           )}
-
-          <p className="mt-10 text-sm" style={{ color: "var(--ink-muted)" }}>
-            {workDisclosure(caseStudies)}
-          </p>
         </div>
       </section>
 

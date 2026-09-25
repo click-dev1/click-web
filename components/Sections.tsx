@@ -2,7 +2,6 @@ import Link from "next/link";
 import ContactButton from "@/components/contact/ContactButton";
 import BlockImage from "@/components/blocks/BlockImage";
 import AttributionBadge from "@/components/work/AttributionBadge";
-import { workDisclosure } from "@/lib/sanity/disclosure";
 import IntelligenceDiagram from "@/components/IntelligenceDiagram";
 import { ScribbleCircle, ScribbleUnderline } from "@/components/Scribble";
 import type { Beat, CaseStudy, HomePage } from "@/lib/sanity/types";
@@ -489,10 +488,7 @@ export function Work({ home }: { home: HomePage }) {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-6">
-          <p className="max-w-2xl text-sm" style={{ color: "var(--ink-muted)" }}>
-            {workDisclosure(studies)}
-          </p>
+        <div className="mt-10 flex justify-end">
           <Link href="/work" className="btn-ghost">
             View All Work <span className="btn-arrow">→</span>
           </Link>

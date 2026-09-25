@@ -8,7 +8,6 @@ import AttributionBadge, {
 } from "@/components/work/AttributionBadge";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchCaseStudies, fetchCaseStudySlugs } from "@/lib/sanity/caseStudy";
-import { figuresDisclosure } from "@/lib/sanity/disclosure";
 
 export async function generateStaticParams() {
   const slugs = await fetchCaseStudySlugs();
@@ -191,9 +190,6 @@ export default async function CaseStudyPage({
               <p className="font-display text-h3">{c.proofLine}</p>
             </div>
           )}
-          <p className="mt-8 text-sm" style={{ color: "var(--ink-muted)" }}>
-            {figuresDisclosure(c.figuresSource)}
-          </p>
 
           {c.quote?.text && (
             <figure data-reveal className="insight-frame mt-14 max-w-3xl">
