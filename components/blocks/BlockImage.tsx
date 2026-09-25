@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { urlFor } from "@/lib/sanity/image";
+import { deliveredAspectRatio, urlFor } from "@/lib/sanity/image";
 import type { SanityImage } from "@/lib/sanity/types";
 
 /**
@@ -31,7 +31,8 @@ export default function BlockImage({
       for a card, ~2000 for a full-width hero. */
   width?: number;
 }) {
-  const { hotspot, lqip, aspectRatio } = image;
+  const { hotspot, lqip } = image;
+  const aspectRatio = deliveredAspectRatio(image);
   const fit = image.display === "fit";
   const objectPosition = hotspot
     ? `${Math.round(hotspot.x * 100)}% ${Math.round(hotspot.y * 100)}%`

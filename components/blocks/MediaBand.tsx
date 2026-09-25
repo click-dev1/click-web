@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import BlockImage from "./BlockImage";
+import { deliveredAspectRatio } from "@/lib/sanity/image";
 import Placeholder from "@/components/Placeholder";
 import type { MediaBlock as Block } from "@/lib/sanity/types";
 
@@ -52,9 +53,10 @@ export default function MediaBand({
      into the banner — a portrait group shot in a 21/9 frame is mostly
      empty ground. Its width is capped so the height stays within ~80% of
      the viewport, and it centres in the column. */
-  const lone = count === 1 && images[0]?.display === "fit" && images[0].aspectRatio
-    ? images[0].aspectRatio
-    : null;
+  const lone =
+    count === 1 && images[0]?.display === "fit"
+      ? (deliveredAspectRatio(images[0]) ?? null)
+      : null;
 
   const frames: ReactNode[] = images.length
     ? images.map((img, i) => (
