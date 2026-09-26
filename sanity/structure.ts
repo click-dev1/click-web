@@ -36,4 +36,26 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.documentTypeListItem("article").title("Insights & news"),
       S.documentTypeListItem("pressItem").title("Press"),
+      S.divider(),
+      /* Fixed documents, like the singletons: legal text is edited, never
+         created or deleted from the sidebar. */
+      S.listItem()
+        .title("Legal pages")
+        .id("legalPages")
+        .child(
+          S.list()
+            .title("Legal pages")
+            .items(
+              [
+                ["privacy-policy", "Privacy Policy"],
+                ["cookie-policy", "Cookie Policy"],
+                ["terms-of-use", "Terms of Use"],
+              ].map(([slug, title]) =>
+                S.listItem()
+                  .title(title)
+                  .id(`legalPage-${slug}`)
+                  .child(S.document().schemaType("legalPage").documentId(`legalPage-${slug}`)),
+              ),
+            ),
+        ),
     ]);

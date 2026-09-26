@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import LegalPage from "@/components/LegalPage";
-import { isLegalPublishable, legalPages } from "@/content/legal";
+import { fetchLegalPage } from "@/lib/sanity/legal";
 
-const page = legalPages.privacy;
+/* Edited in the Studio (Legal pages). noindex until counsel signs the
+   text off — the "Signed off by counsel" switch on the document. */
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await fetchLegalPage("privacy-policy");
+  return {
+    title: page.title,
+    description: page.description,
+    alternates: { canonical: "/privacy-policy" },
+    robots: page.approved ? { index: true, follow: true } : { index: false, follow: true },
+  };
+}
 
-/* noindex until counsel signs the text off — see content/legal.ts. */
-export const metadata: Metadata = {
-  title: page.title,
-  description: page.description,
-  alternates: { canonical: "/privacy-policy" },
-  robots: isLegalPublishable(page)
-    ? { index: true, follow: true }
-    : { index: false, follow: true },
-};
-
-export default function PrivacyPolicyPage() {
-  return <LegalPage page={page} />;
+export default async function Page() {
+  return <LegalPage page={await fetchLegalPage("privacy-policy")} />;
 }

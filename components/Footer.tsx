@@ -3,7 +3,14 @@ import ContactButton from "@/components/contact/ContactButton";
 import CookiePreferencesButton from "@/components/consent/CookiePreferencesButton";
 import { recognition } from "@/content/manifest";
 import type { Navigation, SiteSettings } from "@/lib/sanity/types";
-import { legalNav } from "@/content/legal";
+
+/* The three legal documents are fixed pages (their text is edited in the
+   Studio under Legal pages), so the legal bar is fixed too. */
+const legalNav = [
+  { href: "/privacy-policy", label: "Privacy" },
+  { href: "/cookie-policy", label: "Cookies" },
+  { href: "/terms-of-use", label: "Terms" },
+] as const;
 
 /* Social marks stay in code. The CMS chooses the platform and the URL
    (see sanity/schemaTypes/siteSettings.ts); letting an editor paste SVG

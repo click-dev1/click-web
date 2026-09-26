@@ -323,3 +323,17 @@ export const pressQuery = defineQuery(
     _id, title, outlet, url, publishedAt, excerpt
   }`,
 );
+
+/* ---------- Legal pages ---------- */
+
+export const legalPageQuery = defineQuery(
+  `*[_type == "legalPage" && slug == $slug][0] {
+    title, slug, description, lastUpdated, "approved": coalesce(approved, false),
+    intro, sections[]{ _key, heading, body }
+  }`,
+);
+
+/* Sitemap: only documents counsel has signed off. */
+export const legalSitemapQuery = defineQuery(
+  `*[_type == "legalPage" && approved == true] { slug, _updatedAt }`,
+);

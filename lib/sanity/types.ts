@@ -564,3 +564,19 @@ export interface PressItem {
   publishedAt: string;
   excerpt?: string;
 }
+
+/* ---------- Legal pages ---------- */
+
+export type LegalSlug = "privacy-policy" | "cookie-policy" | "terms-of-use";
+
+export interface LegalPageDoc {
+  title: string;
+  slug: LegalSlug;
+  description: string;
+  /** ISO date, YYYY-MM-DD. */
+  lastUpdated: string;
+  /** Signed off by counsel — decides indexing and sitemap membership. */
+  approved: boolean;
+  intro?: RichText;
+  sections: { _key: string; heading: string; body: RichText }[];
+}

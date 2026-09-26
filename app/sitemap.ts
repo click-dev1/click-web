@@ -4,7 +4,7 @@ import { fetchTalentSitemap } from "@/lib/sanity/talent";
 import { fetchPageSitemap } from "@/lib/sanity/page";
 import { fetchCaseStudySitemap } from "@/lib/sanity/caseStudy";
 import { ARTICLE_SECTIONS, fetchArticleSitemap, fetchPress } from "@/lib/sanity/article";
-import { isLegalPublishable, legalPages } from "@/content/legal";
+import { fetchLegalSitemap } from "@/lib/sanity/legal";
 
 /* Every indexable route.
 
@@ -13,7 +13,8 @@ import { isLegalPublishable, legalPages } from "@/content/legal";
    /talent and /talent/[slug] render from — the two cannot disagree, and
    the same "talent" cache tag that rebuilds those pages rebuilds this
    file. Case studies come from Sanity too, and join once their figures
-   are confirmed; legal pages join once counsel has signed them off. */
+   are confirmed; legal pages join once counsel has signed them off in the
+   Studio. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   /* Only the routes that are still hand-built. As each bespoke page moves
      onto the `page` type its entry comes from Sanity instead, with a real
@@ -25,13 +26,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/work`, changeFrequency: "monthly", priority: 0.8 },
   ];
 
-  const legal: MetadataRoute.Sitemap = Object.values(legalPages)
-    .filter(isLegalPublishable)
-    .map((p) => ({
-      url: `${siteUrl}/${p.slug}`,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    }));
+  /* Legal pages join once counsel has signed them off in the Studio. */
+  const legal: MetadataRoute.Sitemap = (await fetchLegalSitemap()).map((p) => ({
+    url: `${siteUrl}/${p.slug}`,
+    lastModified: new Date(p._updatedAt),
+    changeFrequency: "yearly",
+    priority: 0.3,
+  }));
 
   /* The query already excludes case studies hidden from search and those
      still awaiting the client's confirmation of their figures — the job

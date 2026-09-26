@@ -30,6 +30,7 @@ import { homePageType } from "./homePage";
 import { workPageType } from "./workPage";
 import { articleType } from "./article";
 import { pressItemType } from "./pressItem";
+import { legalPageType } from "./legalPage";
 
 /* Every type the Studio knows about. Documents first, then the section
    blocks a page is assembled from, then shared objects.
@@ -50,6 +51,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   workPageType,
   articleType,
   pressItemType,
+  legalPageType,
   // section blocks
   pageHeroType,
   copyMediaType,

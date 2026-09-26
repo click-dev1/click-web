@@ -3,8 +3,9 @@
  *
  * Three things render from this file and therefore cannot disagree:
  *
- *   - the Cookie Policy's cookie table and its "who processes" list
- *     (content/legal.ts)
+ *   - the Cookie Policy's cookie table, categories and "who processes"
+ *     list (lib/cookie-policy.ts, placed by the policy's Cookie inventory
+ *     inserts in Sanity)
  *   - the consent banner and the preferences panel (components/consent)
  *   - the version stamped into the visitor's stored decision, and the
  *     cookies expired when a category is switched back off

@@ -15,12 +15,11 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 79% of the way to launch-ready.** The build and the CMS are
-largely done: every public page except the three legal pages renders from
-Sanity, and CLICK's own decks are in — 24 case studies with figures
+**About 80% of the way to launch-ready.** The build and the CMS are
+largely done: every public page renders from Sanity, and CLICK's own decks are in — 24 case studies with figures
 supplied by CLICK. The redirect map for the old sites and the structured
 data are built, and insights, news and press are ready for CLICK to
-publish. What remains: legal pages in the CMS, draft preview, analytics
+publish. What remains: draft preview, analytics
 verification, the §14 handover pack, the vulnerability scan and the Bill
 of Materials.
 
@@ -28,7 +27,7 @@ of Materials.
 | --- | --- | --- | --- |
 | Design | 15% | 100% | Accepted and paid |
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
-| CMS (§4) | 25% | ~90% | Legal pages in the CMS, draft preview, editor seats left |
+| CMS (§4) | 25% | ~95% | Draft preview and editor seats left |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
 | SEO: schema + redirects | 10% | ~90% | All 6 schema types; redirect map built and verified |
 | Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
@@ -55,7 +54,7 @@ contract figures.
 | `/work/[slug]` | Sanity | ✅ case studies (page furniture is code) |
 | `/talent`, `/talent/[slug]` | Sanity | ✅ profiles (page furniture is code) |
 | `/[slug]` — any CMS page | Sanity | ✅ fully |
-| `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
+| `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | Sanity — `legalPage` | ✅ fully (migrated 26 Sep); cookie parts generated |
 | `/insights`, `/news` (+ articles), `/press` | Sanity — `article`, `pressItem` | ✅ fully; empty until CLICK publishes |
 
 `Nav` and `Footer` read from Sanity (`navigation`, `siteSettings`), so
@@ -64,7 +63,7 @@ social profile without a developer.
 
 Every migrated page was verified by diffing its rendered text against the
 hand-built page it replaced; see **Migrating a bespoke page** in
-`docs/SANITY.md`. `content/manifest.ts` and `content/site.ts` are no longer
+`docs/SANITY.md`. `content/legal.ts` is retired; `content/manifest.ts` and `content/site.ts` are no longer
 read by any page — only `app/sitemap.ts`, `StructuredData`, `Footer`, the
 contact components and `lib/sanity/queries.ts` still import constants from
 them.
@@ -106,7 +105,7 @@ and the §8.9 tracking inventory.
 | `siteSettings` | ✅ singleton — email, socials, company name |
 | `article` (insight \| news) | ✅ 0 published |
 | `pressItem` | ✅ 0 published |
-| `legalPage` | ❌ |
+| `legalPage` | ✅ 3 fixed documents, awaiting counsel's sign-off switch |
 
 ## Block library — 18 delivered
 
@@ -153,8 +152,10 @@ In order. Each is ours to finish; none waits on CLICK.
    indexes are `noindex` until the first publish. See **Insights, news
    and press** in `docs/SANITY.md`. Left: CLICK to publish, and to add
    them to the menu.
-4. **`legalPage` type.** Move the three legal pages into Sanity; the cookie
-   table stays generated from `lib/consent.ts`.
+4. ~~**Legal pages into Sanity.**~~ **Done 26 Sep** — three fixed
+   `legalPage` documents; the cookie table, categories and processors stay
+   generated from `lib/consent.ts`. Rendered text and markup diffed
+   identical before and after. `content/legal.ts` is retired.
 5. **Draft preview** (`draftMode` + Studio preview link).
 6. **Pre-merge hardening** — see below.
 7. **§6 evidence.** Median-of-three Lighthouse runs against staging for all
@@ -228,10 +229,9 @@ Practices score below the §6 threshold of 90.
   drafted from public sources on 1 September 2026 and are **unverified by
   CLICK**.
 - **Legal go-live.** Counsel's review landed 2 September (ABN, retention,
-  age floor, authorised agents settled). Still open — search `TO CONFIRM`
-  in `content/legal.ts`: the EU/UK representative, and
-  `privacy@clickmedia.group` must exist and receive mail before the pages
-  drop `noindex`.
+  age floor, authorised agents settled). Still open: the EU/UK
+  representative, and `privacy@clickmedia.group` must exist and receive
+  mail before **Signed off by counsel** is switched on in the Studio.
 - **One real insight** for the payoff frame on `/influencer-marketing`.
 
 **Decisions:**

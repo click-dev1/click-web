@@ -1,25 +1,30 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import Link from "next/link";
+import { PortableText, type PortableTextComponents } from "next-sanity";
 import PageHero from "@/components/PageHero";
-import { isLegalPublishable, type LegalBlock, type LegalPageContent } from "@/content/legal";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbList } from "@/lib/jsonld";
+import { formatDate } from "@/lib/date";
+import { cookieCategoryData, cookieTableData, processorsSentence } from "@/lib/cookie-policy";
+import type { LegalPageDoc, RichText } from "@/lib/sanity/types";
 
 /**
- * Renders one legal document from its typed blocks (content/legal.ts).
+ * Renders one legal document from Sanity (sanity/schemaTypes/legalPage.ts).
  *
- * Stored text stays plain prose: emails, URLs and `[label](/route)` links
- * are turned into anchors here, so nobody edits JSX to change a policy.
  * Every section heading becomes an anchor and the "On this page" list is
- * generated from them.
+ * generated from them. The cookie table, categories and processors are
+ * generated from lib/cookie-policy.ts wherever the text places a "Cookie
+ * inventory" insert.
  *
- * A document's `status` (content/legal.ts) is internal: it decides
- * noindex and sitemap membership, and is never shown to a visitor.
+ * `approved` (signed off by counsel) is internal: it decides noindex and
+ * sitemap membership, and is never shown to a visitor.
  */
-export default function LegalPage({ page }: { page: LegalPageContent }) {
+export default function LegalPage({ page }: { page: LegalPageDoc }) {
+  const updated = `Last updated: ${formatDate(page.lastUpdated)}`;
+
   return (
     <>
-      {isLegalPublishable(page) && (
+      {page.approved && (
         <JsonLd nodes={[breadcrumbList([{ name: page.title, path: `/${page.slug}` }])]} />
       )}
       <PageHero eyebrow="Legal" title={page.title} lede={page.description} signal="quiet" />
@@ -36,7 +41,7 @@ export default function LegalPage({ page }: { page: LegalPageContent }) {
             </p>
             <ol className="flex flex-col gap-1.5 text-sm">
               {page.sections.map((s) => (
-                <li key={s.heading}>
+                <li key={s._key}>
                   <a
                     href={`#${slugify(s.heading)}`}
                     className="opacity-75 transition-opacity hover:opacity-100"
@@ -46,15 +51,19 @@ export default function LegalPage({ page }: { page: LegalPageContent }) {
                 </li>
               ))}
             </ol>
-            <p className="font-data mt-6 text-[0.62rem] opacity-70">{page.updated}</p>
+            <p className="font-data mt-6 text-[0.62rem] opacity-70">{updated}</p>
           </nav>
 
           <article className="legal-body max-w-3xl">
-            {page.intro && <div className="legal-intro">{page.intro.map(renderBlock)}</div>}
+            {page.intro && page.intro.length > 0 && (
+              <div className="legal-intro">
+                <LegalText value={page.intro} />
+              </div>
+            )}
 
             {page.sections.map((s, i) => (
               <section
-                key={s.heading}
+                key={s._key}
                 id={slugify(s.heading)}
                 className="legal-section"
                 aria-labelledby={`${slugify(s.heading)}-h`}
@@ -65,12 +74,14 @@ export default function LegalPage({ page }: { page: LegalPageContent }) {
                 <h2 id={`${slugify(s.heading)}-h`} className="font-display text-h3">
                   {s.heading}
                 </h2>
-                <div className="legal-blocks">{s.blocks.map(renderBlock)}</div>
+                <div className="legal-blocks">
+                  <LegalText value={s.body ?? []} />
+                </div>
               </section>
             ))}
 
             <p className="hairline-t font-data mt-16 pt-6 text-[0.62rem] opacity-70">
-              {page.updated}
+              {updated}
             </p>
           </article>
         </div>
@@ -79,60 +90,109 @@ export default function LegalPage({ page }: { page: LegalPageContent }) {
   );
 }
 
-function renderBlock(block: LegalBlock, i: number): ReactNode {
-  switch (block.type) {
-    case "text":
-      return (
-        <p key={i} className="leading-body">
-          {linkify(block.text)}
-        </p>
-      );
-    case "subheading":
-      return (
-        <h3 key={i} className="font-display mt-6 text-lg">
-          {linkify(block.text)}
-        </h3>
-      );
-    case "list":
-      return (
-        <ul key={i} className="legal-list">
-          {block.items.map((item, j) => (
-            <li key={j} className="leading-body">
-              <span aria-hidden="true">▸</span>
-              <span>{linkify(item)}</span>
-            </li>
-          ))}
-        </ul>
-      );
-    case "table":
-      return (
-        <div key={i} className="legal-table-wrap">
-          <table className="legal-table">
-            {block.columns && (
-              <thead>
-                <tr>
-                  {block.columns.map((c) => (
-                    <th key={c} scope="col">
-                      {c}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-            )}
-            <tbody>
-              {block.rows.map((row, r) => (
-                <tr key={r}>
-                  {row.map((cell, c) => (
-                    <td key={c}>{linkify(cell)}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
-  }
+function LegalText({ value }: { value: RichText }) {
+  return <PortableText value={value as never} components={components} />;
 }
+
+const LINK_CLASS = "underline underline-offset-4 transition-opacity hover:opacity-70";
+
+/* Only web, email and on-site links become anchors — the schema refuses
+   anything else, and this is the second lock. */
+const SAFE_HREF = /^(https?:\/\/|mailto:|\/(?!\/)|#)/i;
+
+function anchor(href: string, label: ReactNode, key?: number): ReactNode {
+  if (!SAFE_HREF.test(href)) return label;
+  if (href.startsWith("/")) {
+    return (
+      <Link key={key} href={href} className={LINK_CLASS}>
+        {label}
+      </Link>
+    );
+  }
+  const external = /^https?:/i.test(href);
+  return (
+    <a
+      key={key}
+      href={href}
+      className={LINK_CLASS}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
+      {label}
+    </a>
+  );
+}
+
+function Table({ columns, rows }: { columns?: string[]; rows: string[][] }) {
+  return (
+    <div className="legal-table-wrap">
+      <table className="legal-table">
+        {columns && columns.length > 0 && (
+          <thead>
+            <tr>
+              {columns.map((c) => (
+                <th key={c} scope="col">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {rows.map((row, r) => (
+            <tr key={r}>
+              {row.map((cell, c) => (
+                <td key={c}>{linkify(cell)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const components: PortableTextComponents = {
+  block: {
+    normal: ({ children }) => <p className="leading-body">{children}</p>,
+    h3: ({ children }) => <h3 className="font-display mt-6 text-lg">{children}</h3>,
+  },
+  list: {
+    bullet: ({ children }) => <ul className="legal-list">{children}</ul>,
+  },
+  listItem: {
+    bullet: ({ children }) => (
+      <li className="leading-body">
+        <span aria-hidden="true">▸</span>
+        <span>{children}</span>
+      </li>
+    ),
+  },
+  marks: {
+    link: ({ children, value }) => anchor(value?.href ?? "", children),
+  },
+  types: {
+    legalTable: ({ value }: { value: { columns?: string[]; rows?: { cells?: string[] }[] } }) => (
+      <Table columns={value.columns} rows={(value.rows ?? []).map((r) => r.cells ?? [])} />
+    ),
+    cookieInventory: ({ value }: { value: { show?: string } }) => {
+      if (value.show === "table") return <Table {...cookieTableData()} />;
+      if (value.show === "processors")
+        return <p className="leading-body">{processorsSentence()}</p>;
+      if (value.show === "categories")
+        return (
+          <>
+            {cookieCategoryData().map((c) => (
+              <Fragment key={c.heading}>
+                <h3 className="font-display mt-6 text-lg">{c.heading}</h3>
+                <p className="leading-body">{c.text}</p>
+              </Fragment>
+            ))}
+          </>
+        );
+      return null;
+    },
+  },
+};
 
 export function slugify(text: string): string {
   return text
@@ -141,10 +201,10 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-/* [label](href) · bare email · bare URL. Trailing sentence punctuation is
-   left outside the link. */
+/* Table cells are plain strings: bare emails and URLs become links.
+   Trailing sentence punctuation is left outside the link. */
 const TOKEN =
-  /\[([^\]]+)\]\(([^)\s]+)\)|([\w.+-]+@[\w-]+\.[\w.-]+\w)|(https?:\/\/[^\s<>"']+?)(?=[.,;:)]*(?:\s|$))/g;
+  /([\w.+-]+@[\w-]+\.[\w.-]+\w)|(https?:\/\/[^\s<>"']+?)(?=[.,;:)]*(?:\s|$))/g;
 
 function linkify(text: string): ReactNode[] {
   const out: ReactNode[] = [];
@@ -153,34 +213,10 @@ function linkify(text: string): ReactNode[] {
   for (const m of text.matchAll(TOKEN)) {
     const start = m.index ?? 0;
     if (start > last) out.push(text.slice(last, start));
-    const [whole, label, href, email, url] = m;
-    if (label !== undefined) out.push(anchor(href, label, key++));
-    else if (email !== undefined) out.push(anchor(`mailto:${email}`, email, key++));
-    else if (url !== undefined) out.push(anchor(url, url, key++));
+    const [whole, email, url] = m;
+    out.push(email !== undefined ? anchor(`mailto:${email}`, email, key++) : anchor(url, url, key++));
     last = start + whole.length;
   }
   if (last < text.length) out.push(text.slice(last));
   return out;
-}
-
-function anchor(href: string, label: string, key: number): ReactNode {
-  const cls = "underline underline-offset-4 transition-opacity hover:opacity-70";
-  if (href.startsWith("/")) {
-    return (
-      <Link key={key} href={href} className={cls}>
-        {label}
-      </Link>
-    );
-  }
-  const external = /^https?:/.test(href);
-  return (
-    <a
-      key={key}
-      href={href}
-      className={cls}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-    >
-      {label}
-    </a>
-  );
 }

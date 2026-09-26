@@ -7,7 +7,7 @@ from it and therefore cannot disagree:
 
 | Reads the inventory                        | Where                                  |
 | ------------------------------------------ | -------------------------------------- |
-| The Cookie Policy's table + processor list | `content/legal.ts` (generated blocks)  |
+| The Cookie Policy's table, categories + processors | `lib/cookie-policy.ts`, placed by *Cookie inventory* inserts in the Sanity document |
 | The banner and the preferences panel       | `components/consent/*`                 |
 | The version stamped into the stored choice | `CONSENT_VERSION` in `lib/consent.ts`  |
 
@@ -55,25 +55,33 @@ on staging whenever HubSpot changes the embed.
 
 ## Legal pages
 
-`content/legal.ts` holds the Privacy Policy, Cookie Policy and Terms of
-Use as typed blocks; `components/LegalPage.tsx` renders them. Each has a
-`status`. The status is internal — nothing on the page shows it. Until it is
-`client-confirmed` the route is `noindex` and left out of the sitemap;
-flip the status when counsel signs off and both change at once.
+The Privacy Policy, Cookie Policy and Terms of Use are edited in the
+Studio under **Legal pages** — three fixed documents (`legalPage-<slug>`)
+that cannot be created or deleted from the sidebar.
+`components/LegalPage.tsx` renders them. They moved out of
+`content/legal.ts` on 26 September 2026; the rendered pages were diffed
+before and after and are identical in text and markup.
+
+Each document has a **Signed off by counsel** switch. It is internal —
+nothing on the page shows it. While it is off the route is `noindex` and
+left out of the sitemap; turn it on when counsel signs off and both change
+at once. Change **Last updated** whenever the text changes.
 
 Counsel's review landed 2026-09-02: ABN, the privacy mailbox
 (`privacy@clickmedia.group`), the retention periods, the authorised-agent
-wording and the Creator Network age floor are all settled, and the statuses
-are still `awaiting-confirmation` for two reasons — search `TO CONFIRM` in
-the file: EU/UK representative details, and the privacy mailbox has to
-exist before a policy points people at it.
+wording and the Creator Network age floor are all settled. Two things keep
+the switches off: EU/UK representative details, and the privacy mailbox has
+to exist before a policy points people at it.
 
-Do not hand-write cookie names in the policy text — they are generated.
+Do not hand-write cookie names in the policy text. The Cookie Policy places
+three **Cookie inventory** inserts (table, categories, processors) that are
+generated from `lib/consent.ts`.
 
 ## Launch checklist
 
 - [ ] `privacy@clickmedia.group` exists and mail to it is landing.
-- [ ] Counsel has signed off all three documents; statuses flipped.
+- [ ] Counsel has signed off all three documents; **Signed off by counsel**
+      turned on for each in the Studio.
 - [ ] Browser audit on staging: no non-essential cookie before Accept;
       none after Reject; all removed after withdrawing; GPC browser sees
       no banner and no cookies.
