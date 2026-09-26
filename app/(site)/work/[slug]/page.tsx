@@ -8,6 +8,8 @@ import AttributionBadge, {
 } from "@/components/work/AttributionBadge";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchCaseStudies, fetchCaseStudySlugs } from "@/lib/sanity/caseStudy";
+import JsonLd from "@/components/JsonLd";
+import { caseStudyWork } from "@/lib/jsonld";
 
 export async function generateStaticParams() {
   const slugs = await fetchCaseStudySlugs();
@@ -49,6 +51,7 @@ export default async function CaseStudyPage({
 
   return (
     <>
+      {!c.seo?.noIndex && <JsonLd nodes={caseStudyWork(c)} />}
       {/* ---- hero ---- */}
       <section
         data-signal="overlap"

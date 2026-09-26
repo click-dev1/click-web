@@ -60,6 +60,8 @@ type Seed = {
   category: string;
   region: string;
   location?: string;
+  /** Defaults to "person"; a group channel is described as a group. */
+  entityType?: "person" | "group";
   audience: string;
   platforms: Platform[];
   bio: string;
@@ -154,6 +156,7 @@ const ROSTER: Seed[] = [
   {
     slug: "the-boys",
     name: "The Boys",
+    entityType: "group",
     category: "Comedy",
     region: "United States",
     audience: "6.5M",
@@ -316,6 +319,7 @@ async function toDocument(t: Seed, index: number) {
     audience: t.audience,
     region: t.region,
     location: t.location,
+    entityType: t.entityType ?? "person",
     managed: true,
     bio: t.bio,
     partners: [],

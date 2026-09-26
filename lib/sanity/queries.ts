@@ -7,6 +7,7 @@ const talentFields = /* groq */ `
   _id,
   name,
   "slug": slug.current,
+  "entityType": coalesce(entityType, "person"),
   category,
   platforms[]{ platform, handle, url, audience },
   audience,

@@ -1,6 +1,8 @@
 import { recognition } from "@/content/manifest";
 import type { SiteSettings } from "@/lib/sanity/types";
 import { siteUrl } from "@/lib/site";
+import JsonLd from "@/components/JsonLd";
+import { ORG_ID, WEBSITE_ID } from "@/lib/jsonld";
 
 /**
  * Organization + WebSite JSON-LD.
@@ -17,12 +19,10 @@ export default function StructuredData({
 }: {
   settings: SiteSettings;
 }) {
-  const graph = {
-    "@context": "https://schema.org",
-    "@graph": [
+  const nodes = [
       {
         "@type": "Organization",
-        "@id": `${siteUrl}/#organization`,
+        "@id": ORG_ID,
         name: "CLICK",
         url: siteUrl,
         logo: `${siteUrl}/click-logo.png`,
@@ -35,19 +35,13 @@ export default function StructuredData({
       },
       {
         "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
+        "@id": WEBSITE_ID,
         url: siteUrl,
         name: "CLICK",
-        publisher: { "@id": `${siteUrl}/#organization` },
+        publisher: { "@id": ORG_ID },
         inLanguage: "en",
       },
-    ],
-  };
+  ];
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
-    />
-  );
+  return <JsonLd nodes={nodes} />;
 }

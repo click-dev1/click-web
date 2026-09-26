@@ -4,6 +4,8 @@ import Blocks from "@/components/blocks/registry";
 import { fetchPage, fetchPageSlugs } from "@/lib/sanity/page";
 import { fetchSiteSettings } from "@/lib/sanity/settings";
 import { urlFor } from "@/lib/sanity/image";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList } from "@/lib/jsonld";
 
 /**
  * Any page CLICK assembles in the CMS.
@@ -55,5 +57,12 @@ export default async function CmsPage({
   ]);
   if (!page) notFound();
 
-  return <Blocks blocks={page.blocks} settings={settings} />;
+  return (
+    <>
+      {!page.seo?.noIndex && (
+        <JsonLd nodes={[breadcrumbList([{ name: page.title, path: `/${page.slug}` }])]} />
+      )}
+      <Blocks blocks={page.blocks} settings={settings} />
+    </>
+  );
 }

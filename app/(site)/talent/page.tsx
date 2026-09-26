@@ -6,6 +6,8 @@ import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchRoster } from "@/lib/sanity/talent";
 import { platformNames } from "@/lib/sanity/types";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList } from "@/lib/jsonld";
 
 export const metadata: Metadata = {
   title: "Talent Directory",
@@ -37,6 +39,7 @@ export default async function TalentDirectoryPage() {
 
   return (
     <>
+      <JsonLd nodes={[breadcrumbList([{ name: "Talent Directory", path: "/talent" }])]} />
       <PageHero
         eyebrow="Talent · Directory"
         title="Meet the creators shaping what's next."

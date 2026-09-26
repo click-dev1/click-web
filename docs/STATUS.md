@@ -15,11 +15,11 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 73% of the way to launch-ready.** The build and the CMS are
+**About 76% of the way to launch-ready.** The build and the CMS are
 largely done: every public page except the three legal pages renders from
 Sanity, and CLICK's own decks are in — 24 case studies with figures
-supplied by CLICK, and the redirect map for the old sites is built. What
-remains sits mostly **outside the CMS**: structured data, analytics
+supplied by CLICK. The redirect map for the old sites and the structured
+data are built. What remains: insights/news/press, legal pages in the CMS, analytics
 verification, the §14 handover pack, the vulnerability scan and the Bill
 of Materials.
 
@@ -29,7 +29,7 @@ of Materials.
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
 | CMS (§4) | 25% | ~80% | Legal pages, `article`/`pressItem` + routes, draft preview, editor seats left |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
-| SEO: schema + redirects | 10% | ~55% | 2 of 6 schema types; redirect map built and verified |
+| SEO: schema + redirects | 10% | ~85% | 5 of 6 schema types (Article waits on articles); redirect map built and verified |
 | Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
 | Consent + analytics | 5% | ~55% | Consent built; verification and inventory outstanding |
 | Security, BOM, pre-merge | 3% | ~10% | Not started |
@@ -141,10 +141,11 @@ In order. Each is ours to finish; none waits on CLICK.
    URLs from the Internet Archive map to the new site in 57 rules, all
    verified locally and on staging. See `docs/REDIRECTS.md`. Left: CLICK to confirm three `review` rows, and fold in their
    Search Console / Wix export when it arrives.
-2. **Structured data.** `BreadcrumbList` site-wide, `Person` on talent
-   profiles, `CreativeWork` on case studies, `Article` once articles
-   exist. Validate all six in Google's Rich Results Test and the Schema.org
-   validator.
+2. ~~**Structured data.**~~ **Done 26 Sep** — `BreadcrumbList`,
+   `Person` (via `ProfilePage`), `CreativeWork`, plus the existing
+   `Organization` and `WebSite`: 5 of the 6 §5 types. Zero validator
+   errors. See `docs/STRUCTURED_DATA.md`. Left: Rich Results Test on
+   staging; `Article` comes with item 3.
 3. **`article` + `pressItem` and `/insights`, `/news`, `/press`.** Schema,
    index and detail routes, sitemap, `Article` JSON-LD. Launch with the
    routes empty-state-safe; CLICK populates.
@@ -257,8 +258,6 @@ Practices score below the §6 threshold of 90.
   Sanity pair, by design.
 - Only **1 Sanity seat is in use.** §9 requires a CLICK person to perform
   every §4 operation unaided during training, so they need inviting.
-- Replace the deprecated default export of `@sanity/image-url` with
-  `createImageUrlBuilder` (build warning).
 - Delete or explicitly scope out the old `click-concept` project on the
   personal Vercel account (§6.3, §14 inventory).
 
@@ -283,3 +282,5 @@ with a Protection Bypass secret sent as `x-vercel-protection-bypass`.
 - `docs/PERFORMANCE.md` — §6 baseline and the two open decisions
 - `docs/CONSENT_AND_LEGAL.md` — consent layer, legal pages, launch checklist
 - `docs/HUBSPOT_SETUP.md` — where the form's fields and copy live
+- `docs/REDIRECTS.md` — the legacy redirect map
+- `docs/STRUCTURED_DATA.md` — JSON-LD per page and its rules

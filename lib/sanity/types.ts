@@ -38,6 +38,8 @@ export interface Talent {
   audience: string;
   region: string;
   location?: string;
+  /** Person or group, for structured data. Defaults to person in GROQ. */
+  entityType: "person" | "group";
   managed?: boolean;
   bio: string;
   partners: string[];

@@ -6,6 +6,8 @@ import TalentMedia from "@/components/TalentMedia";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchRoster, fetchTalent, fetchTalentSlugs } from "@/lib/sanity/talent";
 import { platformNames } from "@/lib/sanity/types";
+import JsonLd from "@/components/JsonLd";
+import { talentProfile } from "@/lib/jsonld";
 
 export async function generateStaticParams() {
   const slugs = await fetchTalentSlugs();
@@ -42,6 +44,7 @@ export default async function TalentProfilePage({
 
   return (
     <>
+      {!t.seo?.noIndex && <JsonLd nodes={talentProfile(t)} />}
       {/* ---- hero ---- */}
       <section
         data-signal="overlap"

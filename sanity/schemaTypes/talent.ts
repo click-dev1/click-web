@@ -136,6 +136,23 @@ export const talentType = defineType({
       description: "City and country as shown on the profile: Sydney, Australia.",
     }),
     defineField({
+      name: "entityType",
+      title: "Individual or group",
+      type: "string",
+      group: "profile",
+      description:
+        "How search engines are told about this creator: an individual person, or a group or channel several people make together.",
+      options: {
+        list: [
+          { title: "Individual", value: "person" },
+          { title: "Group", value: "group" },
+        ],
+        layout: "radio",
+        direction: "horizontal",
+      },
+      initialValue: "person",
+    }),
+    defineField({
       name: "managed",
       title: "Exclusively managed by CLICK",
       type: "boolean",

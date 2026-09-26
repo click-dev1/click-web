@@ -3,6 +3,8 @@ import PageHero from "@/components/PageHero";
 import WorkExplorer from "@/components/WorkExplorer";
 import ContactButton from "@/components/contact/ContactButton";
 import { fetchCaseStudies, fetchWorkPage } from "@/lib/sanity/caseStudy";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList } from "@/lib/jsonld";
 
 const DESCRIPTION =
   "Smarter decisions. Stronger partnerships. Better results. Explore CLICK Influence's influencer marketing, experiential and in-game campaigns — each one starting with what the intelligence found.";
@@ -24,6 +26,7 @@ export default async function WorkPage() {
 
   return (
     <>
+      <JsonLd nodes={[breadcrumbList([{ name: "Work", path: "/work" }])]} />
       <PageHero
         eyebrow={page?.heroEyebrow ?? "Our Work"}
         title={

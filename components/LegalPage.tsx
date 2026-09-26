@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
-import type { LegalBlock, LegalPageContent } from "@/content/legal";
+import { isLegalPublishable, type LegalBlock, type LegalPageContent } from "@/content/legal";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbList } from "@/lib/jsonld";
 
 /**
  * Renders one legal document from its typed blocks (content/legal.ts).
@@ -17,6 +19,9 @@ import type { LegalBlock, LegalPageContent } from "@/content/legal";
 export default function LegalPage({ page }: { page: LegalPageContent }) {
   return (
     <>
+      {isLegalPublishable(page) && (
+        <JsonLd nodes={[breadcrumbList([{ name: page.title, path: `/${page.slug}` }])]} />
+      )}
       <PageHero eyebrow="Legal" title={page.title} lede={page.description} signal="quiet" />
 
       <section
