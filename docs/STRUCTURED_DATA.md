@@ -1,8 +1,7 @@
 # Structured data
 
 SOW §5's schema set: `Organization`, `WebSite`, `BreadcrumbList`,
-`Person`, `Article`, `CreativeWork`. Five are live; `Article` arrives with
-the insights/news work.
+`Person`, `Article`, `CreativeWork`. All six are live.
 
 ## What each page carries
 
@@ -11,7 +10,8 @@ the insights/news work.
 | Every page | `Organization` (CLICK) + `WebSite` — `components/StructuredData.tsx`, in the site layout |
 | `/talent/[slug]` | `ProfilePage` → `Person`, or `Organization` for a group, + `BreadcrumbList` |
 | `/work/[slug]` | `WebPage` → `CreativeWork` + `BreadcrumbList` |
-| `/talent`, `/work`, every CMS page | `BreadcrumbList` |
+| `/insights/[slug]`, `/news/[slug]` | `WebPage` → `Article` (insight) or `NewsArticle` (news) + `BreadcrumbList`; author is the named team member, or CLICK |
+| `/talent`, `/work`, `/insights`, `/news`, `/press`, every CMS page | `BreadcrumbList` |
 | Legal pages | `BreadcrumbList` once published (not while they are `noindex` drafts) |
 | Home | none beyond the site-wide pair — it is the root of every trail |
 

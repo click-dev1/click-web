@@ -33,4 +33,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("talent").title("Talent"),
       S.documentTypeListItem("caseStudy").title("Case studies"),
       S.documentTypeListItem("person").title("Team"),
+      S.divider(),
+      S.documentTypeListItem("article").title("Insights & news"),
+      S.documentTypeListItem("pressItem").title("Press"),
     ]);

@@ -15,11 +15,12 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 76% of the way to launch-ready.** The build and the CMS are
+**About 79% of the way to launch-ready.** The build and the CMS are
 largely done: every public page except the three legal pages renders from
 Sanity, and CLICK's own decks are in — 24 case studies with figures
 supplied by CLICK. The redirect map for the old sites and the structured
-data are built. What remains: insights/news/press, legal pages in the CMS, analytics
+data are built, and insights, news and press are ready for CLICK to
+publish. What remains: legal pages in the CMS, draft preview, analytics
 verification, the §14 handover pack, the vulnerability scan and the Bill
 of Materials.
 
@@ -27,9 +28,9 @@ of Materials.
 | --- | --- | --- | --- |
 | Design | 15% | 100% | Accepted and paid |
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
-| CMS (§4) | 25% | ~80% | Legal pages, `article`/`pressItem` + routes, draft preview, editor seats left |
+| CMS (§4) | 25% | ~90% | Legal pages in the CMS, draft preview, editor seats left |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
-| SEO: schema + redirects | 10% | ~85% | 5 of 6 schema types (Article waits on articles); redirect map built and verified |
+| SEO: schema + redirects | 10% | ~90% | All 6 schema types; redirect map built and verified |
 | Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
 | Consent + analytics | 5% | ~55% | Consent built; verification and inventory outstanding |
 | Security, BOM, pre-merge | 3% | ~10% | Not started |
@@ -55,7 +56,7 @@ contract figures.
 | `/talent`, `/talent/[slug]` | Sanity | ✅ profiles (page furniture is code) |
 | `/[slug]` — any CMS page | Sanity | ✅ fully |
 | `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
-| `/insights`, `/news`, `/press` | — | ❌ routes do not exist (404) |
+| `/insights`, `/news` (+ articles), `/press` | Sanity — `article`, `pressItem` | ✅ fully; empty until CLICK publishes |
 
 `Nav` and `Footer` read from Sanity (`navigation`, `siteSettings`), so
 CLICK can change a menu item, a footer link, the enquiries address or a
@@ -103,8 +104,8 @@ and the §8.9 tracking inventory.
 | `workPage` | ✅ singleton — hero, reels, brand wall, CTA |
 | `navigation` | ✅ singleton — main menu and footer columns |
 | `siteSettings` | ✅ singleton — email, socials, company name |
-| `article` (insight \| news) | ❌ |
-| `pressItem` | ❌ |
+| `article` (insight \| news) | ✅ 0 published |
+| `pressItem` | ✅ 0 published |
 | `legalPage` | ❌ |
 
 ## Block library — 18 delivered
@@ -146,9 +147,12 @@ In order. Each is ours to finish; none waits on CLICK.
    `Organization` and `WebSite`: 5 of the 6 §5 types. Zero validator
    errors. See `docs/STRUCTURED_DATA.md`. Left: Rich Results Test on
    staging; `Article` comes with item 3.
-3. **`article` + `pressItem` and `/insights`, `/news`, `/press`.** Schema,
-   index and detail routes, sitemap, `Article` JSON-LD. Launch with the
-   routes empty-state-safe; CLICK populates.
+3. ~~**Insights, news and press.**~~ **Done 26 Sep** — `article`
+   (insight | news) and `pressItem`, `/insights`, `/news`, `/press` and
+   the article pages, sitemap, `Article`/`NewsArticle` JSON-LD. Empty
+   indexes are `noindex` until the first publish. See **Insights, news
+   and press** in `docs/SANITY.md`. Left: CLICK to publish, and to add
+   them to the menu.
 4. **`legalPage` type.** Move the three legal pages into Sanity; the cookie
    table stays generated from `lib/consent.ts`.
 5. **Draft preview** (`draftMode` + Studio preview link).
@@ -240,6 +244,8 @@ Practices score below the §6 threshold of 90.
   staging URL", which has never been named in writing.
 - Confirmation in writing that `/insights`, `/news` and `/press` are
   included as goodwill rather than §13 chargeable pages.
+- Approval of the hero copy written for `/insights`, `/news` and `/press`
+  (`components/articles/routes.tsx`, `app/(site)/press/page.tsx`).
 
 ---
 

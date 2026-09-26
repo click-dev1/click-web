@@ -1,5 +1,6 @@
 import { urlFor } from "@/lib/sanity/image";
-import type { CaseStudy, SanityImage, Talent } from "@/lib/sanity/types";
+import { ARTICLE_SECTIONS, articlePath } from "@/lib/sanity/article";
+import type { Article, CaseStudy, SanityImage, Talent } from "@/lib/sanity/types";
 import { siteUrl } from "@/lib/site";
 
 /**
@@ -140,6 +141,48 @@ export function caseStudyWork(c: CaseStudy): Node[] {
     breadcrumbList([
       { name: "Work", path: "/work" },
       { name: `${c.brand} — ${c.title}`, path: `/work/${c.slug}` },
+    ]),
+  ];
+}
+
+/**
+ * An insight (Article) or a news story (NewsArticle). The author is the
+ * team member the byline names, or CLICK itself when it names no one —
+ * again, exactly what the page says.
+ */
+export function articleJsonLd(a: Article): Node[] {
+  const path = articlePath(a);
+  const url = absolute(path);
+  const section = ARTICLE_SECTIONS[a.kind];
+  return [
+    {
+      "@type": "WebPage",
+      "@id": url,
+      url,
+      name: a.title,
+      isPartOf: { "@id": WEBSITE_ID },
+      mainEntity: { "@id": `${url}#article` },
+      breadcrumb: { "@id": `${url}#breadcrumb` },
+    },
+    {
+      "@type": a.kind === "news" ? "NewsArticle" : "Article",
+      "@id": `${url}#article`,
+      url,
+      headline: a.title,
+      description: a.excerpt,
+      image: imageUrl(a.mainImage),
+      datePublished: a.publishedAt,
+      dateModified: a._updatedAt,
+      articleSection: section.label,
+      author: a.author
+        ? { "@type": "Person", name: a.author.name, ...(a.author.role ? { jobTitle: a.author.role } : {}) }
+        : { "@id": ORG_ID },
+      publisher: { "@id": ORG_ID },
+      mainEntityOfPage: { "@id": url },
+    },
+    breadcrumbList([
+      { name: section.label, path: section.path },
+      { name: a.title, path },
     ]),
   ];
 }

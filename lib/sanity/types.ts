@@ -534,3 +534,33 @@ export interface Page {
   seo?: Seo;
   blocks: PageBlock[];
 }
+
+/* ---------- Insights, news and press ---------- */
+
+export type ArticleKind = "insight" | "news";
+
+export interface ArticleCard {
+  _id: string;
+  _updatedAt: string;
+  kind: ArticleKind;
+  title: string;
+  slug: string;
+  publishedAt: string;
+  excerpt: string;
+  mainImage?: SanityImage;
+  author?: { name: string; role?: string } | null;
+}
+
+export interface Article extends ArticleCard {
+  body: RichText;
+  seo?: Seo;
+}
+
+export interface PressItem {
+  _id: string;
+  title: string;
+  outlet: string;
+  url: string;
+  publishedAt: string;
+  excerpt?: string;
+}

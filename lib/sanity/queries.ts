@@ -272,3 +272,54 @@ export const homePageQuery = defineQuery(
       | order(sortOrder asc, brand asc)[0...4]{ ${caseStudyFields} }
   }`,
 );
+
+/* ---------- Insights, news and press ---------- */
+
+/* The card: enough for a list, not the body. */
+const articleCardFields = /* groq */ `
+  _id,
+  _updatedAt,
+  kind,
+  title,
+  "slug": slug.current,
+  publishedAt,
+  excerpt,
+  mainImage { ${imageFields} },
+  "author": author->{ name, role }
+`;
+
+const articleOrder = `order(publishedAt desc)`;
+
+export const articlesByKindQuery = defineQuery(
+  `*[_type == "article" && kind == $kind && defined(slug.current)] | ${articleOrder} { ${articleCardFields} }`,
+);
+
+export const articleBySlugQuery = defineQuery(
+  `*[_type == "article" && kind == $kind && slug.current == $slug][0] {
+    ${articleCardFields},
+    body[]{
+      ...,
+      _type == "bodyImage" => { ${imageFields} }
+    },
+    seo
+  }`,
+);
+
+export const articleSlugsQuery = defineQuery(
+  `*[_type == "article" && kind == $kind && defined(slug.current)].slug.current`,
+);
+
+/* Sitemap: both kinds, minus anything hidden from search. */
+export const articleSitemapQuery = defineQuery(
+  `*[_type == "article" && defined(slug.current) && seo.noIndex != true] | ${articleOrder} {
+    kind,
+    "slug": slug.current,
+    _updatedAt
+  }`,
+);
+
+export const pressQuery = defineQuery(
+  `*[_type == "pressItem" && defined(url)] | ${articleOrder} {
+    _id, title, outlet, url, publishedAt, excerpt
+  }`,
+);

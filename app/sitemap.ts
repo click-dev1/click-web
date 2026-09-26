@@ -3,6 +3,7 @@ import { siteUrl } from "@/lib/site";
 import { fetchTalentSitemap } from "@/lib/sanity/talent";
 import { fetchPageSitemap } from "@/lib/sanity/page";
 import { fetchCaseStudySitemap } from "@/lib/sanity/caseStudy";
+import { ARTICLE_SECTIONS, fetchArticleSitemap, fetchPress } from "@/lib/sanity/article";
 import { isLegalPublishable, legalPages } from "@/content/legal";
 
 /* Every indexable route.
@@ -59,11 +60,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  /* Insights and news. An index joins only once it has something in it
+     — the same rule that noindexes an empty one. Press items link out, so
+     only the /press index is listed. */
+  const [articleRows, press] = await Promise.all([fetchArticleSitemap(), fetchPress()]);
+  const articles: MetadataRoute.Sitemap = articleRows.map((a) => ({
+    url: `${siteUrl}${ARTICLE_SECTIONS[a.kind].path}/${a.slug}`,
+    lastModified: new Date(a._updatedAt),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+  const articleIndexes: MetadataRoute.Sitemap = (["insight", "news"] as const)
+    .filter((kind) => articleRows.some((a) => a.kind === kind))
+    .map((kind) => ({
+      url: `${siteUrl}${ARTICLE_SECTIONS[kind].path}`,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    }));
+  if (press.length)
+    articleIndexes.push({ url: `${siteUrl}/press`, changeFrequency: "monthly", priority: 0.5 });
+
   /* One entry per URL. A page that has migrated to the CMS would
      otherwise appear twice — once from the hardcoded list above and once
      from Sanity — and duplicate <loc>s are a real SEO defect, not a
      cosmetic one. The CMS entry wins: it carries a lastModified. */
-  const all = [...statics, ...legal, ...cases, ...talent, ...cmsPages];
+  const all = [...statics, ...legal, ...cases, ...talent, ...cmsPages, ...articleIndexes, ...articles];
   const byUrl = new Map<string, MetadataRoute.Sitemap[number]>();
   for (const entry of all) byUrl.set(entry.url, entry);
   return [...byUrl.values()];

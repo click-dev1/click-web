@@ -1,6 +1,12 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { reservedSlugs } from "../../lib/legacy-redirects";
 
+/* First segments owned by hand-built routes in app/(site). */
+const BUILT_ROUTES = [
+  "talent", "work", "insights", "news", "press",
+  "privacy-policy", "cookie-policy", "terms-of-use", "studio", "api",
+];
+
 /* A standard page, assembled from the delivered section blocks.
 
    This is the type SOW §4 row 1 is about: "Publish new pages assembled
@@ -38,12 +44,17 @@ export const pageType = defineType({
       group: "content",
       description: "The page's web address: /<slug>. Set it before publishing.",
       options: { source: "title", maxLength: 96 },
-      /* A redirect is checked before any page, so a page at an old site's
-         address would be unreachable. */
+      /* Two kinds of address a page can never have: an old site's (a
+         redirect is checked before any page) and a built-in section's (a
+         built route wins over a CMS page). Either would leave the page
+         unreachable. */
       validation: (rule) =>
         rule.required().custom((slug) => {
           const first = slug?.current?.split("/")[0];
-          return first && reservedSlugs.includes(first)
+          if (!first) return true;
+          if (BUILT_ROUTES.includes(first))
+            return `"/${first}" is a built-in section of the site — choose another address.`;
+          return reservedSlugs.includes(first)
             ? `"/${first}" is an address from the old site and redirects elsewhere — choose another.`
             : true;
         }),

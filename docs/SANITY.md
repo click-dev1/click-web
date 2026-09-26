@@ -364,6 +364,33 @@ again** once CLICK has edited anything in the Studio — it reads
 `content/site.ts` and would overwrite their edits. It exists to move the
 content once.
 
+## Insights, news and press
+
+**Insights & news** (`article`) is one type with a *kind*: an insight
+lives at `/insights/<slug>`, a news story at `/news/<slug>`, and each
+index lists its own kind, newest first. Title, excerpt (the card and the
+search description), publication date, an optional lead image, an
+optional author picked from the Team, and a body with headings, quotes,
+lists, links and images. With no author the byline reads "CLICK".
+
+**Press** (`pressItem`) is coverage in other outlets: headline, outlet,
+date, link, and an optional line quoted from the piece. It has no page
+of its own — `/press` lists it and links out to the original.
+
+- **Empty is a real state.** Before anything is published each index
+  says so plainly, is `noindex`, and stays out of the sitemap. The first
+  published piece brings it into search.
+- **Not in the menu by default.** Add `/insights`, `/news` or `/press`
+  in *Navigation* when there is something to show.
+- **Body links** accept `https://`, `mailto:` or a path on this site;
+  anything else is refused in the Studio and dropped by the renderer.
+- A Page cannot take the address `insights`, `news` or `press` (or any
+  other built-in section) — the Studio refuses it, because the built
+  route would hide the page.
+- The index headings and ledes are written in code
+  (`components/articles/routes.tsx`), like the page furniture on
+  `/talent` and `/work`.
+
 ## Migrating a bespoke page
 
 A static route **wins over** a CMS page with the same slug. So a page
