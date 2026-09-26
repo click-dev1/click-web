@@ -139,8 +139,7 @@ In order. Each is ours to finish; none waits on CLICK.
 
 1. ~~**Redirect map.**~~ **Done 26 Sep** — 504 old WordPress and Wix
    URLs from the Internet Archive map to the new site in 57 rules, all
-   verified locally. See `docs/REDIRECTS.md`. Left: verify on staging
-   once pushed, CLICK to confirm three `review` rows, and fold in their
+   verified locally and on staging. See `docs/REDIRECTS.md`. Left: CLICK to confirm three `review` rows, and fold in their
    Search Console / Wix export when it arrives.
 2. **Structured data.** `BreadcrumbList` site-wide, `Person` on talent
    profiles, `CreativeWork` on case studies, `Article` once articles

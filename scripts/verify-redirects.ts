@@ -71,6 +71,18 @@ async function check(c: Case): Promise<string[]> {
 
 async function main() {
   console.log(`Verifying ${rows.length} legacy URLs against ${base}`);
+
+  /* A deployment without the map fails every row as a 0-hop 404, which
+     reads as a broken map when it is only a build still in progress. */
+  const canary = rows.find((r) => r.action === "redirect");
+  if (canary && (await follow(canary.path)).hops.length === 0) {
+    console.error(
+      `\n${canary.path} does not redirect at all — this deployment does not serve the map yet.\n` +
+        `If you just pushed, wait for the Vercel deployment to finish and run again.`,
+    );
+    process.exit(1);
+  }
+
   const failures: string[] = [];
   let i = 0;
   await Promise.all(

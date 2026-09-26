@@ -70,7 +70,8 @@ new creator's old URL keeps going to `/talent` until then.
 
 ## Verified
 
-26 September 2026, local production build: **504 old URLs, 1,007
+26 September 2026, local production build and staging (`dev`, commit
+`71923a5`): **504 old URLs, 1,007
 requests (with and without trailing slash), all end on their expected
 page with a 200 in at most two hops.** The two hops are Next's own
 trailing-slash 308 followed by the redirect.
