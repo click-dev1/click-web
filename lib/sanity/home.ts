@@ -1,4 +1,4 @@
-import { assertPresent, client, previewDrafts } from "./client";
+import { assertPresent, sanityFetch } from "./client";
 import { homePageQuery } from "./queries";
 import type { HomePage } from "./types";
 
@@ -8,11 +8,8 @@ import type { HomePage } from "./types";
    Tagged with both types it reads: editing the home document rebuilds it,
    and so does publishing a case study, because the featured work section
    resolves from those. */
-const readOptions = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["homePage", "caseStudy"] } };
+const tags = ["homePage", "caseStudy"];
 
 export const fetchHomePage = () =>
-  client
-    .fetch<HomePage | null>(homePageQuery, {}, readOptions)
+  sanityFetch<HomePage | null>(homePageQuery, {}, tags)
     .then((d) => assertPresent(d, "the home page"));

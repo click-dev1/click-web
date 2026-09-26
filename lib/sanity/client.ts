@@ -1,4 +1,5 @@
-import { createClient } from "next-sanity";
+import { createClient, type QueryParams } from "next-sanity";
+import { draftMode } from "next/headers";
 import { apiVersion, dataset, projectId } from "@/sanity/env";
 
 /* Server-only read client.
@@ -38,6 +39,48 @@ export const client = createClient({
   token,
   perspective: previewDrafts ? "drafts" : "published",
 });
+
+/* Draft reads for an editor previewing from the Studio (see
+   app/api/draft-mode). Same token, drafts perspective, never the CDN. */
+const draftClient = client.withConfig({ perspective: "drafts", useCdn: false });
+
+/** True only for a request that carries Next's draft-mode cookie. There is
+    no request during generateStaticParams or the sitemap, where
+    draftMode() throws — that is simply "not previewing". */
+async function isPreviewing(): Promise<boolean> {
+  try {
+    return (await draftMode()).isEnabled;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Every Sanity read on the site goes through here.
+ *
+ * - An editor previewing (draft mode): drafts, uncached. Next already
+ *   renders a draft-mode request fresh and serves it `private, no-store`,
+ *   so a draft can never land in a cache another visitor is served from.
+ * - Everyone else: published content, cached and tagged with the document
+ *   types the read depends on, so the publish webhook (app/api/revalidate)
+ *   invalidates exactly the pages it should. The one-hour TTL is a safety
+ *   net, never the mechanism — see docs/SANITY.md.
+ * - SANITY_PREVIEW_DRAFTS (local only): drafts for the whole build.
+ */
+export async function sanityFetch<T>(
+  query: string,
+  params: QueryParams,
+  tags: string[],
+): Promise<T> {
+  if (await isPreviewing()) {
+    return draftClient.fetch<T>(query, params, { cache: "no-store" });
+  }
+  return client.fetch<T>(
+    query,
+    params,
+    previewDrafts ? {} : { next: { revalidate: 3600, tags } },
+  );
+}
 
 /* A private dataset does not reject an unauthorised read — it returns an
    empty result set. So a build with a missing or wrong

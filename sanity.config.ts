@@ -1,10 +1,12 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
+import { presentationTool } from "sanity/presentation";
 import { visionTool } from "@sanity/vision";
 import { muxInput } from "sanity-plugin-mux-input";
 import { apiVersion, dataset, projectId, studioBasePath } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
+import { locations } from "./sanity/presentation";
 
 /* Sanity Studio — the editing dashboard. It is a React app that lives in
    this repo and is served by Next at /studio (app/studio/[[...tool]]), so
@@ -21,6 +23,20 @@ export default defineConfig({
   schema: { types: schemaTypes },
   plugins: [
     structureTool({ structure }),
+    /* Draft preview: the site, beside the form, showing unpublished
+       changes. It opens /api/draft-mode/enable with a short-lived secret
+       it writes to the dataset; the site checks that secret before
+       showing drafts. Same origin as the Studio, so no extra CORS. */
+    presentationTool({
+      title: "Preview",
+      previewUrl: {
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+          disable: "/api/draft-mode/disable",
+        },
+      },
+      resolve: { locations },
+    }),
     /* GROQ playground — for developers, harmless for editors. */
     visionTool({ defaultApiVersion: apiVersion }),
     /* Video, for the /work industry reels. Editors upload in the Studio;

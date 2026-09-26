@@ -1,4 +1,4 @@
-import { assertPopulated, client, previewDrafts } from "./client";
+import { assertPopulated, sanityFetch } from "./client";
 import {
   rosterQuery,
   talentBySlugQuery,
@@ -7,9 +7,9 @@ import {
 } from "./queries";
 import type { Talent } from "./types";
 
-/* Server-side accessors.
+/* Server-side accessors, all through sanityFetch (./client).
 
-Published reads are cached and tagged with the document type, so the
+   Published reads are cached and tagged with the document type, so the
    Sanity webhook (app/api/revalidate) can invalidate exactly the pages an
    edit touches.
 
@@ -21,33 +21,27 @@ Published reads are cached and tagged with the document type, so the
    missed or misconfigured webhook self-heals within the hour instead of
    surviving deploys.
 
-   Draft reads pass no cache directive at all. They must not be cached —
-   an editor has to see their own unpublished change on the next reload —
-   but they must not say `revalidate: 0` either: that opts the route out
-   of prerendering, and every page here is required to ship as static
-   HTML (SOW §2). An untagged, undirected fetch is uncached at request
-   time in dev and still baked in at build time, which is both. */
-const readOptions = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["talent"] } };
+   Draft reads for a local SANITY_PREVIEW_DRAFTS build pass no cache
+   directive: `revalidate: 0` would opt the route out of prerendering, and
+   every page here must ship as static HTML (SOW §2). An editor previewing
+   from the Studio is a different path — see sanityFetch in ./client. */
+const tags = ["talent"];
 
 export const fetchRoster = () =>
-  client
-    .fetch<Talent[]>(rosterQuery, {}, readOptions)
+  sanityFetch<Talent[]>(rosterQuery, {}, tags)
     .then((rows) => assertPopulated(rows, "talent"));
 
 export const fetchTalent = (slug: string) =>
-  client.fetch<Talent | null>(talentBySlugQuery, { slug }, readOptions);
+  sanityFetch<Talent | null>(talentBySlugQuery, { slug }, tags);
 
 export const fetchTalentSlugs = () =>
-  client
-    .fetch<string[]>(talentSlugsQuery, {}, readOptions)
+  sanityFetch<string[]>(talentSlugsQuery, {}, tags)
     .then((rows) => assertPopulated(rows, "talent slugs"));
 
 /** Slug + last-modified for every profile, for app/sitemap.ts. */
 export const fetchTalentSitemap = () =>
-  client.fetch<{ slug: string; _updatedAt: string }[]>(
+  sanityFetch<{ slug: string; _updatedAt: string }[]>(
     talentSitemapQuery,
     {},
-    readOptions,
+    tags,
   );

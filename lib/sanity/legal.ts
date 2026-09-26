@@ -1,4 +1,4 @@
-import { assertPresent, client, previewDrafts } from "./client";
+import { assertPresent, sanityFetch } from "./client";
 import { legalPageQuery, legalSitemapQuery } from "./queries";
 import type { LegalPageDoc, LegalSlug } from "./types";
 
@@ -6,14 +6,11 @@ import type { LegalPageDoc, LegalSlug } from "./types";
    tagged "legalPage" so a publish rebuilds the page. A missing document
    fails the build loudly — a site without its privacy policy must not
    ship green. */
-const readOptions = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["legalPage"] } };
+const tags = ["legalPage"];
 
 export const fetchLegalPage = (slug: LegalSlug) =>
-  client
-    .fetch<LegalPageDoc | null>(legalPageQuery, { slug }, readOptions)
+  sanityFetch<LegalPageDoc | null>(legalPageQuery, { slug }, tags)
     .then((d) => assertPresent(d, `legal page "${slug}"`));
 
 export const fetchLegalSitemap = () =>
-  client.fetch<{ slug: LegalSlug; _updatedAt: string }[]>(legalSitemapQuery, {}, readOptions);
+  sanityFetch<{ slug: LegalSlug; _updatedAt: string }[]>(legalSitemapQuery, {}, tags);

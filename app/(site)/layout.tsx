@@ -4,6 +4,7 @@ import SignalCanvas from "@/components/SignalCanvas";
 import FxRouter from "@/components/FxRouter";
 import SmoothScroll from "@/components/SmoothScroll";
 import StructuredData from "@/components/StructuredData";
+import DraftMode from "@/components/DraftMode";
 import { fetchNavigation, fetchSiteSettings } from "@/lib/sanity/settings";
 
 /* Chrome for the main site: persistent signal canvas, full nav, footer.
@@ -33,6 +34,7 @@ export default async function SiteLayout({
         {children}
       </main>
       <Footer settings={settings} navigation={navigation} />
+      <DraftMode />
     </>
   );
 }

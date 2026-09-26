@@ -15,11 +15,11 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 80% of the way to launch-ready.** The build and the CMS are
+**About 81% of the way to launch-ready.** The build and the CMS are
 largely done: every public page renders from Sanity, and CLICK's own decks are in — 24 case studies with figures
 supplied by CLICK. The redirect map for the old sites and the structured
 data are built, and insights, news and press are ready for CLICK to
-publish. What remains: draft preview, analytics
+publish. The CMS is feature-complete. What remains: analytics
 verification, the §14 handover pack, the vulnerability scan and the Bill
 of Materials.
 
@@ -27,7 +27,7 @@ of Materials.
 | --- | --- | --- | --- |
 | Design | 15% | 100% | Accepted and paid |
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
-| CMS (§4) | 25% | ~95% | Draft preview and editor seats left |
+| CMS (§4) | 25% | ~98% | Built; CLICK editor seats left to invite |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
 | SEO: schema + redirects | 10% | ~90% | All 6 schema types; redirect map built and verified |
 | Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
@@ -156,7 +156,10 @@ In order. Each is ours to finish; none waits on CLICK.
    `legalPage` documents; the cookie table, categories and processors stay
    generated from `lib/consent.ts`. Rendered text and markup diffed
    identical before and after. `content/legal.ts` is retired.
-5. **Draft preview** (`draftMode` + Studio preview link).
+5. ~~**Draft preview.**~~ **Done 26 Sep** — the Studio's **Preview**
+   tool shows unpublished changes on the real site; secret checked by
+   Sanity, drafts never cached for visitors. See **Drafts** in
+   `docs/SANITY.md`.
 6. **Pre-merge hardening** — see below.
 7. **§6 evidence.** Median-of-three Lighthouse runs against staging for all
    six configurations, re-measured now that video and galleries are in.

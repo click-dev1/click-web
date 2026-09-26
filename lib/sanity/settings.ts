@@ -1,4 +1,4 @@
-import { assertPresent, client, previewDrafts } from "./client";
+import { assertPresent, sanityFetch } from "./client";
 import { navigationQuery, siteSettingsQuery } from "./queries";
 import type { Navigation, SiteSettings } from "./types";
 
@@ -9,16 +9,12 @@ import type { Navigation, SiteSettings } from "./types";
 
    Tagged with their own document types, like everything else, so editing
    the menu in the Studio rebuilds every page that shows it. */
-const readOptions = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["siteSettings", "navigation"] } };
+const tags = ["siteSettings", "navigation"];
 
 export const fetchSiteSettings = () =>
-  client
-    .fetch<SiteSettings | null>(siteSettingsQuery, {}, readOptions)
+  sanityFetch<SiteSettings | null>(siteSettingsQuery, {}, tags)
     .then((d) => assertPresent(d, "site settings"));
 
 export const fetchNavigation = () =>
-  client
-    .fetch<Navigation | null>(navigationQuery, {}, readOptions)
+  sanityFetch<Navigation | null>(navigationQuery, {}, tags)
     .then((d) => assertPresent(d, "navigation"));

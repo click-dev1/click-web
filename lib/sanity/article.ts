@@ -1,4 +1,4 @@
-import { client, previewDrafts } from "./client";
+import { sanityFetch } from "./client";
 import {
   articleBySlugQuery,
   articleSitemapQuery,
@@ -10,37 +10,33 @@ import type { Article, ArticleCard, ArticleKind, PressItem } from "./types";
 
 /* Server-side accessors for insights, news and press. Same contract as
    ./talent: published reads are cached and tagged with the document type
-   so the webhook can invalidate them; draft reads pass no cache directive.
+   so the webhook can invalidate them.
 
    Articles are also tagged "person": the byline is a reference to a team
    member, so renaming someone must rebuild the pieces they wrote.
 
    Unlike talent, an empty result is a legitimate state — CLICK may not
    have published anything yet — so nothing here asserts population. */
-const articleRead = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["article", "person"] } };
-const pressRead = previewDrafts
-  ? {}
-  : { next: { revalidate: 3600, tags: ["pressItem"] } };
+const articleTags = ["article", "person"];
+const pressTags = ["pressItem"];
 
 export const fetchArticles = (kind: ArticleKind) =>
-  client.fetch<ArticleCard[]>(articlesByKindQuery, { kind }, articleRead);
+  sanityFetch<ArticleCard[]>(articlesByKindQuery, { kind }, articleTags);
 
 export const fetchArticle = (kind: ArticleKind, slug: string) =>
-  client.fetch<Article | null>(articleBySlugQuery, { kind, slug }, articleRead);
+  sanityFetch<Article | null>(articleBySlugQuery, { kind, slug }, articleTags);
 
 export const fetchArticleSlugs = (kind: ArticleKind) =>
-  client.fetch<string[]>(articleSlugsQuery, { kind }, articleRead);
+  sanityFetch<string[]>(articleSlugsQuery, { kind }, articleTags);
 
 export const fetchArticleSitemap = () =>
-  client.fetch<{ kind: ArticleKind; slug: string; _updatedAt: string }[]>(
+  sanityFetch<{ kind: ArticleKind; slug: string; _updatedAt: string }[]>(
     articleSitemapQuery,
     {},
-    articleRead,
+    articleTags,
   );
 
-export const fetchPress = () => client.fetch<PressItem[]>(pressQuery, {}, pressRead);
+export const fetchPress = () => sanityFetch<PressItem[]>(pressQuery, {}, pressTags);
 
 /** Where each kind lives, and what its index is called. */
 export const ARTICLE_SECTIONS: Record<ArticleKind, { path: string; label: string }> = {

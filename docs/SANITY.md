@@ -90,6 +90,39 @@ live page.
 
 ## Drafts
 
+### Previewing drafts from the Studio
+
+The Studio's **Preview** tool (top bar) shows the site beside the
+document form, rendering unpublished changes as they are typed. Every
+document also lists **Used on** links at the top of its form — open one to
+jump the preview to that page. Nothing is published until **Publish** is
+pressed, and visitors never see a draft.
+
+How it works, and why it is safe:
+
+- The Preview tool opens `/api/draft-mode/enable` with a short-lived
+  secret it has just written to the dataset. The route checks that secret
+  against Sanity (with the read token) and only then sets Next's
+  draft-mode cookie. There is no preview secret in the environment to
+  leak or rotate, and the route only redirects to paths on this site.
+- With that cookie, reads switch to drafts and skip every cache
+  (`sanityFetch` in `lib/sanity/client.ts`); the response is sent
+  `private, no-store`, so a draft can never land in a cache a visitor is
+  served from. Without it, pages stay static and cached.
+- Opened in a tab of its own, a preview shows a bar at the foot of the
+  page — "Previewing unpublished drafts" — with **Exit preview**
+  (`/api/draft-mode/disable`, which only returns to paths on this site).
+- Click-to-edit overlays (stega) are off on purpose: they encode
+  invisible characters into every string, which the split-text headings
+  and JSON-LD would carry.
+
+Verified 26 September 2026 against a production build: a draft-only page
+is 404 without the cookie, before and after an editor has previewed it;
+a bogus secret or forged cookie gets nothing; `?to=//evil.com` and
+similar redirect home.
+
+### SANITY_PREVIEW_DRAFTS (local only)
+
 Set `SANITY_PREVIEW_DRAFTS=true` and the site renders drafts as well as
 published documents, so unpublished work stays reviewable without ever
 being publishable. **Local development only.**
@@ -103,7 +136,8 @@ being publishable. **Local development only.**
 Note that with drafts on, **localhost cannot show you the
 published/unpublished distinction** — a draft edit appears on the local
 site whether or not you pressed Publish. The document's own status in the
-Studio is the truth.
+Studio is the truth. To test the site as staging behaves, build and start
+with `SANITY_PREVIEW_DRAFTS=false`.
 
 ## Staging
 
