@@ -18,6 +18,7 @@ export const workPageType = defineType({
   groups: [
     { name: "hero", title: "Hero", default: true },
     { name: "reels", title: "Industry reels" },
+    { name: "brands", title: "Brand wall" },
     { name: "closing", title: "Closing" },
     { name: "seo", title: "SEO" },
   ],
@@ -80,6 +81,19 @@ export const workPageType = defineType({
         }),
       ],
       validation: (rule) => rule.max(4),
+    }),
+
+    defineField({ name: "brandsEyebrow", title: "Eyebrow", type: "string", group: "brands" }),
+    defineField({ name: "brandsHeading", title: "Heading", type: "string", group: "brands" }),
+    defineField({
+      name: "brandWall",
+      title: "Brands",
+      type: "array",
+      group: "brands",
+      of: [defineArrayMember({ type: "string" })],
+      options: { layout: "tags" },
+      description:
+        "Brands CLICK Influence has worked with, in display order. Brands with a CLICK case study are added automatically after these — no need to list them — and clicking one filters the grid to its work.",
     }),
 
     defineField({ name: "ctaHeading", title: "Heading", type: "string", group: "closing" }),

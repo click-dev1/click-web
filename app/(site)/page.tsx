@@ -34,7 +34,7 @@ export default async function Home() {
       <Intelligence home={home} />
       <Work home={home} />
       <Recognition home={home} />
-      <Ecosystem />
+      <Ecosystem home={home} />
       <FinalCta home={home} />
     </>
   );

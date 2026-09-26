@@ -43,6 +43,9 @@ export default async function WorkPage() {
         reels={page?.reels ?? []}
         reelsEyebrow={page?.reelsEyebrow}
         reelsHeading={page?.reelsHeading}
+        brandsEyebrow={page?.brandsEyebrow}
+        brandsHeading={page?.brandsHeading}
+        brandWall={page?.brandWall}
       />
 
       {/* ---- final CTA ---- */}

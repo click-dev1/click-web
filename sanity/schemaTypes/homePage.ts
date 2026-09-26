@@ -21,6 +21,7 @@ export const homePageType = defineType({
     { name: "intelligence", title: "Intelligence" },
     { name: "work", title: "Featured work" },
     { name: "closing", title: "Recognition & closing" },
+    { name: "ecosystem", title: "Ecosystem" },
     { name: "seo", title: "SEO" },
   ],
   fields: [
@@ -235,6 +236,84 @@ export const homePageType = defineType({
       title: "Closing button",
       type: "cta",
       group: "closing",
+    }),
+
+    /* ---- ecosystem ---- */
+    /* Sits between recognition and the closing call to action on the
+       page; grouped last here because it is edited least. GameSquare's
+       structure has changed more than once, which is why the lineup lives
+       here and not in code. */
+    defineField({
+      name: "ecosystemEyebrow",
+      title: "Eyebrow",
+      type: "string",
+      group: "ecosystem",
+    }),
+    defineField({
+      name: "ecosystemHeading",
+      title: "Heading",
+      type: "string",
+      group: "ecosystem",
+    }),
+    defineField({
+      name: "ecosystemGroups",
+      title: "Groups",
+      type: "array",
+      group: "ecosystem",
+      description:
+        "Each group is a labelled row of names. Hovering or tapping a name shows its line in the panel beside them — the first name is shown to start.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "ecosystemGroup",
+          fields: [
+            defineField({
+              name: "label",
+              type: "string",
+              description: "e.g. “Technology”.",
+              validation: (r) => r.required(),
+            }),
+            defineField({
+              name: "nodes",
+              title: "Names",
+              type: "array",
+              of: [
+                defineArrayMember({
+                  type: "object",
+                  name: "ecosystemNode",
+                  fields: [
+                    defineField({ name: "name", type: "string", validation: (r) => r.required() }),
+                    defineField({
+                      name: "blurb",
+                      title: "Line",
+                      type: "text",
+                      rows: 2,
+                      description: "One sentence on what it is.",
+                      validation: (r) => r.required(),
+                    }),
+                  ],
+                  preview: { select: { title: "name", subtitle: "blurb" } },
+                }),
+              ],
+              validation: (r) => r.min(1),
+            }),
+          ],
+          preview: {
+            select: { title: "label", nodes: "nodes" },
+            prepare: ({ title, nodes }) => ({
+              title,
+              subtitle: (nodes ?? []).map((n: { name?: string }) => n.name).join(" · "),
+            }),
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: "ecosystemNote",
+      title: "Footnote",
+      type: "string",
+      group: "ecosystem",
+      description: "The small line under the panel. Optional.",
     }),
 
     defineField({ name: "seo", type: "seo", group: "seo" }),

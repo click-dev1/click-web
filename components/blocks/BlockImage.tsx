@@ -50,7 +50,11 @@ export default function BlockImage({
         alt={image.alt ?? ""}
         fill
         sizes={sizes}
-        priority={priority}
+        /* Next 16 deprecated `priority`; it no longer raises the fetch
+           priority. Eager + high is the documented replacement for an
+           above-the-fold image. */
+        loading={priority ? "eager" : undefined}
+        fetchPriority={priority ? "high" : undefined}
         placeholder={lqip && !fit ? "blur" : "empty"}
         blurDataURL={lqip}
         className={fit ? "object-contain" : "object-cover"}

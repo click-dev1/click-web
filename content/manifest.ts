@@ -133,7 +133,10 @@ export const recognition = {
   status: "verified-public" as VerificationStatus, // shown on clickmedia.group
 };
 
-/* Brand names shown on the current public site / blueprint logo list.
+/* Seed source only — the site reads the brand lists from the CMS (home
+   marquee: seed:home; /work brand wall: seed:ecosystem).
+
+   Brand names shown on the current public site / blueprint logo list.
    Rendered as styled wordmarks (no logo files) — logo usage requires
    brand approval before production (blueprint's own launch gate). */
 export const brands = {
@@ -152,7 +155,10 @@ export const brands = {
   status: "awaiting-confirmation" as VerificationStatus,
 };
 
-/* GameSquare ecosystem — structure per CLICK's blueprint. Entity lineup
+/* Seed source only — the site reads the lineup from the home page
+   document (seed:ecosystem).
+
+   GameSquare ecosystem — structure per CLICK's blueprint. Entity lineup
    must be re-verified at build time (blueprint's own rule; GameSquare's
    structure has changed during 2025–26). */
 export const ecosystem = {

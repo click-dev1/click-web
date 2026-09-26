@@ -82,7 +82,14 @@ export default function Blocks({
               <FeaturedTalent key={block._key} block={block} signal={signal} />
             );
           case "mediaBlock":
-            return <MediaBand key={block._key} block={block} signal={signal} />;
+            return (
+              <MediaBand
+                key={block._key}
+                block={block}
+                signal={signal}
+                priority={i === 1 && blocks[0]?._type === "pageHero"}
+              />
+            );
           case "teamGrid":
             return <TeamGrid key={block._key} block={block} signal={signal} />;
           case "timeline":

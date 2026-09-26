@@ -34,9 +34,13 @@ const STAGGER = ["md:mt-12", "", "md:mt-20"];
 export default function MediaBand({
   block,
   signal,
+  priority = false,
 }: {
   block: Block;
   signal: string;
+  /** Straight under the hero, the band is in the first screen and is
+      usually the page's largest paint — load it eagerly. */
+  priority?: boolean;
 }) {
   const images = (block.images ?? []).filter((m) => m?.asset);
   const labels = block.mediaLabels ?? [];
@@ -70,6 +74,7 @@ export default function MediaBand({
             ratio={lone ? undefined : ratio}
             sizes={lone ? `min(100vw, calc(80vh * ${lone}))` : sizes}
             width={count === 1 ? 2400 : 1200}
+            priority={priority}
             className={offset(i)}
           />
         </div>

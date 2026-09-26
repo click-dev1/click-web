@@ -274,7 +274,15 @@ Two things resolve rather than being typed:
   carried both before the migration, in two different files. Most case
   studies need only the name.
 
-The GameSquare ecosystem diagram is still in code.
+The GameSquare ecosystem is edited in the home page's **Ecosystem** group:
+an eyebrow, a heading, labelled groups of names (each with a one-line
+description shown in the side panel), and an optional footnote. With no
+groups the section is left off the page.
+
+The `/work` brand wall is edited on the **Work page** (Brand wall group).
+List the clients there; brands with a CLICK case study are appended
+automatically and become filter buttons. GameSquare-attributed brands are
+never added — the wall is CLICK's own clients.
 
 ## Anchors
 
@@ -418,3 +426,8 @@ what does not exist yet and inserts page sections only when their
 `deck-*` key is absent, so re-running it cannot overwrite Studio edits.
 It reads images from `DECK_ASSETS_DIR`. Dry run by default; `--apply`
 writes.
+
+`pnpm seed:ecosystem` (`scripts/seed-ecosystem.ts`) moved the home
+ecosystem lineup and the `/work` brand wall out of `content/manifest.ts`.
+Every field is `setIfMissing`, so it never overwrites Studio edits. Dry
+run by default; `--apply` writes.

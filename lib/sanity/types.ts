@@ -148,6 +148,9 @@ export interface WorkPage {
   reelsEyebrow?: string;
   reelsHeading?: string;
   reels: Reel[];
+  brandsEyebrow?: string;
+  brandsHeading?: string;
+  brandWall?: string[];
   ctaHeading?: string;
   ctaBody?: string;
   seo?: Seo;
@@ -161,6 +164,12 @@ export interface Beat {
   title: string;
   body: string;
   proof?: Metric;
+}
+
+export interface EcosystemGroup {
+  _key?: string;
+  label: string;
+  nodes: { _key?: string; name: string; blurb: string }[];
 }
 
 export interface HomePage {
@@ -194,6 +203,10 @@ export interface HomePage {
   ctaHeading?: string;
   ctaBody?: string;
   ctaButton?: Cta;
+  ecosystemEyebrow?: string;
+  ecosystemHeading?: string;
+  ecosystemGroups?: EcosystemGroup[];
+  ecosystemNote?: string;
   seo?: Seo;
 }
 

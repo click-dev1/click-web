@@ -1,16 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { ecosystem } from "@/content/manifest";
+import type { HomePage } from "@/lib/sanity/types";
 
 /**
  * GameSquare ecosystem — the signal field's final transformation.
  * Nodes are real buttons: keyboard reachable, focus visible, description
  * shown for hover, focus and touch alike. Mobile reflows to a list.
+ *
+ * The lineup is edited on the home page document (Ecosystem group).
+ * Without any groups the section is left out rather than drawn empty.
  */
-export default function Ecosystem() {
-  const first = ecosystem.groups[0].nodes[0];
-  const [active, setActive] = useState<{ name: string; blurb: string }>(first);
+export default function Ecosystem({ home }: { home: HomePage }) {
+  const groups = (home.ecosystemGroups ?? []).filter((g) => g.nodes?.length);
+  const [active, setActive] = useState<{ name: string; blurb: string } | null>(
+    groups[0]?.nodes[0] ?? null,
+  );
+  if (!active) return null;
 
   return (
     <section
@@ -25,18 +31,18 @@ export default function Ecosystem() {
             <span className="tick" aria-hidden="true">
               ●
             </span>{" "}
-            Backed by the GameSquare ecosystem
+            {home.ecosystemEyebrow}
           </span>
           <span className="visually-hidden"> — </span>
           <span data-split className="block">
-            One ecosystem. Endless possibilities.
+            {home.ecosystemHeading}
           </span>
         </h2>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div className="flex flex-col gap-8">
-            {ecosystem.groups.map((g) => (
-              <div key={g.label}>
+            {groups.map((g) => (
+              <div key={g._key ?? g.label}>
                 <p className="eyebrow mb-3">{g.label}</p>
                 {/* A real list of real buttons. These used to be buttons
                     carrying role="listitem", which overrode the button
@@ -74,9 +80,9 @@ export default function Ecosystem() {
             <p className="leading-body" style={{ color: "var(--ink-muted)" }}>
               {active.blurb}
             </p>
-            <p className="eyebrow mt-4">
-              Ecosystem lineup verified at build time
-            </p>
+            {home.ecosystemNote && (
+              <p className="eyebrow mt-4">{home.ecosystemNote}</p>
+            )}
           </div>
         </div>
       </div>

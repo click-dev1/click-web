@@ -49,7 +49,11 @@ export default function TalentMedia({
         alt={portrait.alt ?? talent.name}
         fill
         sizes={sizes}
-        priority={priority}
+        /* Next 16 deprecated `priority`; it no longer raises the fetch
+           priority. Eager + high is the documented replacement for an
+           above-the-fold image. */
+        loading={priority ? "eager" : undefined}
+        fetchPriority={priority ? "high" : undefined}
         placeholder={lqip ? "blur" : "empty"}
         blurDataURL={lqip}
         className="object-cover"

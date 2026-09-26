@@ -7,7 +7,6 @@ import BlockImage from "./blocks/BlockImage";
 import AttributionBadge from "./work/AttributionBadge";
 import WorkReels from "./work/WorkReels";
 import type { CaseStudy, Reel } from "@/lib/sanity/types";
-import { brands } from "@/content/manifest";
 
 /**
  * The /work grid: industry reels, filters, and the case studies six at a
@@ -59,11 +58,18 @@ export default function WorkExplorer({
   reels = [],
   reelsEyebrow,
   reelsHeading,
+  brandsEyebrow = "Brands we\u2019ve partnered with",
+  brandsHeading = "From global brands to emerging challengers.",
+  brandWall = [],
 }: {
   caseStudies: CaseStudy[];
   reels?: Reel[];
   reelsEyebrow?: string;
   reelsHeading?: string;
+  brandsEyebrow?: string;
+  brandsHeading?: string;
+  /** The editor's list from the Work page; case-study brands follow it. */
+  brandWall?: string[];
 }) {
   /* CLICK's own work first, the query's order kept within each group. */
   const caseStudies = useMemo(
@@ -135,20 +141,20 @@ export default function WorkExplorer({
   );
   const visible = results.slice(0, shown);
 
-  /* The brand wall: the confirmed client list, plus any brand CLICK
+  /* The brand wall: the editor's client list, plus any brand CLICK
      Influence has a case study for, so every one of its campaigns can be
      reached from here. GameSquare brands stay off it — the wall says
      "brands we've partnered with", and those were the group's clients. */
   const wall = useMemo(
     () => [
       ...new Set([
-        ...brands.clients,
+        ...brandWall,
         ...caseStudies
           .filter((c) => c.attribution !== "gamesquare")
           .map((c) => c.brand),
       ]),
     ],
-    [caseStudies],
+    [brandWall, caseStudies],
   );
   const remaining = results.length - visible.length;
 
@@ -329,10 +335,10 @@ export default function WorkExplorer({
       >
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow pill mb-4">
-            <span className="tick">●</span> Brands we&apos;ve partnered with
+            <span className="tick">●</span> {brandsEyebrow}
           </p>
           <h2 id="brand-wall-heading" data-split className="font-display text-h2 max-w-3xl">
-            From global brands to emerging challengers.
+            {brandsHeading}
           </h2>
           <div className="mt-10 flex flex-wrap gap-x-10 gap-y-6">
             {wall.map((b) => {
