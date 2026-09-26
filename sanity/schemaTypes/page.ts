@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { reservedSlugs } from "../../lib/legacy-redirects";
 
 /* A standard page, assembled from the delivered section blocks.
 
@@ -37,7 +38,15 @@ export const pageType = defineType({
       group: "content",
       description: "The page's web address: /<slug>. Set it before publishing.",
       options: { source: "title", maxLength: 96 },
-      validation: (rule) => rule.required(),
+      /* A redirect is checked before any page, so a page at an old site's
+         address would be unreachable. */
+      validation: (rule) =>
+        rule.required().custom((slug) => {
+          const first = slug?.current?.split("/")[0];
+          return first && reservedSlugs.includes(first)
+            ? `"/${first}" is an address from the old site and redirects elsewhere — choose another.`
+            : true;
+        }),
     }),
     defineField({
       name: "blocks",

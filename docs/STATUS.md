@@ -15,12 +15,13 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 71% of the way to launch-ready.** The build and the CMS are
+**About 73% of the way to launch-ready.** The build and the CMS are
 largely done: every public page except the three legal pages renders from
 Sanity, and CLICK's own decks are in — 24 case studies with figures
-supplied by CLICK. What remains sits mostly **outside the CMS**: the Wix
-redirect map, structured data, analytics verification, the §14 handover
-pack, the vulnerability scan and the Bill of Materials.
+supplied by CLICK, and the redirect map for the old sites is built. What
+remains sits mostly **outside the CMS**: structured data, analytics
+verification, the §14 handover pack, the vulnerability scan and the Bill
+of Materials.
 
 | Workstream | Weight | Done | Where it stands |
 | --- | --- | --- | --- |
@@ -28,7 +29,7 @@ pack, the vulnerability scan and the Bill of Materials.
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
 | CMS (§4) | 25% | ~80% | Legal pages, `article`/`pressItem` + routes, draft preview, editor seats left |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
-| SEO: schema + redirects | 10% | ~30% | 2 of 6 schema types; redirect map not started |
+| SEO: schema + redirects | 10% | ~55% | 2 of 6 schema types; redirect map built and verified |
 | Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
 | Consent + analytics | 5% | ~55% | Consent built; verification and inventory outstanding |
 | Security, BOM, pre-merge | 3% | ~10% | Not started |
@@ -136,13 +137,11 @@ at $50/h. Worth having Chris agree it in writing.
 
 In order. Each is ours to finish; none waits on CLICK.
 
-1. **Draft redirect map from the Wayback Machine.** The Internet Archive
-   holds ~1,560 URLs for the domain across two earlier sites (WordPress to
-   mid-2025: `/creator/*`, `/our-creators/*`, `/case-studies/`; Wix:
-   `/about-1`, `/talentprofiles/*`). Those URLs **already 404 on
-   production**. Build the map in `next.config.ts` now; CLICK's Search
-   Console or Wix export then only fills gaps. Script it so it is
-   re-runnable, and verify every source with a crawl.
+1. ~~**Redirect map.**~~ **Done 26 Sep** — 504 old WordPress and Wix
+   URLs from the Internet Archive map to the new site in 57 rules, all
+   verified locally. See `docs/REDIRECTS.md`. Left: verify on staging
+   once pushed, CLICK to confirm three `review` rows, and fold in their
+   Search Console / Wix export when it arrives.
 2. **Structured data.** `BreadcrumbList` site-wide, `Person` on talent
    profiles, `CreativeWork` on case studies, `Article` once articles
    exist. Validate all six in Google's Rich Results Test and the Schema.org
@@ -210,8 +209,10 @@ Practices score below the §6 threshold of 90.
 **Blocking specific work:**
 - **Search Console export or Wix access** — Indexing → Pages and
   Performance → Pages exports from Search Console, or a Wix collaborator
-  invite. Fills the gaps in the Wayback-based redirect map; no longer
-  blocks starting it.
+  invite. Fills any gaps in the archive-based redirect map
+  (`docs/REDIRECTS.md`).
+- **Three redirect judgement calls** marked `review` in
+  `docs/REDIRECTS.csv`.
 - **Search Console and Bing access** to verify the properties and submit
   the sitemap.
 - **Licensed brand webfonts** (Helvetica Now Display Condensed, Matter) —

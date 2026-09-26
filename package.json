@@ -20,7 +20,9 @@
     "swap:pages": "tsx --env-file=.env.local scripts/swap-cms-pages.ts",
     "seed:home": "tsx --env-file=.env.local scripts/seed-home.ts",
     "seed:deck": "tsx --env-file=.env.local scripts/seed-deck.ts",
-    "seed:ecosystem": "tsx --env-file=.env.local scripts/seed-ecosystem.ts"
+    "seed:ecosystem": "tsx --env-file=.env.local scripts/seed-ecosystem.ts",
+    "redirects:build": "tsx --env-file=.env.local scripts/build-redirects.ts",
+    "redirects:verify": "tsx --env-file=.env.local scripts/verify-redirects.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
