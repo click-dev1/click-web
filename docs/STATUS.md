@@ -15,25 +15,26 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-**About 81% of the way to launch-ready.** The build and the CMS are
-largely done: every public page renders from Sanity, and CLICK's own decks are in — 24 case studies with figures
-supplied by CLICK. The redirect map for the old sites and the structured
+**About 86% of the way to launch-ready.** The build and the CMS are
+largely done: every public page renders from Sanity, and CLICK's own
+decks are in — 24 case studies with figures supplied by CLICK. The redirect map for the old sites and the structured
 data are built, and insights, news and press are ready for CLICK to
-publish. The CMS is feature-complete. What remains: analytics
-verification, the §14 handover pack, the vulnerability scan and the Bill
-of Materials.
+publish. What remains: two §4 CMS gaps
+(canonical and share images, insight reorder), three consent/analytics
+decisions, the quick-start guide and training, and CLICK's content and
+sign-offs.
 
 | Workstream | Weight | Done | Where it stands |
 | --- | --- | --- | --- |
 | Design | 15% | 100% | Accepted and paid |
 | Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
-| CMS (§4) | 25% | ~98% | Built; CLICK editor seats left to invite |
+| CMS (§4) | 25% | ~93% | §4 gaps found 26 Sep: canonical + share images on every type, insight reorder; editor seats |
 | Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
 | SEO: schema + redirects | 10% | ~90% | All 6 schema types; redirect map built and verified |
-| Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
-| Consent + analytics | 5% | ~55% | Consent built; verification and inventory outstanding |
-| Security, BOM, pre-merge | 3% | ~10% | Not started |
-| Handover + training (§14) | 7% | ~10% | Internal docs only |
+| Performance + accessibility (§6) | 5% | ~85% | Median-of-3 on staging: all categories pass; talent-profile mobile LCP and contrast open |
+| Consent + analytics | 5% | ~65% | Inventory done; GA4 pre-consent hits, ads scripts and consent export need decisions; GSC/Bing not verified |
+| Security, BOM, pre-merge | 3% | ~85% | Scan, BOM, hardening done; launch-merge items remain |
+| Handover + training (§14) | 7% | ~45% | 7 of 12 items drafted; quick-start, design files, credentials, training left |
 
 The weights are a judgement of each workstream's share of the SOW, not
 contract figures.
@@ -160,14 +161,43 @@ In order. Each is ours to finish; none waits on CLICK.
    tool shows unpublished changes on the real site; secret checked by
    Sanity, drafts never cached for visitors. See **Drafts** in
    `docs/SANITY.md`.
-6. **Pre-merge hardening** — see below.
-7. **§6 evidence.** Median-of-three Lighthouse runs against staging for all
-   six configurations, re-measured now that video and galleries are in.
-8. **§8.8 vulnerability scan** (`pnpm audit`, headers, CSP review) and
-   **§15 Bill of Materials** — check GSAP's licence and Mux's terms.
-9. **§8.9 tracking inventory** — GA4, HubSpot (loader gated to the contact
-   modal), Mux, Vercel; generated from `lib/consent.ts` where possible.
-10. **§14 handover pack** — draft everything except the recorded training.
+6. ~~**Pre-merge hardening.**~~ **Done 26 Sep** — security headers,
+   `GET /api/revalidate` behind the secret, Next.js 16.3.6 and patched
+   CLI dependencies. The staging CORS origin, Production variables and
+   editor seats stay for the launch merge (below).
+7. ~~**§6 evidence.**~~ **Done 26 Sep** — median of 3 on staging, see
+   `docs/PERFORMANCE.md`. All category thresholds pass; mobile LCP misses
+   only on the talent profile (3.33s).
+8. ~~**§8.8 scan and §15 Bill of Materials.**~~ **Done 26 Sep** —
+   `docs/handover/SECURITY_SCAN.md`, `docs/handover/BILL_OF_MATERIALS.md`.
+9. ~~**§8.9 tracking inventory.**~~ **Done 26 Sep** —
+   `docs/handover/TRACKING_INVENTORY.md`, with five findings.
+10. **§14 handover pack** — index in `docs/handover/README.md`. Done:
+    operations (deploy, env, backup), accounts, BOM, scan, tracking. Left:
+    quick-start guide, design files, credentials, training.
+
+### Found on 26 September — no CLICK input needed
+
+- **§4 SEO gaps.** §4 requires editing "canonical settings and social
+  share images on every content type". There is no canonical field
+  anywhere, and the share image field is ignored on home, `/work`,
+  talent and case studies (honoured only on CMS pages and articles).
+- **Insight reorder.** §4 lists "reorder" for insights; today order is by
+  publication date only.
+
+### Found on 26 September — decisions needed
+
+- **GA4 sends cookieless hits before consent, after Reject and under GPC**
+  (advanced Consent Mode). Recommended: basic mode. See
+  `TRACKING_INVENTORY.md` finding 1.
+- **Ads scripts under analytics consent** — HubSpot's ads-pixel script and
+  Google's ads endpoint load once analytics is allowed; the site has no
+  marketing category and the Cookie Policy says it places no advertising
+  pixels. Finding 2.
+- **"Consent state recorded and exportable"** (Exhibit A §5) is not met.
+  Finding 5.
+- **`main` runs Next.js 16.3.0**, which has a critical advisory (hard to
+  exploit there). Patch before launch or not — CLICK's call.
 
 ---
 
@@ -258,8 +288,6 @@ Practices score below the §6 threshold of 90.
   layer, the intelligence headline trim) are merged into `dev` with the
   `ours` strategy: `dev` already carried all three, newer. The final
   `dev` → `main` merge is therefore a fast-forward.
-- Gate or trim the `GET` readiness handler on `/api/revalidate` — it is
-  publicly readable on production. Key names and booleans only.
 - Remove the staging CORS origin; consider registering the Studio for
   `www.clickmedia.group`.
 - Confirm `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET` and the Mux

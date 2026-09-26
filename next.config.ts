@@ -1,7 +1,34 @@
 import type { NextConfig } from "next";
 import { legacyRedirects } from "./lib/legacy-redirects";
 
+/* Security headers on every response (SOW Agreement §8.1, §8.8). None of
+   them changes how a page looks or behaves:
+   - nosniff: browsers must not guess a file's type from its contents.
+   - Referrer-Policy: other sites see our origin, never a full URL.
+   - Permissions-Policy: switches off device APIs the site never uses.
+     Fullscreen, picture-in-picture and autoplay are left alone — the Mux
+     reels use them.
+   - Framing: only this site may frame its pages, which blocks
+     clickjacking and still lets the Studio's Preview (same origin) work.
+   HSTS and the HTTP→HTTPS redirect already come from Vercel. A full
+   Content-Security-Policy is deliberately not set yet — see
+   docs/handover/SECURITY_SCAN.md. */
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   images: {
     /* Every editor-uploaded image is served from Sanity's CDN. */
     remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],

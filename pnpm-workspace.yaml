@@ -1,3 +1,12 @@
 allowBuilds:
   unrs-resolver: false
   esbuild: true
+
+# Security: patched versions of transitive dependencies of the Sanity CLI
+# (pulled in by `sanity`; build/CLI tooling, not site runtime), kept within
+# each package's current major version. Remove an entry once `sanity`
+# itself ships the patched version. See docs/handover/SECURITY_SCAN.md.
+overrides:
+  js-yaml@<3.15.2: 3.15.2
+  smol-toml@<1.7.1: ^1.7.1
+  adm-zip@<0.6.1: 0.6.1

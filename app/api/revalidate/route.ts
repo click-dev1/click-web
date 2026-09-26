@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { parseBody } from "next-sanity/webhook";
@@ -39,8 +40,20 @@ const REQUIRED = ["SANITY_API_READ_TOKEN", "SANITY_REVALIDATE_SECRET"] as const;
  * runtime can see, which is what catches the failure this was written
  * for: a variable whose NAME carries a stray space or typo looks correct
  * in the Vercel dashboard but is a different key to the process.
+ *
+ * Only for someone holding the webhook secret:
+ *   curl -H "Authorization: Bearer $SANITY_REVALIDATE_SECRET" <origin>/api/revalidate
+ * Anyone else gets a plain 404 — which variable names a deployment has is
+ * nobody else's business. If the secret itself is missing, nothing can
+ * authenticate here; the webhook's own 500 ("not set") says so instead.
  */
-export function GET() {
+export function GET(req: NextRequest) {
+  const secret = process.env.SANITY_REVALIDATE_SECRET;
+  const given = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ?? "";
+  if (!secret || !sameSecret(given, secret)) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
   const present = Object.fromEntries(
     REQUIRED.map((k) => [k, Boolean(process.env[k])]),
   );
@@ -53,8 +66,16 @@ export function GET() {
     present,
     unexpected,
     /* Distinguishes "the value is empty" from "the key is absent". */
-    secretLength: (process.env.SANITY_REVALIDATE_SECRET ?? "").length,
+    secretLength: secret.length,
   });
+}
+
+/** Constant-time comparison, so response timing says nothing about how
+    much of a guess was right. */
+function sameSecret(a: string, b: string): boolean {
+  const x = Buffer.from(a);
+  const y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
 }
 
 export async function POST(req: NextRequest) {

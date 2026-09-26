@@ -7,6 +7,43 @@ one run per configuration. **§6 asks for the median of three** — these are
 single runs and are a working baseline, not the acceptance evidence. Re-run
 as median-of-three against the staging URL before sign-off.
 
+## Acceptance run — staging, median of three (26 September 2026)
+
+The §6 method: Lighthouse 12.8.2 in Chrome 153 (current stable), against
+the staging deployment, three consecutive runs per page and form factor,
+median reported. Each run is a cold load (browser cache cleared). Staging
+sits behind Vercel Authentication; the bypass was set as a cookie scoped
+to the staging host only, so it never reached a third party.
+
+| Page | Form | Perf | A11y | BP | SEO* | LCP | CLS | TBT |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| home | desktop | 100 | 96 | 100 | 100 | 0.58s | 0 | 0ms |
+| talent profile (`/talent/steak`) | desktop | 99 | 96 | 100 | 100 | 0.88s | 0 | 0ms |
+| case study (`/work/capcom-pragmata`) | desktop | 100 | 96 | 100 | 100 | 0.47s | 0 | 0ms |
+| case study, image-heavy (`/work/ea-golf-clash`) | desktop | 100 | 96 | 100 | 100 | 0.47s | 0 | 0ms |
+| home | mobile | 99 | 96 | 100 | 100 | 2.15s | 0 | 0ms |
+| talent profile | mobile | 92 | 96 | 100 | 100 | **3.33s** | 0 | 0ms |
+| case study | mobile | 100 | 96 | 100 | 100 | 1.92s | 0 | 9ms |
+| case study, image-heavy | mobile | 100 | 96 | 100 | 100 | 1.93s | 0 | 0ms |
+
+**Every Lighthouse category threshold passes on every page and form
+factor.** Two things to read with it:
+
+- \*SEO scores **66–69 as measured on staging**. The only failing audit is
+  "Page is blocked from indexing": Vercel adds `x-robots-tag: noindex`
+  to every preview deployment, and production does not (checked). With
+  that one audit excluded, SEO is 100 everywhere. The SEO evidence should
+  be re-run on production after launch.
+- The only accessibility audit failing is colour contrast — the open
+  decision below.
+
+**LCP (§6: ≤2.5s)** now passes on mobile for the home page and case
+studies; the **talent profile (3.33s) is the one miss**. §6 measures LCP,
+INP and CLS at the 75th percentile of real visits, which only exists once
+the site has traffic: confirm it in Search Console's Core Web Vitals
+report after launch. Lab values above are the pre-launch proxy (TBT for
+INP).
+
 ## Thresholds
 
 | | Target |
@@ -80,6 +117,9 @@ lightens the ground under white text. Swapping it for brand Dark Blue
 rather than raised, which is a visible design change and CLICK's call.
 
 ### LCP on mobile — the hero animation
+
+*Update 26 September: on staging, home and case studies now pass; the
+talent profile (3.33s) is the one page still over.*
 
 The LCP element is the hero `<h1>`, and ~88% of its time is *render
 delay*, not network (TTFB is 456ms). The split-text animation waits on
