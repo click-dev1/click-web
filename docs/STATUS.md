@@ -3,7 +3,7 @@
 Where the CLICK website rebuild stands against the executed Website
 Development Agreement and its Exhibit A Statement of Work.
 
-**Last updated:** 15 September 2026
+**Last updated:** 26 September 2026
 **Kickoff:** 13 August 2026 · **Launch-ready target:** ~8 October 2026
 **Paid to date:** $4,000 of $8,000 (kickoff + design). The remaining
 $4,000 releases on launch-ready acceptance (§11).
@@ -15,14 +15,27 @@ $4,000 releases on launch-ready acceptance (§11).
 
 ## The short version
 
-The CMS foundation is finished and proven: the publish loop works, the
-block architecture is settled, and two pages have been rebuilt from
-blocks with their rendered text diffed to zero against the originals.
+**About 71% of the way to launch-ready.** The build and the CMS are
+largely done: every public page except the three legal pages renders from
+Sanity, and CLICK's own decks are in — 24 case studies with figures
+supplied by CLICK. What remains sits mostly **outside the CMS**: the Wix
+redirect map, structured data, analytics verification, the §14 handover
+pack, the vulnerability scan and the Bill of Materials.
 
-**Roughly a third of the content is editable by CLICK.** Six pages, six
-content types and three routes remain. Separately, several contractual
-items outside the CMS have not started at all — the Wix redirect map is
-the most schedule-critical of them.
+| Workstream | Weight | Done | Where it stands |
+| --- | --- | --- | --- |
+| Design | 15% | 100% | Accepted and paid |
+| Front-end build | 20% | ~97% | All core routes live on staging; Mux reels, work filters and paging |
+| CMS (§4) | 25% | ~80% | Legal pages, `article`/`pressItem` + routes, draft preview, editor seats left |
+| Content | 10% | ~60% | Case studies done; talent unverified, portraits missing, legal mailbox |
+| SEO: schema + redirects | 10% | ~30% | 2 of 6 schema types; redirect map not started |
+| Performance + accessibility (§6) | 5% | ~70% | Passes on 13 Sep baseline; not re-measured since video and galleries |
+| Consent + analytics | 5% | ~55% | Consent built; verification and inventory outstanding |
+| Security, BOM, pre-merge | 3% | ~10% | Not started |
+| Handover + training (§14) | 7% | ~10% | Internal docs only |
+
+The weights are a judgement of each workstream's share of the SOW, not
+contract figures.
 
 ---
 
@@ -30,47 +43,50 @@ the most schedule-critical of them.
 
 | Page | Renders from | CLICK can edit? |
 | --- | --- | --- |
-| `/talent`, `/talent/[slug]` | Sanity | ✅ profiles (page furniture is code) |
-| `/work`, `/work/[slug]` | Sanity | ✅ case studies (page furniture is code) |
-| `/[slug]` — any CMS page | Sanity | ✅ fully |
+| `/` (home) | Sanity — `homePage` singleton | ✅ every section, including the ecosystem |
 | `/influencer-marketing` | Sanity | ✅ fully |
 | `/about` | Sanity | ✅ fully |
 | `/talent-management` | Sanity | ✅ fully |
-| `/` (home) | `content/manifest.ts` | ❌ singleton, not started |
-| `/experiential` | `content/site.ts` | ❌ |
 | `/contact` | Sanity | ✅ fully |
+| `/experiential` | Sanity | ✅ fully (migrated 24 Sep) |
+| `/work` | Sanity — `workPage` singleton + case studies | ✅ hero, reels, brand wall, CTA, every case study |
+| `/work/[slug]` | Sanity | ✅ case studies (page furniture is code) |
+| `/talent`, `/talent/[slug]` | Sanity | ✅ profiles (page furniture is code) |
+| `/[slug]` — any CMS page | Sanity | ✅ fully |
 | `/privacy-policy`, `/cookie-policy`, `/terms-of-use` | `content/legal.ts` | ❌ |
-| `/insights`, `/news`, `/press` | — | ❌ routes do not exist |
+| `/insights`, `/news`, `/press` | — | ❌ routes do not exist (404) |
 
-**`Nav` and `Footer` now read from Sanity** — CLICK can change a menu
-item, a footer link, the enquiries address or a social profile without a
-developer. The remaining components on hand-authored content are the home
-page's sections, the legal pages and the ecosystem diagram.
-`content/site.ts`, `content/manifest.ts` and `content/legal.ts` total
-~1,300 lines and retire as the pages above migrate.
+`Nav` and `Footer` read from Sanity (`navigation`, `siteSettings`), so
+CLICK can change a menu item, a footer link, the enquiries address or a
+social profile without a developer.
 
-### Five pages are live from the CMS
+Every migrated page was verified by diffing its rendered text against the
+hand-built page it replaced; see **Migrating a bespoke page** in
+`docs/SANITY.md`. `content/manifest.ts` and `content/site.ts` are no longer
+read by any page — only `app/sitemap.ts`, `StructuredData`, `Footer`, the
+contact components and `lib/sanity/queries.ts` still import constants from
+them.
 
-The home page, `/influencer-marketing`, `/about`, `/contact` and
-`/talent-management` now render from Sanity at their real addresses. The hand-built route
-files are deleted; CLICK edits these pages in the Studio.
+### What came in from CLICK's decks (24 Sep)
 
-Each was verified by diffing its rendered text against the hand-built
-page it replaced. `/about` and `/talent-management` are **identical**.
-`/influencer-marketing` differs by one text-node split (same characters)
-and `/contact` by the order of three social links — the site previously
-listed those in two different orders in two places, and they come from
-one list now.
+`pnpm seed:deck` brought CLICK's Aug–Sep 2026 Narrative and Case Studies
+decks into the CMS: **13 CLICK Influence case studies and 8 GameSquare
+activations**, the Work page, `/experiential` as a block page, and new
+sections on Influencer Marketing and About, with their imagery. Figures
+are the decks' own, marked "as confirmed by CLICK Influence". GameSquare
+work carries a badge and a credit line so the site never claims work CLICK
+did not deliver. The unconfirmed Australian Government campaign was
+withdrawn.
 
-The home page is a **singleton with editable copy per section**, not a
-block canvas — nobody assembles a second home page, and decomposing it
-would let an editor reorder the argument the whole site rests on. Its
-diff against the hand-built version is **zero**. The one part still in
-code is the GameSquare ecosystem diagram.
+The seed is **additive** — re-running it cannot overwrite Studio edits.
 
-`pnpm swap:pages` does the promotion for block-built pages; see **Migrating a bespoke page** in
-`docs/SANITY.md` for the full procedure, including removing the page from
-the hardcoded list in `app/sitemap.ts`.
+### Video
+
+The four industry reels on `/work` play through **Mux**
+(`@mux/mux-player-react`, `mux.video` fields on `workPage`), with custom
+controls in `components/work/ReelPlayer.tsx`. Mux is listed as optional in
+the SOW; it is wired and working, and belongs in the §15 Bill of Materials
+and the §8.9 tracking inventory.
 
 ---
 
@@ -79,14 +95,15 @@ the hardcoded list in `app/sitemap.ts`.
 | Type | Status |
 | --- | --- |
 | `talent` | ✅ 11 creators, portraits on the CDN |
-| `caseStudy` | ✅ 5 campaigns migrated |
-| `person` | ✅ 12 team members (2 portraits, 10 awaiting) |
+| `caseStudy` | ✅ 24 published (20 from CLICK's decks) |
+| `person` | ✅ 12 team members |
 | `page` | ✅ |
-| `homePage` | ✅ singleton |
-| `article` (insight \| news) | ❌ |
-| `pressItem` | ❌ |
+| `homePage` | ✅ singleton — incl. ecosystem groups |
+| `workPage` | ✅ singleton — hero, reels, brand wall, CTA |
 | `navigation` | ✅ singleton — main menu and footer columns |
 | `siteSettings` | ✅ singleton — email, socials, company name |
+| `article` (insight \| news) | ❌ |
+| `pressItem` | ❌ |
 | `legalPage` | ❌ |
 
 ## Block library — 18 delivered
@@ -97,18 +114,10 @@ the hardcoded list in `app/sitemap.ts`.
 `journeySequence` · `journeyPanels` · `contactForm` · `linkChips` ·
 `ctaBanner`
 
-Every block that renders its own section can carry an **anchor**, so a
-link can point straight at it.
+Every image slot has a **Fill / Fit** display option (`imageDisplay`).
 
-**Still to build**, with the page that needs each:
-
-| Block | Needed by |
-| --- | --- |
-| `logoWall` | `/work` brand wall |
-
-The home page turned out not to need `homeHero`, `intelligenceDiagram` or
-`ecosystem` as blocks: it is a singleton, so those are fixed sections
-reading fields rather than block types anyone can place.
+`logoWall` is **no longer needed**: the `/work` brand wall is edited on the
+`workPage` singleton, and case-study brands are appended automatically.
 
 This list is the **SOW §4 scope boundary**. §4 says designing a new
 section type is development work, so anything outside it is a §3 change
@@ -120,19 +129,48 @@ at $50/h. Worth having Chris agree it in writing.
   routing cards were links across the whole card surface.
 - `copyMedia` stacks its paragraphs; two built sections set them in two
   columns.
-- `copyMedia`'s collage fixes its frames at 4/3 + 1/1; `/experiential`'s
-  is 16/9 + two 4/3.
+
+---
+
+## Still to build — no CLICK input needed
+
+In order. Each is ours to finish; none waits on CLICK.
+
+1. **Draft redirect map from the Wayback Machine.** The Internet Archive
+   holds ~1,560 URLs for the domain across two earlier sites (WordPress to
+   mid-2025: `/creator/*`, `/our-creators/*`, `/case-studies/`; Wix:
+   `/about-1`, `/talentprofiles/*`). Those URLs **already 404 on
+   production**. Build the map in `next.config.ts` now; CLICK's Search
+   Console or Wix export then only fills gaps. Script it so it is
+   re-runnable, and verify every source with a crawl.
+2. **Structured data.** `BreadcrumbList` site-wide, `Person` on talent
+   profiles, `CreativeWork` on case studies, `Article` once articles
+   exist. Validate all six in Google's Rich Results Test and the Schema.org
+   validator.
+3. **`article` + `pressItem` and `/insights`, `/news`, `/press`.** Schema,
+   index and detail routes, sitemap, `Article` JSON-LD. Launch with the
+   routes empty-state-safe; CLICK populates.
+4. **`legalPage` type.** Move the three legal pages into Sanity; the cookie
+   table stays generated from `lib/consent.ts`.
+5. **Draft preview** (`draftMode` + Studio preview link).
+6. **Pre-merge hardening** — see below.
+7. **§6 evidence.** Median-of-three Lighthouse runs against staging for all
+   six configurations, re-measured now that video and galleries are in.
+8. **§8.8 vulnerability scan** (`pnpm audit`, headers, CSP review) and
+   **§15 Bill of Materials** — check GSAP's licence and Mux's terms.
+9. **§8.9 tracking inventory** — GA4, HubSpot (loader gated to the contact
+   modal), Mux, Vercel; generated from `lib/consent.ts` where possible.
+10. **§14 handover pack** — draft everything except the recorded training.
 
 ---
 
 ## Performance and accessibility
 
-Measured for the first time on 13 September — see `docs/PERFORMANCE.md`.
-**Every §6 category threshold passes on all six configurations.** CLS is
-0 everywhere.
+Baseline measured 13 September — see `docs/PERFORMANCE.md`. Every §6
+category threshold passed on all six configurations; CLS was 0. **Not
+re-measured since the Mux reels, galleries and deck imagery landed.**
 
-Two items remain, both documented there and both needing a decision from
-CLICK:
+Two items remain, both needing a decision from CLICK:
 
 1. **Contrast misses WCAG AA by 0.049.** Brand Electric Blue `#186ffc`
    gives white text 4.451:1 against AA's 4.5:1. Lighthouse still scores
@@ -158,31 +196,9 @@ a deliberate difference from what `main` serves. Reverting it would put a
 third-party cookie back on every pre-consent pageview and drop the Best
 Practices score below the §6 threshold of 90.
 
-## Not started
-
-Ranked by schedule risk.
-
-1. **Wix redirect map** — a week-7 deliverable. Needs a full crawl of the
-   live Wix URL set and a 1:1 map in `next.config.ts`, verified for
-   unintended 404s, with images moved off Wix. **Blocked: the current Wix
-   URL set has not been supplied.**
-2. **Schema markup** — only `Organization` and `WebSite` exist. Still
-   needed: `Person` (talent), `CreativeWork` (case studies), `Article`
-   (insights/news), `BreadcrumbList` site-wide. All six need validating.
-3. **Analytics verification** — Google Search Console and Bing property
-   verification, sitemap submission, and conversion events proven to fire
-   in **both** GA4 and HubSpot. Consent state exportable (§5).
-4. **§14 handover pack** — 12 items, none delivered.
-5. **§15 Bill of Materials** — check GSAP's licence explicitly.
-6. **§8.8 vulnerability scan** and **§8.9 tracking inventory.**
-7. **Median-of-three Lighthouse runs against staging** for acceptance
-   evidence. The current numbers are single runs.
-
 ---
 
 ## Waiting on CLICK
-
-Content and decisions the build cannot proceed without.
 
 **Overdue (§10):**
 - Geographic consent restrictions and the Clarity/Peec election — due at
@@ -192,32 +208,33 @@ Content and decisions the build cannot proceed without.
   due week 3.
 
 **Blocking specific work:**
-- The live **Wix URL set** — blocks the redirect map entirely.
+- **Search Console export or Wix access** — Indexing → Pages and
+  Performance → Pages exports from Search Console, or a Wix collaborator
+  invite. Fills the gaps in the Wayback-based redirect map; no longer
+  blocks starting it.
+- **Search Console and Bing access** to verify the properties and submit
+  the sitemap.
 - **Licensed brand webfonts** (Helvetica Now Display Condensed, Matter) —
   the `@font-face` block in `globals.css` is written and commented out,
   waiting on a *webfont* licence. Free OFL stand-ins carry the page.
-- **Team portraits** — 10 of 12 people render the awaiting-portrait frame.
-- **Perspective lines** — collected from each person in their own voice.
-  Never written for them.
-- **Case-study data** — only Capcom is client-confirmed. The Australian
-  Government campaign is unconfirmed and correctly excluded from the
-  sitemap.
-- **A real experiential activation** — the activation scorecard on
-  `/experiential` is a shaped placeholder and says so.
-- **The 12th talent profile.** The 11 on file were drafted from public
-  sources on 1 September 2026 and are **unverified by CLICK**.
-- **Legal copy** — all three legal pages are `noindex` drafts. Search
-  `content/legal.ts` for "TO CONFIRM".
+- **Team portraits** and **perspective lines** — collected from each person
+  in their own voice, never written for them.
+- **Talent verification** and **the 12th profile.** The 11 on file were
+  drafted from public sources on 1 September 2026 and are **unverified by
+  CLICK**.
+- **Legal go-live.** Counsel's review landed 2 September (ABN, retention,
+  age floor, authorised agents settled). Still open — search `TO CONFIRM`
+  in `content/legal.ts`: the EU/UK representative, and
+  `privacy@clickmedia.group` must exist and receive mail before the pages
+  drop `noindex`.
 - **One real insight** for the payoff frame on `/influencer-marketing`.
 
 **Decisions:**
 - The two in `docs/PERFORMANCE.md` (contrast, hero animation).
-- Sanity plan. The Growth trial lapses around now (~14 September).
-  On **Free** there are only
-  Administrator and Viewer roles — every CLICK editor is a full admin —
-  and history is 3 days. Growth is $15/seat/month. Chris should accept
+- **Sanity plan.** On Free there are only Administrator and Viewer roles
+  and 3 days of history; Growth is $15/seat/month. Chris should accept
   this knowingly.
-- How Chris reaches staging — a Vercel Shareable Link, or adding him to
+- **How Chris reaches staging** — a Vercel Shareable Link, or adding him to
   the `click17` team. §11 ties the final $4,000 to acceptance "on the
   staging URL", which has never been named in writing.
 - Confirmation in writing that `/insights`, `/news` and `/press` are
@@ -227,16 +244,21 @@ Content and decisions the build cannot proceed without.
 
 ## Before merging `dev` to `main`
 
+- `main`'s three own commits (favicon, the hand-assembled consent/legal
+  layer, the intelligence headline trim) are merged into `dev` with the
+  `ours` strategy: `dev` already carried all three, newer. The final
+  `dev` → `main` merge is therefore a fast-forward.
 - Gate or trim the `GET` readiness handler on `/api/revalidate` — it is
   publicly readable on production. Key names and booleans only.
 - Remove the staging CORS origin; consider registering the Studio for
   `www.clickmedia.group`.
-- Confirm `SANITY_API_READ_TOKEN` and `SANITY_REVALIDATE_SECRET` are set
-  on **Production**. The build now fails loudly without them, by design —
-  a private dataset returns empty rather than 401, so a tokenless build
-  would otherwise ship an empty site with a green build.
+- Confirm `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET` and the Mux
+  variables are set on **Production**. The build fails loudly without the
+  Sanity pair, by design.
 - Only **1 Sanity seat is in use.** §9 requires a CLICK person to perform
   every §4 operation unaided during training, so they need inviting.
+- Replace the deprecated default export of `@sanity/image-url` with
+  `createImageUrlBuilder` (build warning).
 - Delete or explicitly scope out the old `click-concept` project on the
   personal Vercel account (§6.3, §14 inventory).
 
@@ -247,7 +269,7 @@ Content and decisions the build cannot proceed without.
 | | |
 | --- | --- |
 | Staging | `https://click-web-git-dev-click17.vercel.app` — the `dev` branch alias |
-| Production | `www.clickmedia.group` — still serving old `main` |
+| Production | `www.clickmedia.group` — still serving old `main` (landing page) |
 | Studio | `/studio` on any deployed origin |
 | Sanity | project `eclvbmom`, dataset `production` (**private**) |
 | Vercel | project `click-web`, team `click17` (CLICK-owned) |
