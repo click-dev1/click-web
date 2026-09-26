@@ -16,24 +16,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const BEATS = [
-  {
-    n: "01",
-    title: "What the intelligence found",
-    body: "The insight that started everything — the audience overlap, the hidden community, the cultural signal others missed. Stated plainly.",
-  },
-  {
-    n: "02",
-    title: "What we built",
-    body: "The strategy, creators and creative the insight produced — hero film, creator content, behind-the-scenes moments.",
-  },
-  {
-    n: "03",
-    title: "What it delivered",
-    body: "Three to five metrics tied to the business objective. Real numbers, minimal framing.",
-  },
-];
-
 export default async function WorkPage() {
   const [caseStudies, page] = await Promise.all([
     fetchCaseStudies(),
@@ -62,35 +44,6 @@ export default async function WorkPage() {
         reelsEyebrow={page?.reelsEyebrow}
         reelsHeading={page?.reelsHeading}
       />
-
-      {/* ---- the three-beat structure, explained once ---- */}
-      <section
-        data-signal="flow"
-        className="hairline-t relative z-10 px-5 py-24 md:px-8"
-        aria-labelledby="beats-heading"
-      >
-        <div className="mx-auto max-w-7xl">
-          <p className="eyebrow pill mb-4">
-            <span className="tick">●</span> How every case study is told
-          </p>
-          <h2 id="beats-heading" data-split className="font-display text-h2 max-w-3xl">
-            A story with a scorecard, not a report.
-          </h2>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {BEATS.map((b) => (
-              <article key={b.n} data-reveal className="card-surface rounded-xl p-7">
-                <p className="eyebrow mb-3">
-                  <span className="tick">{b.n}</span>
-                </p>
-                <h3 className="font-display text-h3">{b.title}</h3>
-                <p className="mt-4 text-sm leading-body" style={{ color: "var(--ink-muted)" }}>
-                  {b.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ---- final CTA ---- */}
       <section
